@@ -125,7 +125,6 @@ Ext.define('Rebanho.view.Header', {
         {
             xtype: 'buttongroup',
             title: 'Uteis',
-            columns: 2,
             defaults: {
                 scale: 'small'
             },
@@ -169,7 +168,12 @@ Ext.define('Rebanho.view.Header', {
                     menu: [
                     ]
                 },
-
+                {
+                    text: 'Ferramentas',
+                    iconCls: 'icon-tools_box',
+                    menu: [
+                    ]
+                },
             ]
         },
     ]
