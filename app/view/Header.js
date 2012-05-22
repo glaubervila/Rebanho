@@ -144,6 +144,7 @@ Ext.define('Rebanho.view.Header', {
                             text: 'Características',
                             iconCls:'icon-table_gear',
                             handler: function(){
+                                var tabs = Ext.getCmp('mainTabpanel').novaAba('caracteristicasgrid');
                             },
                         },
                         {
@@ -175,6 +176,12 @@ Ext.define('Rebanho.view.Header', {
                     ]
                 },
             ]
+        },
+        {
+            text: 'TESTE',
+            handler: function(){
+                var tabs = Ext.getCmp('mainTabpanel').novaAba('caracteristicasgrid');
+            },
         },
     ]
 

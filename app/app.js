@@ -15,12 +15,14 @@ Ext.application({
 
     views: [
         'Viewport',
-        'usuarios'
+        'usuarios',
+        'caracteristicas'
     ],
 
     controllers: [
         'Teste',
-        'Usuarios'
+        'Usuarios',
+        'Caracteristicas'
     ],
 
 });

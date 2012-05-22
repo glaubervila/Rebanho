@@ -304,4 +304,12 @@ Ext.onReady(function(){
           collapsibleSplitTip : "Arraste para redimensionar. Duplo clique para esconder."
        });
     }
+
+    // RowEditor
+    if(Ext.grid.plugin.RowEditing){
+       Ext.apply(Ext.grid.plugin.RowEditing.prototype, {
+            saveBtnText: "Alterar",
+            cancelBtnText: "Cancelar",
+       });
+    }
 });

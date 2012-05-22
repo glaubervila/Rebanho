@@ -12,10 +12,10 @@ Ext.define('Rebanho.store.Usuarios', {
     proxy: {
 
         type: 'rest',
-        url: 'php/usuarios.php',
+        url: 'php/Usuarios.php',
         reader: {
             root: 'usuarios',
-            totalProperty: 'totalCount'
+            totalProperty: 'total'
         },
 
         writer: {
