@@ -10,7 +10,7 @@ Ext.define('Rebanho.view.Tabpanel', {
      */
     novaAba:function(xtype){
 
-        var tab = this.items.find(function( aba ){ return aba.xtype === xtype; });
+        var tab = this.items.findBy(function( aba ){ return aba.xtype === xtype; });
         if (!tab){
             tab = this.add({
                 xtype: xtype,

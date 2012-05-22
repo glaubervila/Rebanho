@@ -1,18 +1,18 @@
-Ext.define('Rebanho.controller.Caracteristicas', {
+Ext.define('Rebanho.controller.Confinamentos', {
     extend: 'Ext.app.Controller',
 
-    stores: ['Caracteristicas'],
+    stores: ['Confinamentos'],
 
-    models: ['Rebanho.model.Caracteristica'],
+    models: ['Rebanho.model.Confinamento'],
 
     views: [
-        'cadastros.caracteristicas.CaracteristicasGrid',
+        'cadastros.confinamentos.ConfinamentosGrid',
     ],
 
     refs: [
         {
-            ref: 'caracteristicasGrid',
-            selector: 'caracteristicasgrid'
+            ref: 'confinamentosGrid',
+            selector: 'confinamentosgrid'
         },
     ],
     init: function() {
@@ -22,15 +22,15 @@ Ext.define('Rebanho.controller.Caracteristicas', {
 
             // Ao Clicar no Botao Novo
 
-            'caracteristicasgrid button[action=action_novo]': {
+            'confinamentosgrid button[action=action_novo]': {
                 click: this.onBtnNovoClick
             },
             // Ao Clicar no Botao Excluir na Grid
-            'caracteristicasgrid button[action=action_excluir]': {
+            'confinamentosgrid button[action=action_excluir]': {
                 click: this.onBtnExcluirClick
             },
 
-            'caracteristicasgrid': {
+            'confinamentosgrid': {
                 // Ao Selecionar um Registro na Grid
                 selectionchange: this.onSelectChange,
             },
@@ -38,25 +38,25 @@ Ext.define('Rebanho.controller.Caracteristicas', {
 
     },
 
-    onBtnNovoClick: function (){
+    onSelectChange: function(selModel, selections){
+        this.getConfinamentosGrid().down('#delete').setDisabled(selections.length === 0);
+    },
+
+    onBtnNovoClick: function (btn){
 
         // Recuperando a Store
-        var store = this.getStore('Caracteristicas');
+        var store = this.getStore('Confinamentos');
 
         // Criando Um Record Novo
-        var model = Ext.create('Rebanho.model.Caracteristica',{});
+        var model = Ext.create('Rebanho.model.Confinamento',{});
 
         store.insert(0,model);
 
         // Iniciando a Edição do registro novo
-        this.getCaracteristicasGrid().editingPlugin.startEdit(0,0);
+        this.getConfinamentosGrid().editingPlugin.startEdit(0,0);
 
     },
 
-
-    onSelectChange: function(selModel, selections){
-        this.getCaracteristicasGrid().down('#delete').setDisabled(selections.length === 0);
-    },
 
     /**Funcao: onBtnExcluirClick()
      * Funcao executada quando se Clica no Botao 'Excluir' no Grid
@@ -67,7 +67,7 @@ Ext.define('Rebanho.controller.Caracteristicas', {
 
         var me = this;
         // Recuperando a Linha Selecionada
-        var grid = me.getCaracteristicasGrid();
+        var grid = me.getConfinamentosGrid();
         var store = grid.getStore();
         var records = grid.getSelectionModel().getSelection();
 

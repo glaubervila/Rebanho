@@ -1,9 +1,9 @@
-Ext.define('Rebanho.view.cadastros.caracteristicas.CaracteristicasGrid' ,{
+Ext.define('Rebanho.view.cadastros.confinamentos.ConfinamentosGrid' ,{
     extend: 'Ext.grid.Panel',
 
-    alias : 'widget.caracteristicasgrid',
+    alias : 'widget.confinamentosgrid',
 
-    title: 'Lista de Caracteristicas',
+    title: 'Lista de Confinamentos',
 
     loadMask: true,
 
@@ -11,7 +11,7 @@ Ext.define('Rebanho.view.cadastros.caracteristicas.CaracteristicasGrid' ,{
 
     initComponent: function() {
 
-        this.store = 'Caracteristicas';
+        this.store = 'Confinamentos';
 
         // RowEdit Plugin
         this.plugins= [
@@ -22,23 +22,17 @@ Ext.define('Rebanho.view.cadastros.caracteristicas.CaracteristicasGrid' ,{
         this.columns = [
             Ext.create('Ext.grid.RowNumberer'),
             {
-                dataIndex: 'id',
-                sortable:false,
-                hidden : true,
-            },
-            {
                 text: "Código",
-                dataIndex: 'codigo',
-                sortable: true,
-                //flex:true,
+                dataIndex: 'id',
                 width: 150,
                 field: {
                     xtype: 'textfield',
                 },
+
             },
             {
-                text: "Características",
-                dataIndex: 'descricao',
+                text: "Confinamentos",
+                dataIndex: 'confinamento',
                 sortable: true,
                 flex:true,
                 field: {
@@ -56,8 +50,8 @@ Ext.define('Rebanho.view.cadastros.caracteristicas.CaracteristicasGrid' ,{
                 tooltip: 'Click para <font color="green"><b>Incluir</b></font> um Novo Registro.',
             },
             {
-                itemId:'delete',
                 text: 'Excluir',
+                itemId: 'delete',
                 iconCls: 'icon-cross',
                 action: 'action_excluir',
                 disabled: true,

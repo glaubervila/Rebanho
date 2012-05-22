@@ -1,7 +1,7 @@
-Ext.define('Rebanho.store.Caracteristicas', {
+Ext.define('Rebanho.store.Confinamentos', {
     extend: 'Ext.data.Store',
     
-    model: 'Rebanho.model.Caracteristica',
+    model: 'Rebanho.model.Confinamento',
 
     autoLoad: true,
 
@@ -12,7 +12,7 @@ Ext.define('Rebanho.store.Caracteristicas', {
     proxy: {
 
         type: 'rest',
-        url: 'php/Caracteristicas.php',
+        url: 'php/Confinamentos.php',
         reader: {
             type: 'json',
             root: 'data',

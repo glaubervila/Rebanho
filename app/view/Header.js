@@ -180,7 +180,7 @@ Ext.define('Rebanho.view.Header', {
         {
             text: 'TESTE',
             handler: function(){
-                var tabs = Ext.getCmp('mainTabpanel').novaAba('caracteristicasgrid');
+                var tabs = Ext.getCmp('mainTabpanel').novaAba('confinamentosgrid');
             },
         },
     ]
