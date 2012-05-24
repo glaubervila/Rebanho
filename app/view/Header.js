@@ -160,6 +160,9 @@ Ext.define('Rebanho.view.Header', {
                         {
                             text: 'Confinamentos',
                             iconCls:'icon-table_gear',
+                            handler: function(){
+                                var tabs = Ext.getCmp('mainTabpanel').novaAba('confinamentosgrid');
+                            },
                         },
                     ]
                 },
@@ -180,9 +183,17 @@ Ext.define('Rebanho.view.Header', {
         {
             text: 'TESTE',
             handler: function(){
-                var tabs = Ext.getCmp('mainTabpanel').novaAba('confinamentosgrid');
+                var tabs = Ext.getCmp('mainTabpanel').novaAba('quadrasgrid');
             },
         },
+        {
+            text: 'TESTE2',
+            handler: function(){
+                var tabs = Ext.getCmp('mainTabpanel').novaAba('panelteste');
+            },
+        },
+
     ]
+    
 
 });

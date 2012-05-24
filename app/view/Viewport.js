@@ -4,10 +4,7 @@ Ext.define('Rebanho.view.Viewport', {
     requires: [
         'Rebanho.view.Header',
         'Rebanho.view.Tabpanel',
-        //'Rebanho.view.Teste',
-        //'Rebanho.view.usuarios.UsuariosForm',
-        //'Rebanho.model.Teste',
-    ],  
+    ],
 
     layout: {
         type: 'border'

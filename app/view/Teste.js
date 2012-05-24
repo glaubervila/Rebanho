@@ -1,26 +1,45 @@
 Ext.define('Rebanho.view.Teste' ,{
-    extend: 'Ext.grid.Panel',
+    extend: 'Ext.form.Panel',
 
-    alias : 'widget.testegrid',
+    alias : 'widget.panelteste',
 
     require:['Rebanho.store.Teste'],
-//     store:'Teste',
     
-    title: 'GRID DE TESTE',
+    title: 'Painel DE TESTE',
     
     initComponent: function() {
 
-        this.store = 'Teste';
-        //console.log(this.store.data);
-        this.columns = [
+        this.items = [
             {
-                header: "Coluna1",
-                dataIndex: 'id',
-            },{
-                header: "Coluna2",
-                dataIndex: 'descricao',
+                xtype:'combobox',
+                store: {
+                    fields: ['text'],
+                    data: [
+                        {text: 'Red'},
+                        {text: 'Yellow'},
+                        {text: 'Green'},
+                    ]
+                }
+            },
+            {
+                xtype:'meucombo',
+                id: 'teste',
             }
+
         ]
+//         this.store = 'Teste';
+//         //console.log(this.store.data);
+//         this.columns = [
+//             {
+//                 header: "Coluna1",
+//                 dataIndex: 'id',
+//             },{
+//                 header: "Coluna2",
+//                 dataIndex: 'descricao',
+//             }
+//         ]
+        
+
         this.callParent(arguments);
     }
  }); 

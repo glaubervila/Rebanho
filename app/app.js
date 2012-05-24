@@ -23,6 +23,7 @@ Ext.application({
         'Usuarios',
         'Caracteristicas',
         'Confinamentos',
+        'Quadras',
     ],
 
 });

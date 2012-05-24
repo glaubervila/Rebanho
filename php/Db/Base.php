@@ -27,7 +27,7 @@ abstract class Base {
         switch ($_SERVER['REQUEST_METHOD']) {
 
             case 'GET':
-                call_user_func(array($this, 'fetchAll'));
+                call_user_func(array($this, 'load'));
 
                 break;
 
@@ -112,37 +112,100 @@ abstract class Base {
         return $stm->fetch(\PDO::FETCH_ASSOC);
     }
 
-    public function fetchAll() {
+    public function fetchAll($query) {
 
         $start = $_GET['start'];
         $limit = $_GET['limit'];
 
-        $sort = $_GET['sort'] ? $_GET['sort'] : 'nome';
-        $dir = $_GET['dir']? $_GET['dir'] : 'ASC';
-        $order = $sort . ' ' . $dir;
-        
+        //$sort = $_GET['sort'] ? $_GET['sort'] : 'nome';
+        $sorts = json_decode($_GET['sort']);
+        //$dir = $_GET['dir'] ? $_GET['dir'] : 'ASC';
+        //$order = $sort['property'] . ' ' . $dir;
+        if ($sorts){
+            foreach ($sorts as $sort) {
+//                 $col = $sort->property  ? $sort->property  : 'id';
+//                 $dir = $sort->direction ? $sort->direction : 'ASC';
+                if ($sort->property AND $dir = $sort->direction){
+                    $orders[] = $sort->property . ' ' . $sort->direction;
+                }
+            }
+            if ($orders[0]){
+                $order = implode(', ', $orders );
+            }
+            else {
+                $order = null;
+            }
+        }
+
         $db = $this->getDb();
 
         $db->exec("SET NAMES utf8");
-        
-        $sql = "select * from " . $this->getTable() . " order by :order";
-        
-        if($start !== null && $start !== '' && $limit !== null && $limit !== ''){
-            $sql .= " LIMIT " . $start . " , " . $limit;
-        }
-        
-        $stm = $db->prepare($sql);
-        $stm->bindValue(":order", $order);
-        $stm->execute();
-        
-        $sql = "SELECT COUNT(*) AS total FROM " . $this->getTable();
-        $total = $db->query($sql)->fetch();
 
-        echo json_encode(array(
-            "data" => $stm->fetchAll(\PDO::FETCH_ASSOC),
-            "success" => true,
-            "total" => $total['total']
-        ));
+        if ($query) {
+
+            $sql = $query->sql;
+
+            if ($order){
+                $sql .= " ORDER BY :order";
+            }
+
+            if ($query->limit){
+                if($start !== null && $start !== '' && $limit !== null && $limit !== ''){
+                    $sql .= " LIMIT " . $start . " , " . $limit;
+                }
+            }
+
+            if ($order){
+                $stm = $db->prepare($sql);
+                $stm->bindValue(":order", $order);
+            }
+
+            $stm->execute();
+
+            $error = $stm->errorInfo();
+
+            if ($error[0] != 0){
+                var_dump($error);
+            }
+
+            // Query para saber o Total
+            $sql_part = preg_replace("#SELECT(.*)FROM(.*?)ORDER(.*)LIMIT(.*)#is", '$2', $sql);
+
+            $sql_total = "SELECT COUNT(*) as total FROM " . $sql_part;
+            //var_dump($sql_total);
+            $total = $db->query($sql_total)->fetch();
+        }
+        else {
+            $sql = "select * from " . $this->getTable() . " order by :order";
+
+            if($start !== null && $start !== '' && $limit !== null && $limit !== ''){
+                $sql .= " LIMIT " . $start . " , " . $limit;
+            }
+
+            $stm = $db->prepare($sql);
+            $stm->bindValue(":order", $order);
+
+            $stm->execute();
+
+            $sql = "SELECT COUNT(*) AS total FROM " . $this->getTable();
+            $total = $db->query($sql)->fetch();
+
+        }
+
+
+        $result = new StdClass();
+        $result->success = true;
+        $result->data    = $stm->fetchAll(\PDO::FETCH_ASSOC);
+        $result->total   = $total['total'];
+
+        return $result;
+    }
+
+    public function load(){
+
+        $result = $this->fetchAll();
+
+        echo json_encode($result);
     }
 
     public function delete($data) {
