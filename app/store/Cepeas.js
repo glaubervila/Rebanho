@@ -1,11 +1,11 @@
-Ext.define('Rebanho.store.Confinamentos', {
+Ext.define('Rebanho.store.Cepeas', {
     extend: 'Ext.data.Store',
-    
-    model: 'Rebanho.model.Confinamento',
 
-    autoLoad: true,
+    model: 'Rebanho.model.Cepea',
 
     autoSync: true,
+
+    //autoLoad: true,
 
     pageSize: 20,
 
@@ -14,7 +14,7 @@ Ext.define('Rebanho.store.Confinamentos', {
     proxy: {
 
         type: 'rest',
-        url: 'php/Confinamentos.php',
+        url: 'php/Cepeas.php',
         reader: {
             type: 'json',
             root: 'data',
@@ -29,14 +29,10 @@ Ext.define('Rebanho.store.Confinamentos', {
             allowSingle: true,
         },
 
-        exception: function(proxy, response, operation){
-            Ext.MessageBox.show({
-                title: 'REMOTE EXCEPTION',
-                msg: operation.getError(),
-                icon: Ext.MessageBox.ERROR,
-                buttons: Ext.Msg.OK
-            });
-        },
+        sorters: [{
+            property: 'data',
+            direction: 'DESC'
+        }],
     },
 
     listeners: {

@@ -151,9 +151,10 @@ Ext.define('Rebanho.view.Header', {
                             text: 'Quadras',
                             iconCls:'icon-table_gear',
                             handler: function(){
+                                var tabs = Ext.getCmp('mainTabpanel').novaAba('quadrasgrid');
                             },
                         },
-                         {
+                        {
                             text: 'Valor Arroba',
                             iconCls:'icon-table_gear',
                         },
@@ -183,7 +184,7 @@ Ext.define('Rebanho.view.Header', {
         {
             text: 'TESTE',
             handler: function(){
-                var tabs = Ext.getCmp('mainTabpanel').novaAba('quadrasgrid');
+                var tabs = Ext.getCmp('mainTabpanel').novaAba('cepeasgrid');
             },
         },
         {
@@ -194,6 +195,5 @@ Ext.define('Rebanho.view.Header', {
         },
 
     ]
-    
 
 });

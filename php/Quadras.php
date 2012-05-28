@@ -76,10 +76,6 @@ class Quadras extends Base {
         echo json_encode($result);
     }
 
-//     public function fetchAll() {
-// 
-//         echo '{"data":[{"id":"1","confinamento_id":"1","quadra":"Quadra 1 confinamento 3", "confinamento":"Fazenda São Marcos"}],"success":true,"total":"3"}';
-//     }
 
     public function destroy($data){
 

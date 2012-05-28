@@ -1,20 +1,18 @@
-Ext.define('Rebanho.store.Confinamentos', {
+Ext.define('Rebanho.store.Cepeas', {
     extend: 'Ext.data.Store',
-    
-    model: 'Rebanho.model.Confinamento',
 
-    autoLoad: true,
+    model: 'Rebanho.model.Cepea',
 
     autoSync: true,
 
-    pageSize: 20,
+    //autoLoad: true,
 
-    remoteSort: true,
+    pageSize: 20,
 
     proxy: {
 
         type: 'rest',
-        url: 'php/Confinamentos.php',
+        url: 'php/Cepeas.php',
         reader: {
             type: 'json',
             root: 'data',

@@ -129,6 +129,7 @@ abstract class Base {
                     $orders[] = $sort->property . ' ' . $sort->direction;
                 }
             }
+
             if ($orders[0]){
                 $order = implode(', ', $orders );
             }
@@ -145,50 +146,73 @@ abstract class Base {
 
             $sql = $query->sql;
 
-            if ($order){
+            if ($query->order OR $order){
                 $sql .= " ORDER BY :order";
             }
 
-            if ($query->limit){
+            if ($query->limit OR $limit){
                 if($start !== null && $start !== '' && $limit !== null && $limit !== ''){
                     $sql .= " LIMIT " . $start . " , " . $limit;
                 }
             }
 
-            if ($order){
+            if ($query->order OR $order){
                 $stm = $db->prepare($sql);
                 $stm->bindValue(":order", $order);
             }
 
+            $stm = $db->prepare($sql);
             $stm->execute();
 
-            $error = $stm->errorInfo();
+            // Query para saber o Total
+            $exp_reg = "#SELECT(.*)FROM(.*?)";
+            if ($query->order OR $order){
+                $exp_reg .= "ORDER(.*)";
+            }
+            if ($query->limit OR $limit){
+                $exp_reg .= "LIMIT(.*)#is";
+            }
+            $sql_part = preg_replace($exp_reg, '$2', $sql);
 
+            $sql_total = "SELECT COUNT(*) as total FROM " . $sql_part;
+
+            $total = $db->query($sql_total)->fetch();
+
+            // Se Tiver Erro REFAZER ESSA PARTE!
+            $error = $stm->errorInfo();
             if ($error[0] != 0){
                 var_dump($error);
             }
 
-            // Query para saber o Total
-            $sql_part = preg_replace("#SELECT(.*)FROM(.*?)ORDER(.*)LIMIT(.*)#is", '$2', $sql);
-
-            $sql_total = "SELECT COUNT(*) as total FROM " . $sql_part;
-            //var_dump($sql_total);
-            $total = $db->query($sql_total)->fetch();
         }
         else {
-            $sql = "select * from " . $this->getTable() . " order by :order";
+            $sql = "SELECT * FROM " . $this->getTable();
+
+            if ($order) {
+                $sql .= " ORDER BY $order ";
+            }
 
             if($start !== null && $start !== '' && $limit !== null && $limit !== ''){
                 $sql .= " LIMIT " . $start . " , " . $limit;
             }
 
             $stm = $db->prepare($sql);
-            $stm->bindValue(":order", $order);
-
             $stm->execute();
+
+            // Se Tiver Erro REFAZER ESSA PARTE!
+            $error = $stm->errorInfo();
+            if ($error[0] != 0){
+                var_dump($error);
+            }
 
             $sql = "SELECT COUNT(*) AS total FROM " . $this->getTable();
             $total = $db->query($sql)->fetch();
+
+            // Se Tiver Erro REFAZER ESSA PARTE!
+            $error = $stm->errorInfo();
+            if ($error[0] != 0){
+                var_dump($error);
+            }
 
         }
 
@@ -294,6 +318,18 @@ abstract class Base {
 
             $result->failure = true;
             $result->message = $msg;
+
+            return $result;
+        }
+    }
+
+    public function destroy($data){
+
+        if ($data){
+
+            $result = $this->delete($data);
+
+            $this->ReturnJson($result);
         }
 
     }

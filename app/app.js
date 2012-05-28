@@ -24,6 +24,7 @@ Ext.application({
         'Caracteristicas',
         'Confinamentos',
         'Quadras',
+        'Cepeas',
     ],
 
 });

@@ -8,7 +8,9 @@ Ext.define('Rebanho.store.Caracteristicas', {
     autoSync: true,
 
     pageSize: 20,
-    
+
+    remoteSort: true,
+
     proxy: {
 
         type: 'rest',
