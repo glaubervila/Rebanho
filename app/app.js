@@ -19,6 +19,8 @@ Ext.application({
 
     controllers: [
         'Teste',
+        // Compras
+        'Fornecedores',
         // Cadastros
         'Usuarios',
         'Caracteristicas',

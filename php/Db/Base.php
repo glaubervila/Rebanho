@@ -4,6 +4,16 @@ require_once 'Connection.php';
 
 header('Content-Type: text/javascript; charset=UTF-8');
 
+function __autoload($classe) {
+    $pastas = array('../php');
+
+    foreach ($pastas as $pasta) {
+        if (file_exists("{$pasta}/{$classe}.php")){
+            include_once "{$pasta}/{$classe}.php";
+        }
+    }
+}
+
 abstract class Base {
 
     protected $id = null;
@@ -11,13 +21,14 @@ abstract class Base {
     protected $table = null;
 
     public function __construct(array $options=null, \PDO $database = null) {
+
         if (count($options))
             $this->setOptions($options);
 
-        $this->config['adapter'] = "mysql";
+        $this->config['adapter']  = "mysql";
         $this->config['hostname'] = "localhost";
-        $this->config['dbname'] = "rebanho";
-        $this->config['user'] = "root";
+        $this->config['dbname']   = "rebanho";
+        $this->config['user']     = "root";
         $this->config['password'] = "";
 
         $connection = new Connection();
@@ -42,7 +53,7 @@ abstract class Base {
 
             case 'PUT':
                 parse_str(file_get_contents("php://input"), $post_vars);
- 
+
                 $info = $post_vars['data'];
 
                 //$data = json_decode(stripslashes($info));
@@ -62,6 +73,7 @@ abstract class Base {
 
                 break;
         }
+
     }
 
     public function setOptions(array $options) {
@@ -104,12 +116,18 @@ abstract class Base {
         }
     }
 
-    public function find($id) {
+    public function find($id, $table) {
         $db = $this->getDb();
-        $stm = $db->prepare("select * from " . $this->getTable() . ' where id=:id');
+        if ($table) {
+            $sql = "select * from " . $table . ' where id=:id';
+        }
+        else {
+            $sql = "select * from " . $this->getTable() . ' where id=:id';
+        }
+        $stm = $db->prepare($sql);
         $stm->bindValue(':id', $id);
         $stm->execute();
-        return $stm->fetch(\PDO::FETCH_ASSOC);
+        return $stm->fetchObject();
     }
 
     public function fetchAll($query) {
@@ -147,7 +165,9 @@ abstract class Base {
             $sql = $query->sql;
 
             if ($query->order OR $order){
-                $sql .= " ORDER BY :order";
+                if ($order){
+                    $sql .= " ORDER BY $order";
+                }
             }
 
             if ($query->limit OR $limit){
@@ -156,18 +176,15 @@ abstract class Base {
                 }
             }
 
-            if ($query->order OR $order){
-                $stm = $db->prepare($sql);
-                $stm->bindValue(":order", $order);
-            }
-
             $stm = $db->prepare($sql);
             $stm->execute();
 
             // Query para saber o Total
             $exp_reg = "#SELECT(.*)FROM(.*?)";
             if ($query->order OR $order){
-                $exp_reg .= "ORDER(.*)";
+                if ($order){
+                    $exp_reg .= "ORDER(.*)";
+                }
             }
             if ($query->limit OR $limit){
                 $exp_reg .= "LIMIT(.*)#is";
@@ -219,7 +236,7 @@ abstract class Base {
 
         $result = new StdClass();
         $result->success = true;
-        $result->data    = $stm->fetchAll(\PDO::FETCH_ASSOC);
+        $result->data    = $stm->fetchAll(\PDO::FETCH_OBJ);
         $result->total   = $total['total'];
 
         return $result;

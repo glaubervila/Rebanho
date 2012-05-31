@@ -38,7 +38,7 @@ Ext.define('Rebanho.controller.Cepeas', {
                 // Ao Selecionar um Registro na Grid
                 selectionchange: this.onSelectChange,
                 render:function(){
-                    this.getCepeasStore().sort('data', 'DESC');
+                    this.getCepeasStore().load();
                 },
             },
         });

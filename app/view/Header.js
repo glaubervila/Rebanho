@@ -157,6 +157,9 @@ Ext.define('Rebanho.view.Header', {
                         {
                             text: 'Valor Arroba',
                             iconCls:'icon-table_gear',
+                            handler: function(){
+                                var tabs = Ext.getCmp('mainTabpanel').novaAba('cepeasgrid');
+                            },
                         },
                         {
                             text: 'Confinamentos',
@@ -184,7 +187,7 @@ Ext.define('Rebanho.view.Header', {
         {
             text: 'TESTE',
             handler: function(){
-                var tabs = Ext.getCmp('mainTabpanel').novaAba('cepeasgrid');
+                var tabs = Ext.getCmp('mainTabpanel').novaAba('fornecedoresgrid');
             },
         },
         {

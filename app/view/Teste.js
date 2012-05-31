@@ -27,7 +27,9 @@ Ext.define('Rebanho.view.Teste' ,{
             }
 
         ]
-//         this.store = 'Teste';
+        var store = Ext.create('Rebanho.store.Fornecedores',{});
+        
+        store.load();
 //         //console.log(this.store.data);
 //         this.columns = [
 //             {

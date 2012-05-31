@@ -34,6 +34,10 @@ Ext.define('Rebanho.store.Cepeas', {
             direction: 'DESC'
         }],
     },
+    sorters: [{
+        property: 'data',
+        direction: 'DESC'
+    }],
 
     listeners: {
         write: function(store, operation){
