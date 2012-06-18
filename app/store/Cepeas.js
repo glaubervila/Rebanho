@@ -5,8 +5,6 @@ Ext.define('Rebanho.store.Cepeas', {
 
     autoSync: true,
 
-    //autoLoad: true,
-
     pageSize: 20,
 
     remoteSort: true,
@@ -14,7 +12,10 @@ Ext.define('Rebanho.store.Cepeas', {
     proxy: {
 
         type: 'rest',
-        url: 'php/Cepeas.php',
+        url: 'php/main.php',
+        extraParams:{
+            classe: 'Cepeas',
+        },
         reader: {
             type: 'json',
             root: 'data',

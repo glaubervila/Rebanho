@@ -3,8 +3,6 @@ Ext.define('Rebanho.store.Caracteristicas', {
     
     model: 'Rebanho.model.Caracteristica',
 
-    autoLoad: true,
-
     autoSync: true,
 
     pageSize: 20,
@@ -14,7 +12,10 @@ Ext.define('Rebanho.store.Caracteristicas', {
     proxy: {
 
         type: 'rest',
-        url: 'php/Caracteristicas.php',
+        url: 'php/main.php',
+        extraParams:{
+            classe: 'Caracteristicas',
+        },
         reader: {
             type: 'json',
             root: 'data',
@@ -29,14 +30,6 @@ Ext.define('Rebanho.store.Caracteristicas', {
             allowSingle: true,
         },
 
-        exception: function(proxy, response, operation){
-            Ext.MessageBox.show({
-                title: 'REMOTE EXCEPTION',
-                msg: operation.getError(),
-                icon: Ext.MessageBox.ERROR,
-                buttons: Ext.Msg.OK
-            });
-        },
     },
 
     listeners: {

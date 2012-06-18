@@ -132,6 +132,8 @@ Ext.define('Rebanho.controller.Fornecedores', {
         // Recupera o Form
         var form = this.getFornecedoresForm();
         var store = this.getStore('Fornecedores');
+
+        console.log(store);
         // Recupera os dados do Formulario
         var values = this.getFornecedoresForm().getForm().getValues();
         var record = form.getRecord();
@@ -147,10 +149,10 @@ Ext.define('Rebanho.controller.Fornecedores', {
                 var record = Ext.create('Rebanho.model.Fornecedor', values);
                 // Criando o Registro pela Store
                 store.add(record);
-                //store.sync();
+                this.getFornecedoresForm().getForm().reset();
             }
         }
-        this.getFornecedoresForm().getForm().reset();
+
     },
 
     /**Funcao: onBtnExcluirClick()

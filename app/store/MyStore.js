@@ -7,11 +7,10 @@ Ext.define('Rebanho.store.MyStore', {
 
     remoteSort: true,
 
-    listeners: {
+    listeners:{
         write: function(store, operation){
 
-
-            var obj = Ext.decode(operation.response.responseText);
+        var obj = Ext.decode(operation.response.responseText);
 
             // Verificando se Houve Falha
             if (obj.failure){
@@ -24,6 +23,7 @@ Ext.define('Rebanho.store.MyStore', {
                 store.load();
             }
         },
-    }
+    },
+
 
 });

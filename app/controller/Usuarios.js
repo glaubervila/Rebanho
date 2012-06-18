@@ -6,9 +6,9 @@ Ext.define('Rebanho.controller.Usuarios', {
     models: ['Usuario'],
 
     views: [
-        'usuarios.UsuariosPanel',
-        'usuarios.UsuariosGrid',
-        'usuarios.UsuariosForm',
+        'cadastros.usuarios.UsuariosPanel',
+        'cadastros.usuarios.UsuariosGrid',
+        'cadastros.usuarios.UsuariosForm',
     ],
 
     refs: [
@@ -41,6 +41,9 @@ Ext.define('Rebanho.controller.Usuarios', {
                 selectionchange: this.onSelectUsuario,
                 // DoubleClick em uma linha da Grid
                 itemdblclick: this.onEditUsuario,
+                render:function(){
+                    this.getUsuariosStore().load();
+                },
             },
 
             // Ao Clicar no Botao Excluir na Grid

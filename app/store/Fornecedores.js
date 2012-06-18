@@ -8,7 +8,10 @@ Ext.define('Rebanho.store.Fornecedores', {
     proxy: {
 
         type: 'rest',
-        url: 'php/Fornecedores.php',
+        url: 'php/main.php',
+        extraParams:{
+            classe: 'Fornecedores',
+        },
         reader: {
             type: 'json',
             root: 'data',

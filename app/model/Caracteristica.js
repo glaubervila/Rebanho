@@ -8,6 +8,7 @@ Ext.define('Rebanho.model.Caracteristica', {
         {name:'id', type: 'int'},
         {name:'codigo', type: 'string'},
         {name:'descricao', type: 'string'},
+        {name:'cod_desc', type: 'string'},
     ],
 
 //     validations: [

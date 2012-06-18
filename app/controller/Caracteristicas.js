@@ -33,6 +33,10 @@ Ext.define('Rebanho.controller.Caracteristicas', {
             'caracteristicasgrid': {
                 // Ao Selecionar um Registro na Grid
                 selectionchange: this.onSelectChange,
+                render:function(){
+                    this.getCaracteristicasStore().load();
+                },
+
             },
         });
 

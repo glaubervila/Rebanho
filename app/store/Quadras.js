@@ -5,14 +5,15 @@ Ext.define('Rebanho.store.Quadras', {
 
     autoSync: true,
 
-    //autoLoad: true,
-
     pageSize: 20,
 
     proxy: {
 
         type: 'rest',
-        url: 'php/Quadras.php',
+        url: 'php/main.php',
+        extraParams:{
+            classe: 'Quadras',
+        },
         reader: {
             type: 'json',
             root: 'data',
@@ -27,14 +28,6 @@ Ext.define('Rebanho.store.Quadras', {
             allowSingle: true,
         },
 
-        exception: function(proxy, response, operation){
-            Ext.MessageBox.show({
-                title: 'REMOTE EXCEPTION',
-                msg: operation.getError(),
-                icon: Ext.MessageBox.ERROR,
-                buttons: Ext.Msg.OK
-            });
-        },
     },
 
     listeners: {

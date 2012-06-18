@@ -32,6 +32,7 @@ Ext.define('Rebanho.view.cadastros.cepea.CepeasGrid' ,{
                 field: {
                     xtype:'datefield',
                 },
+                allowBlank: false,
             },
             {
                 text: "Valor",
@@ -41,7 +42,8 @@ Ext.define('Rebanho.view.cadastros.cepea.CepeasGrid' ,{
                 field: {
                     xtype: 'textfield',
                 },
-                renderer: 'brMoney'
+                renderer: 'brMoney',
+                allowBlank: false,
             },
         ]
 

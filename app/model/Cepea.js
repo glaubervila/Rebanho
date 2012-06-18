@@ -9,6 +9,7 @@ Ext.define('Rebanho.model.Cepea', {
         {name:'id', type: 'int'},
         {name:'data', type: 'date', dateFormat: 'Y-m-d' },
         {name:'valor', type: 'fload'},
+        {name:'data_valor', type: 'string'},
     ],
 
 });

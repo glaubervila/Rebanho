@@ -14,7 +14,10 @@ Ext.define('Rebanho.store.Confinamentos', {
     proxy: {
 
         type: 'rest',
-        url: 'php/Confinamentos.php',
+        url: 'php/main.php',
+        extraParams:{
+            classe: 'Confinamentos',
+        },
         reader: {
             type: 'json',
             root: 'data',
@@ -27,15 +30,6 @@ Ext.define('Rebanho.store.Confinamentos', {
             writeAllFields: true,
             encode: true,
             allowSingle: true,
-        },
-
-        exception: function(proxy, response, operation){
-            Ext.MessageBox.show({
-                title: 'REMOTE EXCEPTION',
-                msg: operation.getError(),
-                icon: Ext.MessageBox.ERROR,
-                buttons: Ext.Msg.OK
-            });
         },
     },
 
