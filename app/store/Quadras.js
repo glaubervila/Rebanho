@@ -5,6 +5,8 @@ Ext.define('Rebanho.store.Quadras', {
 
     autoSync: true,
 
+    //autoLoad:true,
+
     pageSize: 20,
 
     proxy: {

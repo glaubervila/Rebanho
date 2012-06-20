@@ -31,8 +31,16 @@ class Application {
 
                 case 'GET':
                     $class  = $_REQUEST['classe'];
-                    $action = 'load';
-                break;
+
+                    // Se Nao Houver Parametro Action executa action 'LOAD'
+                    $action = $_REQUEST['action'] ? $_REQUEST['action'] : 'load';
+
+                    // Se Nao Houver Parametro Data Passa todo o Post
+                    $info = $_REQUEST['data'] ? json_decode($_REQUEST['data']) : $_REQUEST;
+
+                    $data = $info;
+
+                    break;
 
                 case 'POST':
                     $class= $_REQUEST['classe'];

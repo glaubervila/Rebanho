@@ -4,10 +4,9 @@ Ext.define('Rebanho.model.Quadra', {
 
     alias: 'Quadra',
 
-
     fields: [
-        {name:'id', type: 'int'},
-        {name:'quadra', type: 'string'},
+        {name:'id'          , type: 'int'},
+        {name:'quadra'      , type: 'string'},
         {name:'confinamento_id', type: 'string'},
         {name:'confinamento', type: 'string'},
     ],

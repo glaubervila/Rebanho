@@ -106,4 +106,19 @@ class Fornecedores extends Base {
 
         echo json_encode($result);
     }
+
+    public function getAt($data){
+        $result = new StdClass();
+
+        $data = $this->findBy($data['field'], $data['value'], $this->getTable());
+
+        if ($data){
+            $result->success = true;
+            $result->data = $data;
+        }
+        else {
+            $result->success = false;
+        }
+        echo json_encode($result);
+    }
 }

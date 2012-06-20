@@ -13,39 +13,62 @@ Ext.define('Rebanho.view.compras.animais.CompraAnimaisGrid' ,{
 
     initComponent: function() {
 
-        this.store = 'Fornecedores';
+        this.store = 'CompraAnimais';
 
         this.columns = [
             Ext.create('Ext.grid.RowNumberer'),
             {
                 text: "Confinamento",
-                dataIndex: 'confinamento_id',
+                dataIndex: 'confinamento_nome',
                 width: 200,
-                renderer: this.changeConfinamento
             },
             {
-                text: "Data",
-                dataIndex: 'nome',
-                width: 200,
+                xtype: 'datecolumn',
+                text: "Data Nota",
+                dataIndex: 'data_compra',
+                width: 100,
+                renderer : Ext.util.Format.dateRenderer('d-m-Y'),
             },
+            {
+                xtype: 'datecolumn',
+                text: "Data Entrada",
+                dataIndex: 'data_pesagem',
+                width: 100,
+                renderer : Ext.util.Format.dateRenderer('d-m-Y'),
+            },
+
             {
                 text: "Fornecedor",
-                dataIndex: 'fazenda',
+                dataIndex: 'fornecedor_nome',
+                sortable: true,
+                flex:true,
+            },
+            {
+                text: "Fazenda",
+                dataIndex: 'fornecedor_fazenda',
                 sortable: true,
                 flex:true,
             },
             {
                 text: "Nota Fiscal",
-                dataIndex: 'cnpj_cpf',
+                dataIndex: 'numero_nota',
                 sortable: true,
-                flex:true,
+                width: 100,
+            },
+            {
+                text: "Qtd Animais",
+                dataIndex: 'quantidade',
+                sortable: true,
+                width: 100,
             },
             {
                 text: "Valor",
-                dataIndex: 'telefone',
+                dataIndex: 'valor_nota',
                 sortable: true,
                 flex:true,
+                renderer: 'brMoney',
             },
+
         ]
 
         this.dockedItems= [{
@@ -79,9 +102,5 @@ Ext.define('Rebanho.view.compras.animais.CompraAnimaisGrid' ,{
 
         this.callParent(arguments);
     },
-
-    changeConfinamento: function(value, obj, record){
-        return record.get('confinamento');
-    }
 
  }); 

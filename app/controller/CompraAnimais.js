@@ -1,9 +1,9 @@
 Ext.define('Rebanho.controller.CompraAnimais', {
     extend: 'Ext.app.Controller',
 
-    stores: ['Fornecedores', 'Estados'],
+    stores: ['CompraAnimais', 'Fornecedores', 'Quadras', 'Confinamentos'],
 
-    models: ['Rebanho.model.Fornecedor'],
+    models: ['Rebanho.model.CompraAnimal'],
 
     views: [
         'compras.animais.CompraAnimaisGrid',
@@ -28,9 +28,6 @@ Ext.define('Rebanho.controller.CompraAnimais', {
     ],
     init: function() {
 
-        // Load da Store
-        //this.getFornecedoresStore().addListener('load',this.onStoreLoad, this);
-
         this.control({
 
             // ----------< Actions do Grid >----------
@@ -40,58 +37,109 @@ Ext.define('Rebanho.controller.CompraAnimais', {
             'compraanimaisgrid button[action=action_novo]': {
                 click: this.onBtnNovoClick
             },
-//             // Ao Clicar no Botao Excluir na Grid
-//             'fornecedoresgrid button[action=action_excluir]': {
-//                 click: this.onBtnExcluirClick
-//             },
-// 
-//             'fornecedoresgrid': {
-//                 // Ao Selecionar um Registro na Grid
-//                 selectionchange: this.onSelectChange,
-//                 render:function(){
-//                     this.getFornecedoresStore().load();
-//                 },
-//                 // DoubleClick em uma linha da Grid
-//                 itemdblclick: this.onBtnEditarClick,
-// 
-//             },
-// 
-//             // ----------< Actions do Form >----------
-// 
-              // Ao Clicar no Botao Novo
+            // Ao Clicar no Botao Excluir na Grid
+            'compraanimaisgrid button[action=action_excluir]': {
+                click: this.onBtnExcluirClick
+            },
+
+            'compraanimaisgrid': {
+                // Ao Renderizar a Grid
+                render:function(){
+                    // Carrega a Store
+                    this.getStore('CompraAnimais').load();
+                },
+                // DoubleClick em uma linha da Grid
+                itemdblclick: this.onBtnEditarClick,
+                // Ao Selecionar um Registro na Grid
+                selectionchange: this.onSelectChange,
+
+            },
+
+            // ----------< Actions do Form >----------
+
+              // Ao Clicar No Select de Fornecedores
             'compraanimaisform [name=fornecedor_id]': {
                 fornecedorestriggerclick: this.searchFornecedor
             },
-// 
-//             // Ao Clicar no Botao Excluir
-//             'fornecedoresform button[action=action_excluir_form]': {
-//                 click: this.onFrmBtnExcluirClick
-//             },
-//             // Ao Clicar no Salvar
-//             'fornecedoresform button[action=action_salvar]': {
-//                 click: this.onBtnSalvarClick
-//             },
-//             // Ao Clicar no Cancelar
-//             'fornecedoresform button[action=action_cancelar]': {
-//                 click: this.onBtnCancelarClick
-//             },
-
+            // Ao Selecionar um Confinamento
+            'compraanimaisform [name=confinamento_id]': {
+                select: this.onSelectCmbConfinamentos
+            },
+            // Ao Clicar no Botao Excluir
+            'compraanimaisform button[action=action_excluir_form]': {
+                click: this.onFrmBtnExcluirClick
+            },
+            // Ao Clicar no Salvar
+            'compraanimaisform button[action=action_salvar]': {
+                click: this.onBtnSalvarClick
+            },
+            // Ao Clicar no Cancelar
+            'compraanimaisform button[action=action_cancelar]': {
+                click: this.onBtnCancelarClick
+            },
+            // Ao Clicar no Botao Novo
+            'compraanimaisform button[action=action_novo]': {
+                click: this.onBtnNovoClick
+            },
+            // Render do Form
+            'compraanimaisform': {
+                render: this.onFormRender
+            },
         });
 
     },
 
-
-
-    onStoreLoad: function(){
-        grid = this.getFornecedoresGrid();
-    },
-
+    /**Funcao onSelectChange
+     * Executada Toda Vez que se seleciona algum registro na grid
+     * Se houver registro selecionado habilita o botao de excluir na grid
+     */
     onSelectChange: function(selModel, selections){
-        this.getFornecedoresGrid().down('#delete').setDisabled(selections.length === 0);
+        this.getCompraAnimaisGrid().down('#delete').setDisabled(selections.length === 0);
     },
 
+    /**Funcao searchFornecedor
+     * Executada quando o evendo customizado do triggerfild de Fornecedores e disparado
+     * OBS: Implementacao Futura abrir uma janela com a lista de fornecedores
+     */
     searchFornecedor: function(btn){
         alert('Localizar Fornecedor');
+    },
+
+    /** Funcao executada no Render do Form
+     *  Carrega as Store das Combo aninhadas para que o filtro funcione
+     */
+    onFormRender: function(){
+        // Carregando a Store de Fornecedores
+        this.getStore('Fornecedores').load();
+        // Carregando a Store de Quadras
+        this.getStore('Quadras').load();
+    },
+    
+    /** Funcao executada quando seleciona um confinamento
+     * habilita a combo de quadra e cria um filtro
+     */
+    onSelectCmbConfinamentos: function(combo, value){
+        var form = combo.up('form');
+
+        // Tratamento dos Fornecedores
+        var comboFornecedores = form.down('#cmbFornecedores');
+        comboFornecedores.setValue('');
+        comboFornecedores.store.removeAll();
+        comboFornecedores.store.load({
+            params: {
+                action: 'getAt',
+                field : 'confinamento_id',
+                value : combo.getValue(),
+            }
+        });
+        //comboFornecedores.store.filter('confinamento_id', combo.getValue());
+        comboFornecedores.setDisabled(false);
+
+        // Tratamento das Quadras
+        var comboQuadras = form.down('#cmbQuadras');
+        comboQuadras.store.clearFilter();
+        comboQuadras.store.filter('confinamento_id', combo.getValue());
+        comboQuadras.setDisabled(false);
     },
 
     /**Funcao: onBtnEditarClick()
@@ -100,16 +148,21 @@ Ext.define('Rebanho.controller.CompraAnimais', {
      */
     onBtnEditarClick: function(btn, pressed){
 
-        var records = this.getFornecedoresGrid().getSelectionModel().getSelection();
+        var records = this.getCompraAnimaisGrid().getSelectionModel().getSelection();
         var data = records[0];
 
         if (data){
             // Cria a Janela de Cadastro
             this.onBtnNovoClick();
             form = this.win.down('form');
-           //console.log(form);
+            //console.log(form);
             // Seta o Registro no Form
             form.getForm().loadRecord(data);
+
+            // Reconfigura o Form
+            // Setando as Combo de desabilitada pra habilitada
+            form.down('#cmbFornecedores').setDisabled(false);
+            form.down('#cmbQuadras').setDisabled(false);
         }
     },
 
@@ -124,7 +177,7 @@ Ext.define('Rebanho.controller.CompraAnimais', {
     },
 
     onBtnCancelarClick: function(){
-        this.getFornecedoresWindow().close();
+        this.getCompraAnimaisWindow().close();
     },
     
     /**Funcao: onBtnSalvarClick()
@@ -134,10 +187,10 @@ Ext.define('Rebanho.controller.CompraAnimais', {
     onBtnSalvarClick: function(btn, pressed){
 
         // Recupera o Form
-        var form = this.getFornecedoresForm();
-        var store = this.getStore('Fornecedores');
+        var form = this.getCompraAnimaisForm();
+        var store = this.getStore('CompraAnimais');
         // Recupera os dados do Formulario
-        var values = this.getFornecedoresForm().getForm().getValues();
+        var values = form.getForm().getValues();
         var record = form.getRecord();
 
         // Verifica se é Valido
@@ -148,13 +201,13 @@ Ext.define('Rebanho.controller.CompraAnimais', {
                 record.set(values);
             }
             else {
-                var record = Ext.create('Rebanho.model.Fornecedor', values);
+                var record = Ext.create('Rebanho.model.CompraAnimal', values);
                 // Criando o Registro pela Store
                 store.add(record);
-                //store.sync();
+                this.getCompraAnimaisForm().getForm().reset();
             }
         }
-        this.getFornecedoresForm().getForm().reset();
+
     },
 
     /**Funcao: onBtnExcluirClick()
@@ -166,7 +219,7 @@ Ext.define('Rebanho.controller.CompraAnimais', {
 
         var me = this;
         // Recuperando a Linha Selecionada
-        var grid = me.getFornecedoresGrid();
+        var grid = me.getCompraAnimaisGrid();
         var store = grid.getStore();
         var records = grid.getSelectionModel().getSelection();
 
@@ -187,7 +240,7 @@ Ext.define('Rebanho.controller.CompraAnimais', {
     onFrmBtnExcluirClick: function(btn, pressed){
 
         // Recuperando os Valores do Form
-        var record = this.getFornecedoresForm().getForm().getRecord();
+        var record = this.getCompraAnimaisForm().getForm().getRecord();
 
         
         // Verificar se Tem Registro a Excluir
@@ -204,7 +257,7 @@ Ext.define('Rebanho.controller.CompraAnimais', {
      */
     excluir: function(record){
 
-        var store = this.getStore('Fornecedores');
+        var store = this.getStore('CompraAnimais');
 
         // Verificar se Tem Registro a Excluir
         if (record.data.id) {
@@ -214,7 +267,6 @@ Ext.define('Rebanho.controller.CompraAnimais', {
 
                 if (btn == 'yes'){
                     // Excluindo Usando a Store
-                    //store.remove(store.getById(data.id));
                     store.remove(record);
                 }
             },this);

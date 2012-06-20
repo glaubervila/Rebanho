@@ -5,6 +5,7 @@ Ext.define('Rebanho.view.compras.animais.CompraAnimaisForm' ,{
         'Rebanho.view.cadastros.confinamentos.ConfinamentosCombo',
         'Rebanho.view.cadastros.caracteristicas.CaracteristicasCombo',
         'Rebanho.view.cadastros.cepea.CepeasCombo',
+        'Rebanho.view.cadastros.quadras.QuadrasCombo',
         'Rebanho.view.compras.fornecedores.FornecedoresTriggerField',
         'Ext.ux.form.FieldMoney',
         'Ext.ux.form.fieldstarrating.FieldStarRating',
@@ -45,14 +46,36 @@ Ext.define('Rebanho.view.compras.animais.CompraAnimaisForm' ,{
                         name: 'id',
                         hidden: true,
                     },{
-                        xtype:'cmbconfinamento',
-                        fieldLabel:'Confinamento',
-                        name: 'confinamento_id',
+                        xtype: 'fieldcontainer',
+                        layout: 'hbox',
+                        defaultType:'textfield',
+                        fieldDefaults: {
+                            labelAlign: 'top',
+                        },
+                        items:[{
+                            xtype:'cmbconfinamento',
+                            fieldLabel:'Confinamento',
+                            name: 'confinamento_id',
+                            width: 200,
+                        },{
+                            xtype: 'datefield',
+                            fieldLabel:'Data da Compra',
+                            name: 'data_compra',
+                            flex: 1,
+                            margins: '0 0 0 5',
+                            allowBlank: false,
+                            format: 'd/m/y',
+                            submitFormat: 'Y-m-d',
+                        }]
                     },{
                         xtype: 'triggerfieldfornecedores',
                         fieldLabel:'Forncedor',
                         name: 'fornecedor_id',
+                        itemId: 'cmbFornecedores',
                         flex: 1,
+                        lastQuery:'',
+                        disabled: true,
+                        allowBlank: false,
                     },{
                         xtype: 'fieldcontainer',
                         layout: 'hbox',
@@ -82,16 +105,15 @@ Ext.define('Rebanho.view.compras.animais.CompraAnimaisForm' ,{
                             labelAlign: 'top',
                         },
                         items:[{
-                            xtype: 'datefield',
-                            fieldLabel:'Data da Compra',
-                            name: 'data_compra',
+                            xtype: 'field-money',
+                            fieldLabel:'Valor da Nota',
+                            name: 'valor_nota',
                             flex: 1,
                         },{
-                            xtype: 'datefield',
-                            fieldLabel:'Data de Entrada',
-                            name: 'data_pesagem',
-                            margins: '0 0 0 5',
+                            fieldLabel:'Peso Saída',
+                            name: 'peso_saida',
                             flex: 1,
+                            margins: '0 0 0 5',
                         }]
                     }]
                 },{
@@ -173,14 +195,18 @@ Ext.define('Rebanho.view.compras.animais.CompraAnimaisForm' ,{
                             labelAlign: 'top',
                         },
                         items:[{
-                            fieldLabel:'Peso Saída',
-                            name: 'peso_saida',
-                            flex: 1,
-                        },{
                             fieldLabel:'Peso Entrada',
                             name: 'peso_entrada',
                             margins: '0 0 0 5',
                             flex: 1,
+                        },{
+                            xtype: 'datefield',
+                            fieldLabel:'Data de Entrada',
+                            name: 'data_pesagem',
+                            margins: '0 0 0 5',
+                            flex: 1,
+                            format: 'd/m/y',
+                            submitFormat: 'Y-m-d',
                         }]
                     },{
                         xtype: 'fieldcontainer',
@@ -210,6 +236,7 @@ Ext.define('Rebanho.view.compras.animais.CompraAnimaisForm' ,{
                         fieldLabel:'Características',
                         name: 'caracteristica_id',
                         anchor: '-5',
+                        allowBlank: false,
                     },
                     {
                         xtype: 'fieldcontainer',
@@ -222,8 +249,8 @@ Ext.define('Rebanho.view.compras.animais.CompraAnimaisForm' ,{
                             fieldLabel : 'Classificação',
                             xtype : 'ratingfield',
                             name  : 'classificacao',
-                            value : 3,
-                            items : [1, 2, 3, 4, 5],
+                            value : 'Regular',
+                            items : ['Pessima', 'Ruim', 'Regular', 'Boa', 'Otima'],
                             margins: '0 0 0 5',
                             flex: 1,
                         },{
@@ -244,12 +271,16 @@ Ext.define('Rebanho.view.compras.animais.CompraAnimaisForm' ,{
                             labelAlign: 'top',
                         },
                         items:[{
+                            xtype: 'cmbquadras',
                             fieldLabel:'Quadra',
                             name: 'quadra_id',
+                            itemId: 'cmbQuadras',
                             flex: 1,
+                            lastQuery:'',
+                            disabled: true,
                         },{
                             fieldLabel:'Idade',
-                            name: 'telefone2',
+                            name: 'idade',
                             margins: '0 0 0 5',
                             flex: 1,
                         }]
@@ -268,7 +299,7 @@ Ext.define('Rebanho.view.compras.animais.CompraAnimaisForm' ,{
                             flex: 1,
                         },{
                             fieldLabel:'Premio',
-                            name: 'telefone2',
+                            name: 'premio',
                             margins: '0 0 0 5',
                             flex: 1,
                         }]

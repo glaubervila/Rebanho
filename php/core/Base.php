@@ -78,6 +78,21 @@ abstract class Base {
         return $stm->fetchObject();
     }
 
+    public function findBy($field, $value, $table) {
+        $db = $this->getDb();
+        if ($table) {
+            $sql = "select * from " . $table . " where $field = $value";
+        }
+        else {
+            $sql = "select * from " .$this->getTable(). " where $field = $value";
+        }
+
+        $stm = $db->prepare($sql);
+        $stm->execute();
+        return $stm->fetchObject();
+
+    }
+
     public function fetchAll($query) {
 
         $start = $_GET['start'];
@@ -357,5 +372,40 @@ abstract class Base {
         }
 
         return $obj;
+    }
+
+    /** Metodo: converteData()
+     * Recebe uma data no formato Y/m/d ou d/m/Y
+     * e retorna no outro Formato
+     */
+    public function converteData($data){
+
+        $tmp = preg_match("~T~", $data) == 0 ? $data : explode('T',$data);
+
+        if (is_array($tmp)){
+            $data = $tmp[0];
+        }
+
+        $data_nova = implode(preg_match("~\/~", $data) == 0 ? "/" : "-", array_reverse(explode(preg_match("~\/~", $data) == 0 ? "-" : "/", $data)));
+
+        return $data_nova;
+    }
+
+    /** Metodo: DateToMysql()
+     * Recebe uma data e Converte no Formato Y-m-d
+     */
+    public function DateToMysql($data){
+
+        $tmp = preg_match("~T~", $data) == 0 ? $data : explode('T',$data);
+
+        if (is_array($tmp)){
+            $data = $tmp[0];
+        }
+
+        $arrData = explode(preg_match("~\/~", $data) == 0 ? "-" : "/", $data);
+
+        $data_nova = implode('-',$arrData);
+
+        return $data_nova;
     }
 }

@@ -150,8 +150,8 @@ Ext.define('Rebanho.controller.Fornecedores', {
                 // Criando o Registro pela Store
                 store.add(record);
                 this.getFornecedoresForm().getForm().reset();
-            }
-        }
+           }
+         }
 
     },
 
