@@ -21,6 +21,15 @@ Ext.define('Rebanho.view.layout.Header', {
                     menu: [
                         {
                             text: 'Compra de Animais',
+                            handler: function(){
+                                var tabs = Ext.getCmp('mainTabpanel').novaAba('compraanimaisgrid');
+                            },
+                        },
+                        {
+                            text: 'Entrada de Animais',
+                            handler: function(){
+                                var tabs = Ext.getCmp('mainTabpanel').novaAba('entradaanimaisgrid');
+                            },
                         },
                         {
                             text: 'Compra de Vacinas/Medicamentos',
@@ -198,7 +207,7 @@ Ext.define('Rebanho.view.layout.Header', {
         {
             text: 'TESTE2',
             handler: function(){
-                var tabs = Ext.getCmp('mainTabpanel').novaAba('panelteste');
+                var tabs = Ext.getCmp('mainTabpanel').novaAba('entradaanimaispanel');
             },
         },
 

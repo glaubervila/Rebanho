@@ -78,13 +78,87 @@ abstract class Base {
         return $stm->fetchObject();
     }
 
+    /**Metodo: findBy
+     * Retorna UNICO Registro usando como filtro os campos filtro e value
+     * pode receber um array de filtros e valores ou um valor unico
+     * @param:$field - array ou string dos campos
+     * @param:$value - array ou string dos valores
+     * @param:$tabela - nome da tabela onde fazer a query
+     */
     public function findBy($field, $value, $table) {
         $db = $this->getDb();
+
+        $sql = "SELECT * FROM ";
+
+        // Se Tiver Parametro Tabela
         if ($table) {
-            $sql = "select * from " . $table . " where $field = $value";
+            $sql .= " $table ";
+        }
+        else {
+            $sql .= ' '.$this->getTable().' ';
+        }
+        // Se os Filtros forem array
+        if ((is_array($field)) && (is_array($value))){
+
+            // Monta o Where Usando Formato para BindValue
+            $sql .= ' WHERE ' . $this->setWhere($field, $value);
+
+            $stm = $db->prepare($sql);
+
+            // Para Cada Campo Executa um BindValue
+            $k = 0;
+            foreach ($field as $campo){
+                $stm->bindValue(":$campo", $value[$k]);
+                $k++;
+            }
+        }
+        else {
+            $sql .= " WHERE $field = $value";
+            $stm = $db->prepare($sql);
+        }
+
+        $stm->execute();
+
+        return $stm->fetchObject();
+    }
+
+    public function findAllBy($field, $value, $table){
+
+        $db = $this->getDb();
+        if ($table) {
+            $sql = "SELECT * FROM " . $table . " WHERE $field = $value";
         }
         else {
             $sql = "select * from " .$this->getTable(). " where $field = $value";
+        }
+
+        $stm = $db->prepare($sql);
+        $stm->execute();
+        return $stm->fetchAll(\PDO::FETCH_OBJ);
+
+    }
+
+    public function getAt($col, $condicao, $table) {
+        $db = $this->getDb();
+
+        $sql = "SELECT ";
+
+        if ($col) {
+            $sql .= " $col ";
+        }
+        else {
+            $sql .= " * ";
+        }
+
+        if ($table) {
+            $sql .= " FROM " . $table ;
+        }
+        else {
+            $sql .= " FROM " .$this->getTable();
+        }
+
+        if ($condicao) {
+            $sql .= " WHERE $condicao";
         }
 
         $stm = $db->prepare($sql);
@@ -352,11 +426,11 @@ abstract class Base {
             $return->data = $data;
         }
 
-        echo json_encode($return);
+        die( json_encode($return) );
     }
 
     public function ReturnJson($obj){
-        echo json_encode($obj);
+        die( json_encode($obj) );
     }
 
     public function decode_utf8($data){
@@ -407,5 +481,47 @@ abstract class Base {
         $data_nova = implode('-',$arrData);
 
         return $data_nova;
+    }
+
+    /** Metodo: setWhere
+     * Retorna uma String no Formato Field = $value
+     * @param:array $fields - array de campos 
+     * @param:array $values - array de valores
+     * @param:string $comparacao - metodo de comparacao defaul ( = )
+     * @param:bool $statement - Se tiver True Retorna String no Formato "field = :field"
+     * se tiver false retorna no formato "field = value"
+     */
+    public function setWhere($fields, $values, $comparacao = '=', $statement = true){
+
+        $qtd_fields = sizeof($fields);
+
+        $k = 0;
+        // montando where
+        foreach ($fields as $field) {
+
+            if ($comparacao == 'LIKE'){
+
+                if ($statement){
+                    $string .= " $field LIKE \"%:$field%\" ";
+                }
+                else {
+                    $string .= " $field LIKE \"%$values[$k]%\" ";
+                }
+            }
+            else {
+                if ($statement){
+                    $string .= " $field $comparacao :$field ";
+                }
+                else {
+                    $string .= " $field $comparacao :$values[$k] ";
+                }
+            }
+
+            if ($qtd_fields > 1 and $k < ($qtd_fields -1 )) {$string .= " AND ";}
+
+            $k++;
+        }
+
+        return $string;
     }
 }

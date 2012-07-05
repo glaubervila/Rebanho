@@ -57,6 +57,7 @@ Ext.define('Rebanho.view.compras.animais.CompraAnimaisForm' ,{
                             fieldLabel:'Confinamento',
                             name: 'confinamento_id',
                             width: 200,
+                            allowBlank: false,
                         },{
                             xtype: 'datefield',
                             fieldLabel:'Data da Compra',
@@ -88,14 +89,21 @@ Ext.define('Rebanho.view.compras.animais.CompraAnimaisForm' ,{
                             name: 'numero_nota',
                             flex: 1,
                             allowBlank: false,
-                            maxLength: 150,
+                            maxLength: 20,
                         },{
                             fieldLabel:'Série',
                             name: 'serie_nota',
+                            margins: '0 0 0 5',
+                            maxLength: 5,
+                            width: 60,
+                        },{
+                            xtype: 'field-money',
+                            fieldLabel:'Valor da Nota',
+                            name: 'valor_nota',
+                            symbolStay : false,
+                            allowBlank: false,
                             flex: 1,
                             margins: '0 0 0 5',
-                            allowBlank: false,
-                            maxLength: 150,
                         }]
                     },{
                         xtype: 'fieldcontainer',
@@ -105,9 +113,8 @@ Ext.define('Rebanho.view.compras.animais.CompraAnimaisForm' ,{
                             labelAlign: 'top',
                         },
                         items:[{
-                            xtype: 'field-money',
-                            fieldLabel:'Valor da Nota',
-                            name: 'valor_nota',
+                            fieldLabel:'Qtd Animais',
+                            name: 'quantidade',
                             flex: 1,
                         },{
                             fieldLabel:'Peso Saída',
@@ -197,7 +204,6 @@ Ext.define('Rebanho.view.compras.animais.CompraAnimaisForm' ,{
                         items:[{
                             fieldLabel:'Peso Entrada',
                             name: 'peso_entrada',
-                            margins: '0 0 0 5',
                             flex: 1,
                         },{
                             xtype: 'datefield',
@@ -216,13 +222,8 @@ Ext.define('Rebanho.view.compras.animais.CompraAnimaisForm' ,{
                             labelAlign: 'top',
                         },
                         items:[{
-                            fieldLabel:'Qtd Animais',
-                            name: 'quantidade',
-                            flex: 1,
-                        },{
                             fieldLabel:'Qtd Machos',
                             name: 'qtd_machos',
-                            margins: '0 0 0 5',
                             flex: 1,
                         },{
                             fieldLabel:'Qtd Femeas',

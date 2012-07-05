@@ -36,6 +36,7 @@
 .icon-add { background-image: url(add.png) !important; background-repeat: no-repeat; }
 .icon-application_form_add { background-image: url(application_form_add.png) !important; background-repeat: no-repeat; }
 .icon-application_form { background-image: url(application_form.png) !important; background-repeat: no-repeat; }
+.icon-barcode-32 { background-image: url(barcode.png) !important; background-repeat: no-repeat; }
 .icon-tools_box { background-image: url(tools_box.png) !important; background-repeat: no-repeat; }
 .icon-cross { background-image: url(cross.png) !important; background-repeat: no-repeat; }
 .icon-disk { background-image: url(disk.png) !important; background-repeat: no-repeat; }
@@ -50,11 +51,12 @@
 .icon-chart_pie { background-image: url(chart_pie.png) !important; background-repeat: no-repeat; }
 .icon-money_delete { background-image: url(money_delete.png) !important; background-repeat: no-repeat; }
 .icon-table_gear { background-image: url(table_gear.png) !important; background-repeat: no-repeat; }
+.icon-tick { background-image: url(tick.png) !important; background-repeat: no-repeat; }
 .icon-page_edit { background-image: url(page_edit.png) !important; background-repeat: no-repeat; }
 .icon-pencil_add { background-image: url(pencil_add.png) !important; background-repeat: no-repeat; }
 .icon-report { background-image: url(report.png) !important; background-repeat: no-repeat; }
 .icon-user_suit { background-image: url(user_suit.gif) !important; background-repeat: no-repeat; }
-
+.icon-scale-32 { background-image: url(scale.png) !important; background-repeat: no-repeat; }
 /*Field Star Rating*/
 .x-form-rating-field {
 }
@@ -86,5 +88,6 @@
         margin-top: 2px;
         padding-left: 10px;
 }
+
 
 

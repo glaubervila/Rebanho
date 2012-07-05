@@ -23,6 +23,13 @@ Ext.define('Rebanho.view.home.Home', {
             });
         }
         this.setActiveTab(tab);
-    }
+    },
 
+    /** Funcao: fecharAbaAtiva
+     * Recupera a Aba Ativa e executa o Metodo Close
+     */
+    fecharAbaAtiva:function(){
+        var tabativa = this.getActiveTab();
+        tabativa.close();
+    },
 });

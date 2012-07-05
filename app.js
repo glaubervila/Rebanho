@@ -45,6 +45,7 @@ Ext.application({
         'Viewport',
         // Compras
         'CompraAnimais',
+        'EntradaAnimais',
         // Fornecedores
         'Fornecedores',
 
