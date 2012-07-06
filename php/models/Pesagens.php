@@ -96,4 +96,48 @@ class Pesagens extends Base {
         return $pesagem;
     }
 
+
+    public function getCntPesados($data){
+
+        // Recuperando os Paramentros
+        $nota_aberta = $data['nota_aberta'];
+
+        // Recuperando o ObjNota
+        $objNota = $this->find($nota_aberta, 'compras');
+
+        // Recuperar Todos os Animais
+        $animais = $this->findAllBy('compra_id', $objNota->id, 'animais');
+
+        foreach ($animais as $animal){
+
+            $aIds[] = $animal->id;
+
+        }
+
+        $ids = implode(', ', $aIds);
+
+        $db = $this->getDb();
+
+        $sql = "SELECT * FROM pesagens WHERE confinamento_id = {$objNota->confinamento_id} AND animal_id IN ($ids) AND tipo = 1";
+
+        $stm = $db->prepare($sql);
+        $stm->execute();
+        $pesagens = $stm->fetchAll(\PDO::FETCH_OBJ);
+
+        $peso_total = 0;
+        $pesados = 0;
+        foreach($pesagens as $objPeso){
+            if ($objPeso->peso > 0) {
+                $peso_total = ($objPeso->peso + $peso_total);
+                $pesados++;
+            }
+        }
+
+        $result = new StdClass();
+        $result->peso_total  = $peso_total;
+        $result->pesados     = $pesados;
+
+        return $result;
+    }
+
 }

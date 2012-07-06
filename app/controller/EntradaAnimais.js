@@ -199,13 +199,23 @@ Ext.define('Rebanho.controller.EntradaAnimais', {
 
         // Recuperando a Store
         store =this.getStore('EntradaAnimais');
+
+        // Limpando a Store
+        store.removeAll();
+        store.load();
+
         // Limpando o Filtro
         store.clearFilter(true);
         // Adicionando novo Filtro pra Pegar todos os animais dessa nota
-        store.filter("compra_id", idNotaAberta);
+        store.filter("compra_id", this.idNotaAberta);
+
+        // Atualizar Contadores
+        this.getContadores();
 
         // Mostrando o Prompt de Codigo
         this.digitarCodigo();
+
+
     },
 
 
@@ -304,21 +314,60 @@ Ext.define('Rebanho.controller.EntradaAnimais', {
         var store_pesagem = this.getStore('Pesagens');
 
         errors = pesagem.validate();
-        console.log(errors.items);
+
         if (errors.isValid()){
             store_pesagem.add(pesagem);
         }
         else {
-            Ext.message.warning(errors.items[field])
+            console.log(errors.items);
         }
 
         this.inicioPesagem();
 /*        // Atualizando a Store de EntradaAnimais
         var store = this.getStore('EntradaAnimais');
         this.getEntradaAnimaisGrid().getStore().load();*/
+    },
+
+
+    getContadores: function(){
+
+        Ext.Ajax.request({
+            url : 'php/main.php',
+            method : 'POST',
+            params: {
+                classe: 'NotasEntrada',
+                action: 'getContadores',
+                nota_aberta: this.idNotaAberta,
+            },
+            scope:this,
+            success: function ( result, request ) {
+                var retorno = Ext.decode(result.responseText);
+                if (retorno.success){
+                    this.setContadores(retorno);
+                }
+                else {
+                    // Mostrando Mensagem de Erro
+                    Ext.MessageBox.show({ title:'Desculpe!', msg: retorno.message, buttons: Ext. MessageBox.OK, icon:  Ext.MessageBox.ERROR })
+                }
+            },
+        })
+    },
+
+    setContadores: function(contadores){
+
+        var grid = this.getEntradaAnimaisGrid();
+        grid.down('#tbquantidade').setText('<b>Quantidade: <font color="blue"> '+contadores.quantidade+' </font></b>');
+        
+        grid.down('#tbpesados').setText('<b>Pesados <font color="green">'+contadores.pesados+'</font></b>');
+        
+        grid.down('#tbfalta').setText('<b>Faltam <font color="red">'+contadores.falta+'</font></b>');
+        
+        grid.down('#tbpesototal').setText('Peso Total <b><font color="blue">'+contadores.peso_total+' Kg</font></b>');
+        
+        grid.down('#tbpesomedio').setText('Peso Médio <b><font color="blue">'+contadores.peso_medio+' Kg</font></b>');
+
     }
 
 
-    
 });
 

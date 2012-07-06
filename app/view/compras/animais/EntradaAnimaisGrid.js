@@ -36,7 +36,15 @@ Ext.define('Rebanho.view.compras.animais.EntradaAnimaisGrid' ,{
 
         this.dockedItems= [{
             xtype: 'toolbar',
-            items: []
+            items: [
+                {xtype: 'tbtext', itemId: 'tbquantidade',text: '<b>Quantidade</b>'},
+                {xtype: 'tbtext', itemId: 'tbpesados',text: '<b>Pesados</b>'},
+                {xtype: 'tbtext', itemId: 'tbfalta',text: '<b>Faltam</b>'},
+                '-',
+                {xtype: 'tbtext', itemId: 'tbpesototal',text: '<b>Peso Total</b>'},
+                '-',
+                {xtype: 'tbtext', itemId: 'tbpesomedio',text: '<b>Peso Médio</b>'},
+            ]
         }]
 
 

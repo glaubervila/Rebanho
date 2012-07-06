@@ -204,6 +204,31 @@ class NotasEntrada extends Base {
 //         echo $teste;
 
     }
+
+    public function getContadores($data){
+
+        $nota_aberta = $data['nota_aberta'];
+
+        // Recuperando os Contadores
+        $result = Pesagens::getCntPesados($data);
+
+        $quantidade = $this->getAt('quantidade',"id = $nota_aberta", 'compras');
+        $quantidade = $quantidade->quantidade;
+        $pesados = $result->pesados;
+        $peso_total = $result->peso_total;
+
+        // Calculando Peso Medio - Usando a quantidade de animais pesados
+        $media = ($peso_total/$pesados);
+
+        $result->quantidade = $quantidade;
+        $result->falta = ($quantidade - $pesados);
+        $result->peso_medio = $media;
+        $result->success =  true;
+
+        echo json_encode($result);
+
+    }
+
 }
 
 
