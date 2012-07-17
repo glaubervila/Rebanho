@@ -163,6 +163,13 @@ Ext.define('Rebanho.controller.CompraAnimais', {
             // Setando as Combo de desabilitada pra habilitada
             form.down('#cmbFornecedores').setDisabled(false);
             form.down('#cmbQuadras').setDisabled(false);
+
+            // Se a Nota Estiver Fechada (status == 2) Nao permite salvar
+            if (data.data.status == 2) {
+                console.log('EDITANDO NOTA FECHADA');
+                // Aqui Evito que a nota seja Alterada
+                form.down('#btnSalvar').setDisabled(true);
+            }
         }
     },
 

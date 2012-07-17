@@ -91,8 +91,8 @@ Ext.define('Ext.ux.form.fieldstarrating.FieldStarRating', {
 	onRender : function() {
 		var me = this;
 		me.callParent(arguments);
-                console.log(this.baseCSSPrefix);
-                console.log(this.fieldCls);
+//                console.log(this.baseCSSPrefix);
+//                console.log(this.fieldCls);
 		var name = me.name || Ext.id();
 		me.hiddenField = me.inputEl.insertSibling({
 			tag : 'input',

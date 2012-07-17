@@ -56,6 +56,11 @@ Ext.define('Rebanho.view.compras.animais.EntradaAnimaisWindow' ,{
                                 listeners:{
                                     scope  : this
                                     , select: this.onSelectNota
+                                    , nenhumaNotaAberta: function(){
+                                        // Se nao Houver notas abertas Fecha a Janela
+                                        this.close();
+                                        Ext.MessageBox.show({ title:'Atenção!', msg: 'Não Há Compras Aguardando Pesagem.<br> Cadastre uma Compra Acessando o Menu<br> Compras -> Compras Animais.', buttons: Ext. MessageBox.OK, icon:  Ext.MessageBox.WARNING });
+                                    }
                                 },
                             }]
                         },

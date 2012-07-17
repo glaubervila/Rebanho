@@ -205,6 +205,7 @@ Ext.define('Rebanho.view.compras.animais.CompraAnimaisForm' ,{
                             fieldLabel:'Peso Entrada',
                             name: 'peso_entrada',
                             flex: 1,
+                            readOnly: true,
                         },{
                             xtype: 'datefield',
                             fieldLabel:'Data de Entrada',
@@ -213,6 +214,7 @@ Ext.define('Rebanho.view.compras.animais.CompraAnimaisForm' ,{
                             flex: 1,
                             format: 'd/m/y',
                             submitFormat: 'Y-m-d',
+                            readOnly: true,
                         }]
                     },{
                         xtype: 'fieldcontainer',
@@ -330,6 +332,7 @@ Ext.define('Rebanho.view.compras.animais.CompraAnimaisForm' ,{
                 },{
                     xtype: 'button',
                     text: 'Salvar',
+                    itemId: 'btnSalvar',
                     action: 'action_salvar',
                     iconCls: 'icon-disk',
                     tooltip: 'Click para <font color="blue"><b>Salvar</b></font> as Informações.'

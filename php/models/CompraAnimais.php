@@ -13,7 +13,7 @@ class CompraAnimais extends Base {
 
         $db->beginTransaction();
 
-        $query = 'INSERT INTO rebanho.compras (fornecedor_id, caracteristica_id, confinamento_id, data_compra, numero_nota, serie_nota, status, quantidade, valor_nota, data_pesagem, peso_entrada, peso_saida, classificacao, escore, idade, qtd_machos, qtd_femeas, corretor, valor_comissao, frete, valor_frete, imposto, valor_imposto, valor_arroba, premio, quadra_id) VALUES (:fornecedor_id, :caracteristica_id, :confinamento_id, :data_compra, :numero_nota, :serie_nota, :status, :quantidade, :valor_nota, :data_pesagem, :peso_entrada, :peso_saida, :classificacao, :escore, :idade, :qtd_machos, :qtd_femeas, :corretor, :valor_comissao, :frete, :valor_frete, :imposto, :valor_imposto, :valor_arroba, :premio, :quadra_id)';
+        $query = 'INSERT INTO compras (fornecedor_id, caracteristica_id, confinamento_id, data_compra, numero_nota, serie_nota, status, quantidade, valor_nota, data_pesagem, peso_entrada, peso_saida, classificacao, escore, idade, qtd_machos, qtd_femeas, corretor, valor_comissao, frete, valor_frete, imposto, valor_imposto, valor_arroba, premio, quadra_id) VALUES (:fornecedor_id, :caracteristica_id, :confinamento_id, :data_compra, :numero_nota, :serie_nota, :status, :quantidade, :valor_nota, :data_pesagem, :peso_entrada, :peso_saida, :classificacao, :escore, :idade, :qtd_machos, :qtd_femeas, :corretor, :valor_comissao, :frete, :valor_frete, :imposto, :valor_imposto, :valor_arroba, :premio, :quadra_id)';
 
 
         $stm = $db->prepare($query);
@@ -86,7 +86,7 @@ class CompraAnimais extends Base {
         $data_compra  = $this->DateToMysql($data->data_compra);
         $data_pesagem = $this->DateToMysql($data->data_pesagem);
 
-        $query = 'UPDATE rebanho.compras set fornecedor_id = :fornecedor_id, caracteristica_id = :caracteristica_id, confinamento_id = :confinamento_id, data_compra = :data_compra, numero_nota = :numero_nota, serie_nota = :serie_nota, status = :status, quantidade = :quantidade, valor_nota = :valor_nota, data_pesagem = :data_pesagem, peso_entrada = :peso_entrada, peso_saida = :peso_saida, classificacao = :classificacao, escore = :escore, idade = :idade, qtd_machos = :qtd_machos, qtd_femeas =:qtd_femeas, corretor =:corretor, valor_comissao = :valor_comissao, frete =:frete, valor_frete =:valor_frete, imposto = :imposto, valor_imposto = :valor_imposto, valor_arroba = :valor_arroba, premio = :premio, quadra_id = :quadra_id WHERE id = :id';
+        $query = 'UPDATE compras set fornecedor_id = :fornecedor_id, caracteristica_id = :caracteristica_id, confinamento_id = :confinamento_id, data_compra = :data_compra, numero_nota = :numero_nota, serie_nota = :serie_nota, status = :status, quantidade = :quantidade, valor_nota = :valor_nota, data_pesagem = :data_pesagem, peso_entrada = :peso_entrada, peso_saida = :peso_saida, classificacao = :classificacao, escore = :escore, idade = :idade, qtd_machos = :qtd_machos, qtd_femeas =:qtd_femeas, corretor =:corretor, valor_comissao = :valor_comissao, frete =:frete, valor_frete =:valor_frete, imposto = :imposto, valor_imposto = :valor_imposto, valor_arroba = :valor_arroba, premio = :premio, quadra_id = :quadra_id WHERE id = :id';
 
 
         $stm = $db->prepare($query);
@@ -147,12 +147,72 @@ class CompraAnimais extends Base {
             $confinamento = $this->find($record->confinamento_id, 'confinamentos');
             $record->confinamento_nome  = $confinamento->confinamento;
 
+            $record->status_nome  = $this->getStatusNome($record->status);
+
             $records[] = $record;
         }
         $result = $records;
 
         echo json_encode($result);
     }
+
+
+    /** Metodo finalizaCompra()
+     * Este metodo troca o status de uma compra
+     * @param:{int}id      = chave primaria da compra
+     * @param:{float}peso_entrada = peso total dos animais na nota
+     */
+    public function finalizaCompra($id, $peso_entrada){
+
+        $db = $this->getDb();
+
+        $query = 'UPDATE compras set status = :status, data_pesagem = :data_pesagem, peso_entrada = :peso_entrada WHERE id = :id';
+
+        $stm = $db->prepare($query);
+
+        $stm->bindValue(':id', $id);
+        $stm->bindValue(':status', 2);
+        $stm->bindValue(':data_pesagem', date('Y-m-d'));
+        $stm->bindValue(':peso_entrada', $peso_entrada);
+
+        $update = $stm->execute();
+
+        $result = new StdClass();
+
+        if ($update) {
+            $result->success = true;
+            $result->msg = "Compra de Animais Encerrada com Sucesso!";
+        }
+        else {
+            $result->success = false;
+            $result->msg = "Falha ao Finalizar a Compra de Animais!";
+        }
+
+        return $result;
+    }
+
+    /** Metodo: getStatusNome()
+     * Retorna o Nome de um Status
+     * @param:{int}status = Chave do Status
+     * @return:{string}status_nome =  Nome do Status
+     *  Status da Nota
+     *  1 - Aberta
+     *  2 - Fechada
+     *  3 - Cancelada
+     *  4 - Aguardando Pesagem
+     */
+    public function getStatusNome($status){
+
+        $aStatus = array();
+        $aStatus[1] = "Aberta";
+        $aStatus[2] = "Fechada";
+        $aStatus[3] = "Cancelada";
+        $aStatus[4] = "Aguardando Pesagem";
+
+        return $aStatus[$status];
+    }
+
+
 }
 
 

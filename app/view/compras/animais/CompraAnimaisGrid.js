@@ -13,6 +13,18 @@ Ext.define('Rebanho.view.compras.animais.CompraAnimaisGrid' ,{
 
     initComponent: function() {
 
+        this.viewConfig = {
+            emptyText      : 'Nenhum registro encontrado'
+            , deferEmptyText : false
+            , getRowClass: function(record) {
+                status = record.data.status;
+                // Formatando a linha pelo valor do campo status
+                if (status == 2){
+                    return 'row-gray'
+                }
+            }
+        }
+
         this.store = 'CompraAnimais';
 
         this.columns = [
@@ -21,6 +33,11 @@ Ext.define('Rebanho.view.compras.animais.CompraAnimaisGrid' ,{
                 text: "Confinamento",
                 dataIndex: 'confinamento_nome',
                 width: 200,
+            },
+            {
+                text: "Status",
+                dataIndex: 'status_nome',
+                width: 150,
             },
             {
                 xtype: 'datecolumn',

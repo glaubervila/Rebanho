@@ -163,7 +163,7 @@ abstract class Base {
 
         $stm = $db->prepare($sql);
         $stm->execute();
-        return $stm->fetchObject();
+        return $stm->fetchAll(\PDO::FETCH_OBJ);
 
     }
 

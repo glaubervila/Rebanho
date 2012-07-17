@@ -21,7 +21,7 @@ class NotasEntrada extends Base {
         $result = new StdClass();
 
 
-        $data[] = $this->getAt(null, 'status IN(1,4)', 'compras');
+        $data = $this->getAt(null, 'status IN(1,4)', 'compras');
 
         if ($data){
 
@@ -41,6 +41,7 @@ class NotasEntrada extends Base {
         }
         else {
             $result->success = false;
+            $result->msg = "Não Há Compras Aguardando Pesagem.";
         }
         echo json_encode($result);
     }
@@ -104,8 +105,8 @@ class NotasEntrada extends Base {
                 $sexo++;
 
                 $animais[] = $animal;
-            }
 
+            }
 
             // Executa o Metodo CadastroAnimais da Classe Animais
             $result = Animais::CadastroAnimais($animais);
@@ -198,37 +199,59 @@ class NotasEntrada extends Base {
 
         echo json_encode($result);
 
-//
-//         $teste = '{"success":true,"data":[{"id":"1","confinamento_id":"2","quadra_id":"2","compra_id":"1","fornecedor_id":"1","caracteristica_id":"1","sisbov":null,"sexo":"M","idade":"24","classificacao":"Boa","escore":"4","status":"1","codigo":"20","pesagens":[{"id":"100", "animal_id":"1", "peso":"1000"}], "codigos":[{"id":"99", "animal_id":"1", "codigo":"21"}]}]}';
-// 
-//         echo $teste;
-
     }
 
-    public function getContadores($data){
+    public function getContadores($data,$json = true){
 
         $nota_aberta = $data['nota_aberta'];
 
         // Recuperando os Contadores
         $result = Pesagens::getCntPesados($data);
 
-        $quantidade = $this->getAt('quantidade',"id = $nota_aberta", 'compras');
-        $quantidade = $quantidade->quantidade;
-        $pesados = $result->pesados;
-        $peso_total = $result->peso_total;
+        if ($result){
+            $quantidade = $this->getAt('quantidade',"id = $nota_aberta", 'compras');
+            $quantidade = $quantidade[0]->quantidade;
+            $pesados = $result->pesados;
+            $peso_total = $result->peso_total;
 
-        // Calculando Peso Medio - Usando a quantidade de animais pesados
-        $media = ($peso_total/$pesados);
+            // Calculando Peso Medio - Usando a quantidade de animais pesados
+            $media = ($peso_total/$pesados);
 
-        $result->quantidade = $quantidade;
-        $result->falta = ($quantidade - $pesados);
-        $result->peso_medio = $media;
-        $result->success =  true;
+            $result->quantidade = $quantidade;
+            $result->falta = ($quantidade - $pesados);
+            $result->peso_medio = number_format($media, 2, '.','.');
+            $result->success =  true;
+        }
+        else {
+            $result = new StdClass();
+            $result->failure = false;
+            $result->msg = "Falha ao Recuperar os Contadores";
+        }
 
-        echo json_encode($result);
+        if ($json) {
+            echo json_encode($result);
+        }
+        else {
+            return $result;
+        }
 
     }
 
+
+    /** Methodo: finalizarNota
+     * Executados quando todos os animais da nota
+     * ja foram pesados, altera o status da nota para
+     * 2 - Finalizado, nesse status a nota nao pode mais ser alterada
+     */
+    public function finalizarNota ($data){
+
+        // Recuperar o Peso Total
+        $cnt = NotasEntrada::getContadores($data, false);
+
+        $result = CompraAnimais::finalizaCompra($data[nota_aberta], $cnt->peso_total);
+
+        echo json_encode($result);
+    }
 }
 
 

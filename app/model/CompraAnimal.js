@@ -13,6 +13,7 @@ Ext.define('Rebanho.model.CompraAnimal', {
         {name:'data_compra', type: 'date', dateFormat: 'Y-m-d'},
         {name:'numero_nota', type: 'string'},
         {name:'serie_nota', type: 'string'},
+        {name:'status', type: 'string'},
         {name:'quantidade', type: 'int'},
         {name:'valor_nota', type: 'float'},
         {name:'data_pesagem', type: 'date', dateFormat: 'Y-m-d' },
@@ -36,6 +37,7 @@ Ext.define('Rebanho.model.CompraAnimal', {
         {name:'fornecedor_nome', type: 'string'},
         {name:'fornecedor_fazenda', type: 'string'},
         {name:'confinamento_nome', type: 'string'},
+        {name:'status_nome', type: 'string'},
     ],
 
 

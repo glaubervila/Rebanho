@@ -28,13 +28,13 @@ class Animais extends Base {
 
         // Recuperar o Ultimo id
         $ultimo_id = $this->getAt('MAX(id) as id', null, 'animais');
-        $next_id = ($ultimo_id->id + 1);
+        $next_id = ($ultimo_id[0]->id + 1);
 
         $ultimo_codigo = $this->getAt('MAX(id) as id', null, 'animais_codigos');
-        $next_codigo = ($ultimo_codigo->id + 1);
+        $next_codigo = ($ultimo_codigo[0]->id + 1);
 
         $ultima_ocorrencia = $this->getAt('MAX(id) as id', null, 'ocorrencias');
-        $next_ocorrencia = ($ultima_ocorrencia->id + 1);
+        $next_ocorrencia = ($ultima_ocorrencia[0]->id + 1);
 
         // Para Cada Animal fazer o Insert
         foreach ($animais as $animal) {

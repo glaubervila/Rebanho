@@ -50,7 +50,17 @@ Ext.define('Rebanho.view.compras.animais.SelecaoNotaAbertaCombo', {
                     root: 'data',
                     totalProperty: 'total'
                 },
+            },
 
+            listeners: {
+                scope: this,
+                load: function(store, records, successful){
+
+                    if (successful == false){
+                        // Disparando Evento 'nenhumaNotaAberta'
+                        this.fireEvent('nenhumaNotaAberta');
+                    }
+                }
             },
         });
 

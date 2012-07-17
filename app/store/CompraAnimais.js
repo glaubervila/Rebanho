@@ -28,5 +28,8 @@ Ext.define('Rebanho.store.CompraAnimais', {
             allowSingle: true,
         },
     },
-
+    sorters: [{
+        property: 'data_compra',
+        direction: 'DESC'
+    }],
 });

@@ -12,8 +12,8 @@ class Pesagens extends Base {
     public function insert($data){
 
         // Verificar se o Registro e UNICO
-        // Chave UNIQUE = confinamento_id + animal_id + data
-        $unique = $this->findBy(array('confinamento_id','animal_id','data'), array($data->confinamento_id, $data->animal_id, $data->data), 'pesagens');
+        // Chave UNIQUE = confinamento_id + animal_id + tipo
+        $unique = $this->findBy(array('confinamento_id','animal_id','tipo'), array($data->confinamento_id, $data->animal_id, $data->tipo), 'pesagens');
 
         if ($unique){
             $data->id = $unique->id;
@@ -90,7 +90,7 @@ class Pesagens extends Base {
      */
     public function getPesagemEntrada($animal, $nota){
 
-        // Recuperando o Peso de Entrada Usando a Data de Pesagem da Nota
+        // Recuperando o Peso de Entrada Usando o Confinamento o animal e o tipo
         $pesagem = $this->findBy(array('confinamento_id','animal_id','tipo'), array($nota->confinamento_id, $animal, 1), 'pesagens');
 
         return $pesagem;
@@ -136,6 +136,8 @@ class Pesagens extends Base {
         $result = new StdClass();
         $result->peso_total  = $peso_total;
         $result->pesados     = $pesados;
+        $result->quantidade  = $objNota->quantidade;
+
 
         return $result;
     }

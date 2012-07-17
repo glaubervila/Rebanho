@@ -48,7 +48,7 @@ Ext.define('Rebanho.Initialization', {requires: ['Ext.ux.Router']},
                     var middle = Ext.getCmp('layoutmiddle');
                     if (middle){
                         middle.removeAll();
-                        console.log(middle);
+                        //console.log(middle);
                         //load view
                         if (Ext.isString(view)) {
                         view = this.getView(view);
@@ -67,8 +67,8 @@ Ext.define('Rebanho.Initialization', {requires: ['Ext.ux.Router']},
                 }
           },
           failure: function ( result, request) { 
-            console.log(result);
-            console.log(request);
+            //console.log(result);
+            //console.log(request);
             switch (result.failureType) {
               case Ext.form.action.Action.CLIENT_INVALID:
                 Ext.MessageBox.alert('Erro', "Campos inv&#225;lidos"); 
@@ -100,11 +100,11 @@ Ext.define('Rebanho.Initialization', {requires: ['Ext.ux.Router']},
       },
       beforedispatch: function(uri, match, params)
       {
-          console.log('beforedispatch ' + uri);
+          //console.log('beforedispatch ' + uri);
       },
       dispatch: function(uri, match, params, controller)
       {
-          console.log('dispatch ' + uri);
+          //console.log('dispatch ' + uri);
           //TIP: you could automize rendering task here, inside dispatch event
       }
   });

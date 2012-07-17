@@ -43,7 +43,12 @@ Ext.define('Rebanho.controller.EntradaAnimais', {
     idNotaAberta: 0,
     // Codigo da Primeira Identificacao
     identificacao: '',
-
+    // Quantidade Total de Animais na Nota
+    quantidade_total: 0,
+    // Quantidade de Animais Pesados
+    quantidade_pesada: 0,
+    // Quantidade de Animais a Serem Pesados
+    quantidade_falta: 'false',
 
     init: function() {
 
@@ -54,6 +59,16 @@ Ext.define('Rebanho.controller.EntradaAnimais', {
             'entradaanimaispanel': {
                 // Ao Renderizar o Panel
                 render: this.onRenderPanel
+            },
+
+            // Ao Clicar no Pesar
+            'entradaanimaisgrid button[action=action_pesar]': {
+                click: this.digitarCodigo
+            },
+
+            // Ao Clicar em Finalizar
+            'entradaanimaisgrid button[action=action_finalizar]': {
+                click: this.finalizarPesagem
             },
 
         });
@@ -159,7 +174,6 @@ Ext.define('Rebanho.controller.EntradaAnimais', {
      * depois de criados carrega a grid.
      */
     inicioEntradaAnimais: function(idNotaAberta, identificacao){
-        console.log('Iniciao Entrada de Animais');
 
         Ext.Ajax.request({
             url : 'php/main.php',
@@ -174,8 +188,9 @@ Ext.define('Rebanho.controller.EntradaAnimais', {
             success: function ( result, request ) {
                 var retorno = Ext.decode(result.responseText);
                 if (retorno.success){
-                    //Chama a funcao de Inicio de Pesagem
-                    this.inicioPesagem(idNotaAberta);
+
+                    // Inicio de Pesagem
+                    this.inicioPesagem();
                 }
                 else {
                     // Mostrando Mensagem de Erro
@@ -193,12 +208,18 @@ Ext.define('Rebanho.controller.EntradaAnimais', {
      * Executada apos a funcao inicioEntradaAnimais 
      * depois dos animais criados, ocorrencias e etc,
      * vai carregar os animais criados no grid
-     * e Depois executar a funcao de digitarCodigo
+     * Faz um request na classe NotasEntrada
+     * e recupera os contadores de quantidade e peso
+     * atualiza os atributos de quantidade
+     * Verifica se falta pesar algum animal
+     * se faltar executa a funcao digitarCodigo
+     * se todos estiverem pesados mostra mensagem e habilita botao finalizarNota
+     * depois executa a funcao setContadores
      */
-    inicioPesagem: function(idNotaAberta){
+    inicioPesagem: function(){
 
         // Recuperando a Store
-        store =this.getStore('EntradaAnimais');
+        store = this.getStore('EntradaAnimais');
 
         // Limpando a Store
         store.removeAll();
@@ -209,12 +230,52 @@ Ext.define('Rebanho.controller.EntradaAnimais', {
         // Adicionando novo Filtro pra Pegar todos os animais dessa nota
         store.filter("compra_id", this.idNotaAberta);
 
-        // Atualizar Contadores
-        this.getContadores();
 
-        // Mostrando o Prompt de Codigo
-        this.digitarCodigo();
+        Ext.Ajax.request({
+            url : 'php/main.php',
+            method : 'POST',
+            params: {
+                classe: 'NotasEntrada',
+                action: 'getContadores',
+                nota_aberta: this.idNotaAberta,
+            },
+            scope:this,
+            success: function ( result, request ) {
+                var retorno = Ext.decode(result.responseText);
+                if (retorno.success){
 
+                    // Alterando os Atributos de quantidade
+                    this.quantidade_total  = retorno.quantidade;
+                    this.quantidade_pesada = retorno.pesados;
+                    this.quantidade_falta  = retorno.falta;
+
+                    // Executando a funcao setContadores
+                    this.setContadores(retorno);
+
+                    // Verifica se Todos Foram Pesados
+                    if ((this.quantidade_total == this.quantidade_pesada) && (this.quantidade_falta ==0)){
+
+                        // Se a Pesagem estiver Completa
+                        Ext.Msg.show({
+                            title:'Pesagem Completa',
+                            msg: 'Pesagem Completa Confira os Dados e Click no Botão Finalizar Pesagem!',
+                            buttons: Ext.Msg.OK,
+                        });
+
+                        // Habilitar o Botao Finalizar Pesagem
+                        this.getEntradaAnimaisGrid().down('#btnFinalizar').enable();
+                    }
+                    else {
+                        // Se ainda houver animais a serem Pesados
+                        this.digitarCodigo();
+                    }
+                }
+                else {
+                    // Mostrando Mensagem de Erro
+                    Ext.MessageBox.show({ title:'Desculpe!', msg: retorno.message, buttons: Ext. MessageBox.OK, icon:  Ext.MessageBox.ERROR })
+                }
+            },
+        })
 
     },
 
@@ -323,27 +384,112 @@ Ext.define('Rebanho.controller.EntradaAnimais', {
         }
 
         this.inicioPesagem();
-/*        // Atualizando a Store de EntradaAnimais
-        var store = this.getStore('EntradaAnimais');
-        this.getEntradaAnimaisGrid().getStore().load();*/
+
+    },
+
+    /** Funcao: getContadores
+     */
+//     getContadores: function(){
+// 
+//         Ext.Ajax.request({
+//             url : 'php/main.php',
+//             method : 'POST',
+//             params: {
+//                 classe: 'NotasEntrada',
+//                 action: 'getContadores',
+//                 nota_aberta: this.idNotaAberta,
+//             },
+//             scope:this,
+//             success: function ( result, request ) {
+//                 var retorno = Ext.decode(result.responseText);
+//                 if (retorno.success){
+// 
+//                     // Alterando os Atributos de quantidade
+//                     this.quantidade_total  = retorno.quantidade;
+//                     this.quantidade_pesada = retorno.pesados;
+//                     this.quantidade_falta  = retorno.falta;
+// 
+//                     // Executando a funcao setContadores
+//                     this.setContadores(retorno);
+// 
+//                     // Verifica se Todos Foram Pesados
+//                     if ((this.quantidade_total == this.quantidade_pesada) && (this.quantidade_falta ==0)){
+// 
+//                         // Se a Pesagem estiver Completa
+//                         Ext.Msg.show({
+//                             title:'Pesagem Completa',
+//                             msg: 'Pesagem Completa Confira os Dados e Click no Botão Finalizar Pesagem!',
+//                             buttons: Ext.Msg.OK,
+//                         });
+// 
+//                         // Habilitar o Botao Finalizar Pesagem
+//                         this.getEntradaAnimaisGrid().down('#btnFinalizar').enable();
+//                     }
+//                     else {
+//                         // Se ainda houver animais a serem Pesados
+//                         this.inicioPesagem();
+//                     }
+//                 }
+//                 else {
+//                     // Mostrando Mensagem de Erro
+//                     Ext.MessageBox.show({ title:'Desculpe!', msg: retorno.message, buttons: Ext. MessageBox.OK, icon:  Ext.MessageBox.ERROR })
+//                 }
+//             },
+//         })
+//     },
+
+    /** Funcao: setContadores
+     * Recebe um objeto com os valores de quantidade e peso
+     * e atualiza os toolbarText com os valores
+     * @param:{object} contadores - objeto com os contadores
+     */
+    setContadores: function(contadores){
+
+        var grid = this.getEntradaAnimaisGrid();
+        grid.down('#tbquantidade').setText('<b>Quantidade: <font color="blue"> '+contadores.quantidade+' </font></b>');
+        
+        grid.down('#tbpesados').setText('<b>Pesados: <font color="green">'+contadores.pesados+'</font></b>');
+        
+        grid.down('#tbfalta').setText('<b>Faltam: <font color="red">'+contadores.falta+'</font></b>');
+        
+        grid.down('#tbpesototal').setText('<b>Peso Total: <font color="blue">'+contadores.peso_total+' Kg</font></b>');
+        
+        grid.down('#tbpesomedio').setText('<b>Peso Médio: <font color="blue">'+contadores.peso_medio+' Kg</font></b>');
+
     },
 
 
-    getContadores: function(){
+    /** Funcao: finalizarPesagem
+     * Confirma se vai realmente fechar
+     * em caso afirmativo executa a funcao finalizarNota
+     */
+    finalizarPesagem: function (){
+
+        // Confirmar Finalizar
+        Ext.MessageBox.confirm('Confirmação', 'Deseja Mesmo <font color="blue"><b>Finalizar a Pesagem</b></font>?<br>Atenção: Ao Finalizar a pesagem não podera ser feita mais alterações.', function(btn){
+
+            if (btn == 'yes'){
+                this.finalizarNota();
+            }
+        },this);
+
+    },
+
+    finalizarNota: function(){
 
         Ext.Ajax.request({
             url : 'php/main.php',
             method : 'POST',
             params: {
                 classe: 'NotasEntrada',
-                action: 'getContadores',
+                action: 'FinalizarNota',
                 nota_aberta: this.idNotaAberta,
             },
             scope:this,
             success: function ( result, request ) {
                 var retorno = Ext.decode(result.responseText);
                 if (retorno.success){
-                    this.setContadores(retorno);
+
                 }
                 else {
                     // Mostrando Mensagem de Erro
@@ -351,23 +497,7 @@ Ext.define('Rebanho.controller.EntradaAnimais', {
                 }
             },
         })
-    },
-
-    setContadores: function(contadores){
-
-        var grid = this.getEntradaAnimaisGrid();
-        grid.down('#tbquantidade').setText('<b>Quantidade: <font color="blue"> '+contadores.quantidade+' </font></b>');
-        
-        grid.down('#tbpesados').setText('<b>Pesados <font color="green">'+contadores.pesados+'</font></b>');
-        
-        grid.down('#tbfalta').setText('<b>Faltam <font color="red">'+contadores.falta+'</font></b>');
-        
-        grid.down('#tbpesototal').setText('Peso Total <b><font color="blue">'+contadores.peso_total+' Kg</font></b>');
-        
-        grid.down('#tbpesomedio').setText('Peso Médio <b><font color="blue">'+contadores.peso_medio+' Kg</font></b>');
-
     }
-
 
 });
 

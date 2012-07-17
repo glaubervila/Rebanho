@@ -28,7 +28,7 @@ Ext.define('Rebanho.view.layout.Header', {
                         {
                             text: 'Entrada de Animais',
                             handler: function(){
-                                var tabs = Ext.getCmp('mainTabpanel').novaAba('entradaanimaisgrid');
+                                var tabs = Ext.getCmp('mainTabpanel').novaAba('entradaanimaispanel');
                             },
                         },
                         {

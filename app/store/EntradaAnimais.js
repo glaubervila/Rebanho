@@ -1,9 +1,11 @@
 Ext.define('Rebanho.store.EntradaAnimais', {
     extend: 'Rebanho.store.MyStore',
 
+    model: 'Rebanho.model.EntradaAnimal',
+
     remoteFilter: true,
 
-    model: 'Rebanho.model.EntradaAnimal',
+    remoteSort: true,
 
     proxy: {
 

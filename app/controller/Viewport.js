@@ -22,7 +22,7 @@ Ext.define('Rebanho.controller.Viewport', {
   	this.render('home.Home');
   },
   onViewportRendered: function(p) {
-    console.log("Viewport - onViewportRendered");
+    //console.log("Viewport - onViewportRendered");
     p.add(this.defaultItem);
     this.index();
   }
