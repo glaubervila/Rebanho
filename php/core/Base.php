@@ -64,17 +64,33 @@ abstract class Base {
         }
     }
 
-    public function find($id, $table) {
+    public function find($id, $table, $col = false, $debug = false) {
         $db = $this->getDb();
-        if ($table) {
-            $sql = "select * from " . $table . ' where id=:id';
+
+        $sql = "SELECT ";
+
+        if ($col) {
+            $sql .= " $col ";
         }
         else {
-            $sql = "select * from " . $this->getTable() . ' where id=:id';
+            $sql .= " * ";
+        }
+        if ($table) {
+            $sql .= " FROM " . $table ;
+        }
+        else {
+            $sql .= " FROM " .$this->getTable();
+        }
+
+        $sql .= ' WHERE id=:id';
+
+        if ($debug) {
+            echo $sql;
         }
         $stm = $db->prepare($sql);
         $stm->bindValue(':id', $id);
         $stm->execute();
+
         return $stm->fetchObject();
     }
 
@@ -159,6 +175,57 @@ abstract class Base {
 
         if ($condicao) {
             $sql .= " WHERE $condicao";
+        }
+
+        $stm = $db->prepare($sql);
+        $stm->execute();
+        return $stm->fetchAll(\PDO::FETCH_OBJ);
+
+    }
+
+
+    /** Metodo: filter
+     * Faz uma query usando filtro e ou ordenacao
+     * Ex: SELECT * FROM tabela WHERE campo = value ORDER BY campo ASC LIMIT start, limit
+     * @PARAM:{string}$col   = nome da coluna para o select ou varias separadas por ',', se nao for passado usa '*'
+     * @PARAM:{string}$table = nome da tabela, se nao for passada usa a tabela da classe que executou o metodo
+     * @PARAM:{string}$filter = uma string no formato '<campo> <condicao> <valor>' ou quando mais de um separados por AND ou OR
+     * @PARAM:{string}$sort = string de Ordenacao no Formato '<campo> <direcao>' quando mais de um separados por ','
+     * @PARAM:{bool}$limit = true usa o Limit pegando da Get o star e o limit, falso traz todos os registros
+     * @RETURN:Vai retornar um array de resultados ou False
+     */
+    public function filter($col, $table, $filter, $sort, $limit = false){
+
+        $db = $this->getDb();
+
+        $sql = "SELECT ";
+
+         if ($col) {
+            $sql .= " $col ";
+        }
+        else {
+            $sql .= " * ";
+        }
+
+        if ($table) {
+            $sql .= " FROM " . $table ;
+        }
+        else {
+            $sql .= " FROM " .$this->getTable();
+        }
+
+        if ($filter) {
+            $sql .= " WHERE $filter";
+        }
+
+        if ($sort){
+            $sql .= " ORDER BY $sort";
+        }
+
+        if ($limit){
+            $start = $_GET['start'];
+            $limit = $_GET['limit'];
+            $sql .= " LIMIT ". $start . " , " . $limit;
         }
 
         $stm = $db->prepare($sql);
@@ -523,5 +590,62 @@ abstract class Base {
         }
 
         return $string;
+    }
+
+
+    /** Metodo: parseFilter
+     * Recebe um array vindo do Post ou do Get ou uma string em Json que sera convertida em array,
+     * para cada registro no array vai montar uma string no formato '<property> <condiction> <value>'.
+     * para ser usado na clausula WHERE da query
+     * @PARAM:{array}$aFilters= array com com os parametros de filtro, ou string em json
+     * @RETURN:{string}$filter
+     * OBS: falta implementar a condicao atualmente so faz com sinal de igualdade
+     */
+    public function parseFilter($aFilters){
+
+        if (!is_array($aFilters)){
+            $filtros = json_decode($aFilters);
+        }
+        else {
+            $filtros = $aFilters;
+        }
+
+        foreach ($filtros as $filtro){
+
+            $aStrings[] = "{$filtro->property} = \"{$filtro->value}\"";
+
+        }
+
+        $string = implode($aStrings, ' AND ');
+
+        return $string;
+
+    }
+
+    /** Metodo: parseSorter
+     * Recebe um array vindo do Post ou do Get ou uma string em Json que sera convertida em array,
+     * para cada registro no array vai montar uma string no formato '<property> <direction>'.
+     * para ser usado na Ordenacao da query
+     * @PARAM:{array}$aSorters= array com com os parametros de ordenacao, ou string em json
+     * @RETURN:{string}$sort
+     */
+    public function parseSorter($aSorters){
+
+        if (!is_array($aSorters)){
+            $sorters = json_decode($aSorters);
+        }
+        else {
+            $sorters = $aSorters;
+        }
+
+        foreach ($sorters as $sort){
+
+            $aStrings[] = "{$sort->property}" .' '. "{$sort->direction}";
+        }
+
+        $string = implode($aStrings, ', ');
+
+        return $string;
+
     }
 }

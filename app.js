@@ -43,11 +43,17 @@ Ext.application({
 
     controllers: [
         'Viewport',
+        'Header',
+
         // Compras
         'CompraAnimais',
         'EntradaAnimais',
+
         // Fornecedores
         'Fornecedores',
+
+        // Ocorrencias
+        'Pesagens',
 
         // Cadastros
         'Usuarios',

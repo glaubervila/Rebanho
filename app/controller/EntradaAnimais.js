@@ -387,57 +387,6 @@ Ext.define('Rebanho.controller.EntradaAnimais', {
 
     },
 
-    /** Funcao: getContadores
-     */
-//     getContadores: function(){
-// 
-//         Ext.Ajax.request({
-//             url : 'php/main.php',
-//             method : 'POST',
-//             params: {
-//                 classe: 'NotasEntrada',
-//                 action: 'getContadores',
-//                 nota_aberta: this.idNotaAberta,
-//             },
-//             scope:this,
-//             success: function ( result, request ) {
-//                 var retorno = Ext.decode(result.responseText);
-//                 if (retorno.success){
-// 
-//                     // Alterando os Atributos de quantidade
-//                     this.quantidade_total  = retorno.quantidade;
-//                     this.quantidade_pesada = retorno.pesados;
-//                     this.quantidade_falta  = retorno.falta;
-// 
-//                     // Executando a funcao setContadores
-//                     this.setContadores(retorno);
-// 
-//                     // Verifica se Todos Foram Pesados
-//                     if ((this.quantidade_total == this.quantidade_pesada) && (this.quantidade_falta ==0)){
-// 
-//                         // Se a Pesagem estiver Completa
-//                         Ext.Msg.show({
-//                             title:'Pesagem Completa',
-//                             msg: 'Pesagem Completa Confira os Dados e Click no Botão Finalizar Pesagem!',
-//                             buttons: Ext.Msg.OK,
-//                         });
-// 
-//                         // Habilitar o Botao Finalizar Pesagem
-//                         this.getEntradaAnimaisGrid().down('#btnFinalizar').enable();
-//                     }
-//                     else {
-//                         // Se ainda houver animais a serem Pesados
-//                         this.inicioPesagem();
-//                     }
-//                 }
-//                 else {
-//                     // Mostrando Mensagem de Erro
-//                     Ext.MessageBox.show({ title:'Desculpe!', msg: retorno.message, buttons: Ext. MessageBox.OK, icon:  Ext.MessageBox.ERROR })
-//                 }
-//             },
-//         })
-//     },
-
     /** Funcao: setContadores
      * Recebe um objeto com os valores de quantidade e peso
      * e atualiza os toolbarText com os valores
@@ -490,6 +439,10 @@ Ext.define('Rebanho.controller.EntradaAnimais', {
                 var retorno = Ext.decode(result.responseText);
                 if (retorno.success){
 
+                    Ext.BoxMsg.msg('Sucesso!', 'Compra de Animais Finalizada Com sucesso!');
+
+                    // Fechando o Aba
+                    Ext.getCmp('mainTabpanel').fecharAbaAtiva();
                 }
                 else {
                     // Mostrando Mensagem de Erro

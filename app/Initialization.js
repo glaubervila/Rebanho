@@ -62,6 +62,15 @@ Ext.define('Rebanho.Initialization', {requires: ['Ext.ux.Router']},
                         middle.setActive(true,middle.add(view));
                         middle.doLayout();
                     }
+
+                    // Setando Os Atributos de Usuario
+                    var main = Ext.getCmp('main_viewport');
+                    if (main){
+                        main.usuario = retorno.data.user_id;
+                        main.confinamento_id = retorno.data.user_confinamento;
+                        main.confinamento    = retorno.data.confinamento;
+                    }
+
                 }else{
                 Ext.ux.Router.redirect('login');
                 }
@@ -89,25 +98,27 @@ Ext.define('Rebanho.Initialization', {requires: ['Ext.ux.Router']},
    * dispatch flow
    */
   Ext.ux.Router.on({
-      routemissed: function(uri)
-      {
-          Ext.Msg.show({
-              title:'Error 404',
-              msg: 'Route not found: ' + uri,
-              buttons: Ext.Msg.OK,
-              icon: Ext.Msg.ERROR
-          });
-      },
-      beforedispatch: function(uri, match, params)
-      {
-          //console.log('beforedispatch ' + uri);
-      },
-      dispatch: function(uri, match, params, controller)
-      {
-          //console.log('dispatch ' + uri);
-          //TIP: you could automize rendering task here, inside dispatch event
-      }
+        routemissed: function(uri)
+        {
+            Ext.Msg.show({
+                title:'Error 404',
+                msg: 'Route not found: ' + uri,
+                buttons: Ext.Msg.OK,
+                icon: Ext.Msg.ERROR
+            });
+        },
+        beforedispatch: function(uri, match, params)
+        {
+            console.log('beforedispatch ' + uri);
+        },
+        dispatch: function(uri, match, params, controller)
+        {
+            console.log('dispatch ' + uri);
+            //TIP: you could automize rendering task here, inside dispatch event
+
+        }
   });
-    //console.log('Ext.ux.Initialization - end');
+    console.log('Ext.ux.Initialization - end');
+
   })
 );

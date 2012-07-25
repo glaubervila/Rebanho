@@ -66,10 +66,14 @@ class Usuarios extends Base {
         $return = new StdClass();
 
         if ($_SESSION['logged']["isLogged"] == TRUE) {
+
+            $logged->user_id            = $_SESSION['logged']["user_id"];
+            $logged->user_name          = $_SESSION['logged']["user_name"];
+            $logged->user_confinamento  = $_SESSION['logged']["user_confinamento"];
+            $logged->confinamento       = $_SESSION['logged']["confinamento"];;
+
             $return->success = true;
-            $return->user_id            = $_SESSION['logged']["user_id"];
-            $return->user_name          = $_SESSION['logged']["user_name"];
-            $return->user_confinamento  = $_SESSION['logged']["user_confinamento"];
+            $return->data = $logged;
         }
         else {
             $return->success = false;
@@ -90,18 +94,22 @@ class Usuarios extends Base {
         if ($data['login'] and $data['senha']){
             // Verificar Login e Senha
             $usuario = $this->verifica_login_senha($data['login'], $data['senha']);
+            //var_dump($usuario);
             if ($usuario){
                 // Criando a Sessao do Usuario
                 $_SESSION['logged']["isLogged"]    = TRUE;
                 $_SESSION['logged']["user_id"]     = $usuario->id;
                 $_SESSION['logged']["user_name"]   = $usuario->nome;
                 $_SESSION['logged']["start_time"]  = date('Y-m-d H:i:s');
-                //$_SESSION['logged']["user_confinamento"] = $usuario->id;
+                $_SESSION['logged']["user_confinamento"] = $usuario->confinamento_id;
+                $_SESSION['logged']["confinamento"] = $usuario->confinamento;
 
                 // Criando Retorno
                 $return->success = true;
                 $return->id      = $usuario->id;
                 $return->nome    = $usuario->nome;
+                $return->confinamento_id = $usuario->confinamento_id;
+                $return->confinamento = $usuario->confinamento;
             }
         }
         else {
@@ -121,18 +129,23 @@ class Usuarios extends Base {
     public function verifica_login_senha($login,$senha){
 
         // Criptografando Senha
-        $senha = sha1($senha);
-
+        //$senha = sha1($senha);
+        //echo "$senha";
         $query = new StdClass();
 
-        $query->sql = "SELECT id, nome, login FROM usuarios WHERE login ='$login' and senha = '$senha' LIMIT 1";
+        $query->sql = "SELECT id, nome, login, confinamento_id FROM usuarios WHERE login ='$login' and senha = '$senha' LIMIT 1";
         $query->limit = false;
         $query->order = false;
 
         $result = $this->fetchAll($query);
 
+        //var_dump($result);
         if ($result->total != 0) {
-            return $result->data[0];
+
+            $user = $result->data[0];
+            $confinamento = $this->find($user->confinamento_id, 'confinamentos');
+            $user->confinamento = $confinamento->confinamento;
+            return $user;
         }
         else {
             return FALSE;

@@ -3,5 +3,21 @@ Ext.define('Rebanho.view.Viewport', {
 
 //config options
     id: 'main_viewport',
-    layout: 'fit'
+    layout: 'fit',
+
+    usuario: false,
+    confinamento_id: 0,
+    confinamento: false,
+
+
+
+// Metodos
+    getConfinamento:function(){
+        return this.confinamento;
+    },
+
+    getConfinamentoId:function(){
+        return parseInt(this.confinamento_id);
+    },
+
 });

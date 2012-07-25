@@ -15,8 +15,17 @@ Ext.define('Rebanho.model.Pesagem', {
         {name:'data', type: 'date', dateFormat: 'Y-m-d' },
         {name:'peso', type: 'float'},
         {name:'tipo', type: 'string'},
+        {name:'sexo', type: 'string'},
+        {name:'quadra', type: 'string'},
+        {name:'icone', convert:function(value,record){
+            // Se tiver Peso Coloca o Icone de Tick
+            if (record.get('peso') > 0){
+                return '<img src="resources/tick.png">';
+            }
+        }},
+
     ],
-    
+
     validations: [
         {type: 'presence',  field: 'confinamento_id'},
         {type: 'presence',  field: 'quadra_id'},

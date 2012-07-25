@@ -166,7 +166,6 @@ Ext.define('Rebanho.controller.CompraAnimais', {
 
             // Se a Nota Estiver Fechada (status == 2) Nao permite salvar
             if (data.data.status == 2) {
-                console.log('EDITANDO NOTA FECHADA');
                 // Aqui Evito que a nota seja Alterada
                 form.down('#btnSalvar').setDisabled(true);
             }

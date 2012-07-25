@@ -12,6 +12,7 @@ Ext.define('Rebanho.store.Pesagens', {
         extraParams:{
             classe: 'Pesagens',
             action: '',
+            returnJson: true,
         },
 
         reader: {
@@ -29,5 +30,8 @@ Ext.define('Rebanho.store.Pesagens', {
         },
 
     },
-
+    sorters: [{
+        property: 'data',
+        direction: 'DESC'
+    }],
 });

@@ -3,6 +3,7 @@ Ext.define('Rebanho.view.layout.Appview', {
   alias         : 'widget.layoutappview',
   layout : 'border',
   id : 'layoutappview',
+
   items:[
     {xtype:'layoutheader'},
     {xtype:'layoutfooter'},

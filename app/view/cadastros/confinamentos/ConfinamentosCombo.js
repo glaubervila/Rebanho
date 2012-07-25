@@ -12,14 +12,19 @@ Ext.define('Rebanho.view.cadastros.confinamentos.ConfinamentosCombo', {
 
     valueField: 'id',
 
+    mode: 'local',
+
+    queryMode: 'local',
+
     displayField: 'confinamento',
 
     initComponent: function() {
 
-        this.store = 'Confinamentos';
+        this.store = 'Confinamentos',
 
         this.callParent(arguments);
 
     },
+
 
 });

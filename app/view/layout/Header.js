@@ -3,6 +3,10 @@ Ext.define('Rebanho.view.layout.Header', {
 
     alias : 'widget.layoutheader',
 
+    requires: [
+        'Rebanho.view.cadastros.confinamentos.ConfinamentosCombo',
+    ],
+
     region:'north',
 
     height: 53,
@@ -201,7 +205,7 @@ Ext.define('Rebanho.view.layout.Header', {
         {
             text: 'TESTE',
             handler: function(){
-                var tabs = Ext.getCmp('mainTabpanel').novaAba('compraanimaisgrid');
+                var tabs = Ext.getCmp('mainTabpanel').novaAba('pesagensgrid');
             },
         },
         {
@@ -210,6 +214,7 @@ Ext.define('Rebanho.view.layout.Header', {
                 var tabs = Ext.getCmp('mainTabpanel').novaAba('entradaanimaispanel');
             },
         },
+
 
     ]
 

@@ -142,4 +142,45 @@ class Pesagens extends Base {
         return $result;
     }
 
+    public function getPesagens($data){
+
+        $strFiltros = $this->parseFilter($data["filter"]);
+        $strSorters = $this->parseSorter($data["sort"]);
+
+        $aResult = $this->filter(null, 'pesagens', $strFiltros, $strSorters, false);
+
+        // Recuperar as Informacoes de cada animal
+        foreach ($aResult as $row){
+
+            $registro = $row;
+
+            // Informacoes do Animal
+            $animal = $this->find($row->animal_id, 'animais');
+
+            $registro->sexo = $animal->sexo;
+
+            // Informacoes da Quadra
+            $quadra = $this->find($row->quadra_id, 'quadras', 'quadra');
+
+            $registro->quadra = $quadra->quadra;
+
+            $aRegistros[] = $registro;
+        }
+
+
+
+        $result = new StdClass();
+        $result->success = true;
+        $result->data    = $aRegistros;
+        $result->total   = count($aRegistros);
+
+        if ($data["returnJson"]){
+
+            echo json_encode($result);
+        }
+        else {
+            return $result;
+        }
+    }
+
 }
