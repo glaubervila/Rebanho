@@ -39,7 +39,7 @@ class Confinamentos extends Base {
 
         $db = $this->getDb();
 
-        $query = 'update ' . $this->getTable() . ' set codigo=:confinamento where id=:id';
+        $query = 'update ' . $this->getTable() . ' set confinamento=:confinamento where id=:id';
 
         $stm = $db->prepare($query);
 

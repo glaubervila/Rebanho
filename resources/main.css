@@ -100,22 +100,5 @@
     color: #A0A0A0;
 }
 
-/** Classes Para Header Difente no Plugin Grid Printer
- *
- */
-.printer-title2 {
-    width: 100%;
-    text-align: left;
-    font-size: 11px;
-    font-family: arial;
-    border-collapse: collapse;
-}
 
-.printer-title2 td {
-    font-weight: bold;
-    padding: 4px 3px 4px 5px;
-    border: 1px solid #d0d0d0;
-    border-left-color: #eee;
-    background-color: #ededed;
-}
 

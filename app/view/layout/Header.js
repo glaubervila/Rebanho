@@ -92,6 +92,9 @@ Ext.define('Rebanho.view.layout.Header', {
                         {
                             text: 'Pesagens',
                             iconCls: 'icon-application_form',
+                            handler: function(){
+                                var tabs = Ext.getCmp('mainTabpanel').novaAba('pesagensgrid');
+                            },
                         },
                         {
                             text: 'Manejos',
@@ -217,18 +220,18 @@ Ext.define('Rebanho.view.layout.Header', {
                 },
             ]
         },
-        {
-            text: 'TESTE',
-            handler: function(){
-                var tabs = Ext.getCmp('mainTabpanel').novaAba('pesagensgrid');
-            },
-        },
-        {
-            text: 'TESTE2',
-            handler: function(){
-                Ext.create('Rebanho.view.ocorrencias.pesagens.PesagensPorDataWindow',{});
-            },
-        },
+//         {
+//             text: 'TESTE',
+//             handler: function(){
+//                 var tabs = Ext.getCmp('mainTabpanel').novaAba('pesagensgrid');
+//             },
+//         },
+//         {
+//             text: 'TESTE2',
+//             handler: function(){
+//                 Ext.create('Rebanho.view.ocorrencias.pesagens.PesagensPorDataWindow',{});
+//             },
+//         },
 
 
     ]
