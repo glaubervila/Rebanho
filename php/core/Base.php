@@ -12,15 +12,15 @@ abstract class Base {
         if (count($options))
             $this->setOptions($options);
 
-        $this->config['adapter']  = "mysql";
-        $this->config['hostname'] = "localhost";
-        $this->config['dbname']   = "rebanho";
-        $this->config['user']     = "root";
-        $this->config['password'] = "";
+            $this->config['adapter']  = "mysql";
+            $this->config['hostname'] = "localhost";
+            $this->config['dbname']   = "rebanho";
+            $this->config['user']     = "root";
+            $this->config['password'] = "";
 
-        $connection = new Connection();
+            $connection = new Connection();
 
-        $this->database = $connection->getConnection($this->config);
+            $this->database = $connection->getConnection($this->config);
 
     }
 
@@ -234,28 +234,33 @@ abstract class Base {
 
     }
 
-    public function fetchAll($query) {
+    public function fetchAll($query, $debug = false) {
 
         $start = $_GET['start'];
         $limit = $_GET['limit'];
 
         $sorts = json_decode($_GET['sort']);
 
-        if ($sorts){
-            foreach ($sorts as $sort) {
+        // Montando String Filter (Where)
+        $filter = $this->parseFilter($_GET['filter']);
+        // Montando String Sort (Order)
+        $sort = $this->parseSorter($_GET['sort']);
 
-                if ($sort->property AND $dir = $sort->direction){
-                    $orders[] = $sort->property . ' ' . $sort->direction;
-                }
-            }
-
-            if ($orders[0]){
-                $order = implode(', ', $orders );
-            }
-            else {
-                $order = null;
-            }
-        }
+//         if ($sorts){
+//             foreach ($sorts as $sort) {
+// 
+//                 if ($sort->property AND $dir = $sort->direction){
+//                     $orders[] = $sort->property . ' ' . $sort->direction;
+//                 }
+//             }
+// 
+//             if ($orders[0]){
+//                 $order = implode(', ', $orders );
+//             }
+//             else {
+//                 $order = null;
+//             }
+//         }
 
         $db = $this->getDb();
 
@@ -265,9 +270,15 @@ abstract class Base {
 
             $sql = $query->sql;
 
-            if ($query->order OR $order){
+            if ($query->filter OR $filter){
+                if ($filter){
+                    $sql .= " WHERE $filter ";
+                }
+            }
+
+            if ($query->order OR $sort){
                 if ($order){
-                    $sql .= " ORDER BY $order";
+                    $sql .= " ORDER BY $sort";
                 }
             }
 
@@ -278,11 +289,16 @@ abstract class Base {
             }
 
             $stm = $db->prepare($sql);
+
+            if ($debug){
+                echo $sql;
+            }
+
             $stm->execute();
 
             // Query para saber o Total
             $exp_reg = "#SELECT(.*)FROM(.*?)";
-            if ($query->order OR $order){
+            if ($query->order OR $sort){
                 if ($order){
                     $exp_reg .= "ORDER(.*)";
                 }
@@ -300,6 +316,10 @@ abstract class Base {
 
             $sql_total = "SELECT COUNT(*) as total FROM " . $sql_part;
 
+            if ($debug){
+                echo $sql_total;
+            }
+
             $total = $db->query($sql_total)->fetch();
 
             // Se Tiver Erro REFAZER ESSA PARTE!
@@ -312,12 +332,22 @@ abstract class Base {
         else {
             $sql = "SELECT * FROM " . $this->getTable();
 
-            if ($order) {
-                $sql .= " ORDER BY $order ";
+            if ($filter) {
+                $sql .= " WHERE $filter";
             }
 
-            if($start !== null && $start !== '' && $limit !== null && $limit !== ''){
-                $sql .= " LIMIT " . $start . " , " . $limit;
+            if ($sort){
+                $sql .= " ORDER BY $sort";
+            }
+
+            if ($limit){
+                $start = $_GET['start'];
+                $limit = $_GET['limit'];
+                $sql .= " LIMIT ". $start . " , " . $limit;
+            }
+
+            if ($debug){
+                echo $sql;
             }
 
             $stm = $db->prepare($sql);
@@ -330,6 +360,12 @@ abstract class Base {
             }
 
             $sql = "SELECT COUNT(*) AS total FROM " . $this->getTable();
+            if ($filter) {
+                $sql .= " WHERE $filter";
+            }
+            if ($debug){
+                echo $sql;
+            }
             $total = $db->query($sql)->fetch();
 
             // Se Tiver Erro REFAZER ESSA PARTE!

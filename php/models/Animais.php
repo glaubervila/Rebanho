@@ -174,5 +174,43 @@ class Animais extends Base {
         return $stm->fetchAll(\PDO::FETCH_OBJ);
     }
 
+    /** Metodo:getIdByCodigo
+     * @PARAM:$codigo - Codigo do Animal
+     * Recebe um codigo de animal e retorna o id do animal,
+     * @return:$id = chave interna do animal
+     */
+    public function getIdByCodigo($data){
+
+        $codigo       = $data["codigo"];
+        $confinamento = $data["confinamento"];
+
+        $sql = "SELECT animal_id FROM animais_codigos WHERE codigo = {$codigo} AND confinamento_id = {$confinamento};";
+
+        $db = $this->getDb();
+        $stm = $db->prepare($sql);
+        $stm->execute();
+
+        $animal_codigo = $stm->fetchObject();
+
+        $result = new StdClass();
+
+        if ($animal_codigo) {
+            $result->success = true;
+            $result->animal_id = $animal_codigo->animal_id;
+            $result->animal = $this->find($animal_codigo->animal_id, 'animais'); 
+        }
+        else {
+            $result->failure = true;
+            $result->message = "Desculpe, mais <font color='red'>Nenhum</font> Animal foi encontrado.<br> Verifique se este código abaixo está correto<br> Código: <font color='red'>{$codigo}</font>";
+        }
+
+        if ($data["returnJson"]){
+            echo json_encode($result);
+        }
+        else {
+            return $result;
+        }
+
+    }
 
 }

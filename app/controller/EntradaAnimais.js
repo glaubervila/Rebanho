@@ -49,8 +49,14 @@ Ext.define('Rebanho.controller.EntradaAnimais', {
     quantidade_pesada: 0,
     // Quantidade de Animais a Serem Pesados
     quantidade_falta: 'false',
+    // Chave estrangeira Confinamento
+    confinamento: 0,
 
     init: function() {
+
+        // ----------< Actions no Store >----------
+        // Load da Store
+        //this.getStore('Pesagens').addListener('load', this.onLoadStore, this);
 
         this.control({
 
@@ -71,16 +77,26 @@ Ext.define('Rebanho.controller.EntradaAnimais', {
                 click: this.finalizarPesagem
             },
 
+            
         });
     },
 
+    /** Funcao: onLoadStore
+     * Executada toda vez que da Load na Store
+     */
+    onLoadStore: function(){
+        console.log('EntradaAnimais - onLoadStore');
+    },
 
-    //
+
     /** Funcao: onRenderPanel
      * Funcao executada quando o painel for renderizado
      * vai criar uma janela para Selecao da Nota de Etrada
      */
     onRenderPanel: function (){
+
+        // Setando o Atributo Confinamento
+        this.confinamento = Ext.getCmp('main_viewport').getConfinamentoId();
 
         // Criar a Janela de Selecao de Nota
         this.windowSelecaoNota();

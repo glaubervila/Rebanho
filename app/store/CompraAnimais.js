@@ -7,6 +7,8 @@ Ext.define('Rebanho.store.CompraAnimais', {
 
     autoSync: true,
 
+    remoteFilter: true,
+
     proxy: {
 
         type: 'rest',

@@ -12,7 +12,12 @@ header('Content-Type: text/javascript; charset=UTF-8');
  */
 function __autoload($classe) {
 
-    $pastas = array('../php','../php/core','../php/models');
+    $pastas = array(
+        '../php',
+        '../php/core',
+        '../php/models',
+        '../php/reports',
+    );
 
     foreach ($pastas as $pasta) {
         if (file_exists("{$pasta}/{$classe}.php")){
@@ -20,6 +25,9 @@ function __autoload($classe) {
         }
     }
 }
+
+// Biblioteca FPDF
+require_once('../php/libs/FPDF/FPDF.php');
 
 class Application {
 

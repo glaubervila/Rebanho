@@ -107,6 +107,21 @@ Ext.define('Rebanho.view.layout.Header', {
                         },
                     ]
                 },
+                {
+                    text: 'Relatorios',
+                    iconCls: 'icon-chart_curve',
+                    menu: [
+                        {
+                            text: 'Pesagens por Data',
+                            iconCls: 'icon-report',
+                        },
+                        {
+                            text: 'Pesagens por Período',
+                            iconCls: 'icon-report',
+                        },
+                    ]
+                },
+
             ]
         },
         {
@@ -211,7 +226,7 @@ Ext.define('Rebanho.view.layout.Header', {
         {
             text: 'TESTE2',
             handler: function(){
-                var tabs = Ext.getCmp('mainTabpanel').novaAba('entradaanimaispanel');
+                Ext.create('Rebanho.view.ocorrencias.pesagens.PesagensPorDataWindow',{});
             },
         },
 

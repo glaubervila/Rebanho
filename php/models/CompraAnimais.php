@@ -213,6 +213,82 @@ class CompraAnimais extends Base {
     }
 
 
+    /** Metodo: delete($data)
+     * Este metodo so exclui um registro por vez
+     * Verifica o Status da Nota, se estiver Fechada = 2 NAO EXCLUI
+     * Se estiver em outro status exclui mas usando as regras do banco
+     * exclui todos os animais relacionados a compra
+     * exclui todos as ocorrencias dos animais relacionados a compra
+     * exclui todas as pesagens dos animais relacionados a compra
+     * exclui todos os codigos dos animais relacionados a compra
+     * @param:$data = Objeto CompraAnimais
+     */
+    public function delete($data){
+
+        $result = new StdClass();
+
+        $db = $this->getDb();
+
+        $compra_id = $data->id;
+
+        if ($data->status == 2) {
+
+            $msg = "Está Nota <font color= 'red'>NÃO</font> pode ser excluída por que já esta fechada!<br> Somente notas que ainda não foram finalizadas podem ser excluidas.";
+
+            $result->failure = true;
+            $result->message = $msg;
+
+            return $result;
+        }
+        else {
+            // Recuperar todos os id de animais da compra
+            $ids_animais = $this->filter('id', 'animais', "compra_id = {$compra_id}");
+            foreach ($ids_animais as $id_animal){
+                $str_ids[] = $id_animal->id;
+            }
+            $str_ids = implode(', ', $str_ids);
+
+            // Iniciando uma Transacao
+            $db->beginTransaction();
+
+            $query1 = "DELETE FROM animais WHERE animal_id IN ($str_ids);";
+            $stm = $db->prepare($query1);
+            $stm->execute();
+
+            $query2 = "DELETE FROM compras WHERE id = {$compra_id};";
+            $stm = $db->prepare($query2);
+            $stm->execute();
+
+            $error = $stm->errorInfo();
+
+            // Se tiver Dado Erro ao Excluir os Animais
+            if ($error[0] != 0){
+
+                // desfaz operacoes realizadas durante a transacao
+                $db->rollback();
+
+                $codigo = $error[1];
+                $erro   = $error[2];
+
+                $msg = "Desculpe mas houve uma falha,<br> e <font color=\"red\"><b>Não</b></font> foi possivel <font color=\"red\"><b>Excluir</b></font> o(s) Registros(s). <br> Se o problema persistir entre em contato com o administrador do sistema e informe a mensagem abaixo.<br>Código: $codigo  <br>Mensagem: $erro.";
+
+                $result->failure = true;
+                $result->message = $msg;
+
+            }
+            else {
+
+                $db->commit();
+
+                $result->success = true;
+                $result->message = "Nota de Compra Excluida com <font color='green'>Sucesso</font>!<br>Obs: Todos os registros referentes aos animais da compra foram excluidos.";
+
+            }
+            return $result;
+        }
+    }
+
+
 }
 
 

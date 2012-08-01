@@ -48,16 +48,19 @@
 .icon-group_gear { background-image: url(group_gear.png) !important; background-repeat: no-repeat; }
 .icon-cog { background-image: url(cog.png) !important; background-repeat: no-repeat; }
 .icon-chart_bar { background-image: url(chart_bar.png) !important; background-repeat: no-repeat; }
+.icon-chart_curve{ background-image: url(chart_curve.png) !important; background-repeat: no-repeat;}
 .icon-chart_pie { background-image: url(chart_pie.png) !important; background-repeat: no-repeat; }
 .icon-money_delete { background-image: url(money_delete.png) !important; background-repeat: no-repeat; }
 .icon-table_gear { background-image: url(table_gear.png) !important; background-repeat: no-repeat; }
 .icon-tick { background-image: url(tick.png) !important; background-repeat: no-repeat; }
 .icon-page_edit { background-image: url(page_edit.png) !important; background-repeat: no-repeat; }
 .icon-pencil_add { background-image: url(pencil_add.png) !important; background-repeat: no-repeat; }
+.icon-printer { background-image: url(printer.png) !important; background-repeat: no-repeat; }
 .icon-report { background-image: url(report.png) !important; background-repeat: no-repeat; }
 .icon-user_suit { background-image: url(user_suit.gif) !important; background-repeat: no-repeat; }
 .icon-scale-32 { background-image: url(scale.png) !important; background-repeat: no-repeat; }
 .icon-scale-16 { background-image: url(scale_16.png) !important; background-repeat: no-repeat; }
+
 /*Field Star Rating*/
 .x-form-rating-field {
 }
@@ -97,5 +100,22 @@
     color: #A0A0A0;
 }
 
+/** Classes Para Header Difente no Plugin Grid Printer
+ *
+ */
+.printer-title2 {
+    width: 100%;
+    text-align: left;
+    font-size: 11px;
+    font-family: arial;
+    border-collapse: collapse;
+}
 
+.printer-title2 td {
+    font-weight: bold;
+    padding: 4px 3px 4px 5px;
+    border: 1px solid #d0d0d0;
+    border-left-color: #eee;
+    background-color: #ededed;
+}
 

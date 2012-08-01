@@ -17,6 +17,8 @@ Ext.define('Rebanho.model.Pesagem', {
         {name:'tipo', type: 'string'},
         {name:'sexo', type: 'string'},
         {name:'quadra', type: 'string'},
+        {name:'codigo', type: 'string'},
+        {name:'idade', type: 'string'},
         {name:'icone', convert:function(value,record){
             // Se tiver Peso Coloca o Icone de Tick
             if (record.get('peso') > 0){
@@ -33,6 +35,27 @@ Ext.define('Rebanho.model.Pesagem', {
         {type: 'presence',  field: 'data'},
         {type: 'presence',  field: 'peso'},
         {type: 'presence',  field: 'tipo'},
-    ]
+    ],
+
+
+    proxy: {
+
+        type: 'rest',
+        url: 'php/main.php',
+        extraParams:{
+            classe: 'Pesagens',
+            action: '',
+            returnJson: true,
+        },
+
+        writer: {
+            type: 'json',
+            root: 'data',
+            writeAllFields: true,
+            encode: true,
+            allowSingle: true,
+        },
+
+    },
 
 });

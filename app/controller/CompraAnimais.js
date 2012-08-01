@@ -26,6 +26,12 @@ Ext.define('Rebanho.controller.CompraAnimais', {
         },
 
     ],
+
+    // Atributos
+    // Chave estrangeira confinamento_id
+    confinamento: 0,
+
+
     init: function() {
 
         this.control({
@@ -33,7 +39,6 @@ Ext.define('Rebanho.controller.CompraAnimais', {
             // ----------< Actions do Grid >----------
 
             // Ao Clicar no Botao Novo
-
             'compraanimaisgrid button[action=action_novo]': {
                 click: this.onBtnNovoClick
             },
@@ -42,17 +47,18 @@ Ext.define('Rebanho.controller.CompraAnimais', {
                 click: this.onBtnExcluirClick
             },
 
+            // Ao Selecionar um Confinamento
+            'compraanimaisgrid [itemId=confinamento]': {
+                select: this.onSelectCmbConfinamentos
+            },
+
             'compraanimaisgrid': {
                 // Ao Renderizar a Grid
-                render:function(){
-                    // Carrega a Store
-                    this.getStore('CompraAnimais').load();
-                },
+                render: this.onGridRender,
                 // DoubleClick em uma linha da Grid
                 itemdblclick: this.onBtnEditarClick,
                 // Ao Selecionar um Registro na Grid
                 selectionchange: this.onSelectChange,
-
             },
 
             // ----------< Actions do Form >----------
@@ -85,8 +91,46 @@ Ext.define('Rebanho.controller.CompraAnimais', {
             'compraanimaisform': {
                 render: this.onFormRender
             },
+
+            // ----------< Actions do Window >----------
+            // Show da Window
+            'compraanimaiswindow':{
+                show: this.onShowWindow
+            }
         });
 
+    },
+
+    /** Funcao: onGridRender
+     * Executada no evendo render da grid
+     * Recupera o confinamento do usuario
+     * Gera os Filtros para a Store
+     * Executa o Load da Store
+     */
+    onGridRender: function(){
+        console.log('CompraAnimais - onAfterRender');
+
+        // Setando o Atributo Confinamento
+        this.confinamento = Ext.getCmp('main_viewport').getConfinamentoId();
+
+        // Setando o Valor da Combo Confinamento
+        cmbConfinamento = this.getCompraAnimaisGrid().down('#confinamento');
+        cmbConfinamento.setValue(this.confinamento);
+
+        // Recuperando a Store
+        store = this.getStore('CompraAnimais');
+
+        // Se houver um Confinamento Usar o Filtro na Store
+        if (this.confinamento > 0) {
+            // Adicionando novo Filtro pra Trazer so as Notas do Confinamento
+            store.filter("confinamento_id", this.confinamento);
+            // Se o Usuario Pertencer a um Confinamento desabilitar a Combo
+            cmbConfinamento.disable();
+        }
+        else {
+            // Carrega a Store
+            store.load();
+        }
     },
 
     /**Funcao onSelectChange
@@ -107,39 +151,92 @@ Ext.define('Rebanho.controller.CompraAnimais', {
 
     /** Funcao executada no Render do Form
      *  Carrega as Store das Combo aninhadas para que o filtro funcione
+     * Se tiver o Confinamento ja faz os filtros nas grids, se nao houver so carrega
+     * e o filtro sera feito no select do combo confinamento
      */
     onFormRender: function(){
-        // Carregando a Store de Fornecedores
-        this.getStore('Fornecedores').load();
-        // Carregando a Store de Quadras
-        this.getStore('Quadras').load();
+        console.log('CompraAnimais - onFormRender');
+        // Setando o Atributo Confinamento
+        this.confinamento = Ext.getCmp('main_viewport').getConfinamentoId();
     },
-    
+
+    /** Funcao: onShowWindow
+     * executada no Evendo Show da Window do Form
+     */
+    onShowWindow: function(){
+        console.log('CompraAnimais - onShowWindow');
+
+        // Recupera o Form
+        var form = this.getCompraAnimaisForm();
+        form.down('#cmbConfinamento').setValue(1);
+
+        // Recupera o Form
+        var form = this.getCompraAnimaisForm();
+
+        // Recuperado as Stores
+        store_fornecedores = this.getStore('Fornecedores');
+        store_quadras = this.getStore('Quadras');
+        // Recuperando a Combo
+        combo_confinamento = form.down('#cmbConfinamento');
+
+        if (this.confinamento > 0){
+
+            combo_confinamento.setValue(this.confinamento);
+            combo_confinamento.setDisabled(true);
+            // Chamando o Metodo onSelectCmbConfinamentos para carregar os combos
+            this.onSelectCmbConfinamentos(combo_confinamento, this.confinamento);
+        }
+        else {
+            combo_confinamento.setValue(0);
+            // Carregando as Stores
+            store_fornecedores.clearFilter(true);
+            store_quadras.clearFilter(true);
+            store_fornecedores.load();
+            store_quadras.load();
+
+        }
+    },
+
     /** Funcao executada quando seleciona um confinamento
      * habilita a combo de quadra e cria um filtro
      */
     onSelectCmbConfinamentos: function(combo, value){
+        //console.log('CompraAnimais - onSelectCmbConfinamentos');
+
+        // Recupera o Form se a combo tiver vindo do form faz os tratamentos se nao so atualiza a grid
         var form = combo.up('form');
 
-        // Tratamento dos Fornecedores
-        var comboFornecedores = form.down('#cmbFornecedores');
-        comboFornecedores.setValue('');
-        comboFornecedores.store.removeAll();
-        comboFornecedores.store.load({
-            params: {
-                action: 'getAt',
-                field : 'confinamento_id',
-                value : combo.getValue(),
-            }
-        });
-        //comboFornecedores.store.filter('confinamento_id', combo.getValue());
-        comboFornecedores.setDisabled(false);
+        if (form) {
+            console.log('Entrou no Form');
+            var comboFornecedores = form.down('#cmbFornecedores');
+            var comboQuadras = form.down('#cmbQuadras');
 
-        // Tratamento das Quadras
-        var comboQuadras = form.down('#cmbQuadras');
-        comboQuadras.store.clearFilter();
-        comboQuadras.store.filter('confinamento_id', combo.getValue());
-        comboQuadras.setDisabled(false);
+            // Limpando as Stores
+            comboQuadras.store.clearFilter(true);
+            comboFornecedores.store.clearFilter(true);
+
+            // Tratamento dos Fornecedores
+            comboFornecedores.setValue('');
+            comboFornecedores.store.removeAll();
+            comboFornecedores.store.load({
+                params: {
+                    action: 'getAt',
+                    field : 'confinamento_id',
+                    value : combo.getValue(),
+                }
+            });
+            comboFornecedores.setDisabled(false);
+
+            // Tratamento das Quadras
+            comboQuadras.store.removeAll();
+            comboQuadras.store.filter('confinamento_id', combo.getValue());
+            comboQuadras.setDisabled(false);
+        }
+
+        // Atualiza o Store da Grid
+        storeCompras = this.getStore('CompraAnimais');
+        storeCompras.clearFilter(true);
+        storeCompras.filter('confinamento_id', combo.getValue());
     },
 
     /**Funcao: onBtnEditarClick()
@@ -161,8 +258,12 @@ Ext.define('Rebanho.controller.CompraAnimais', {
 
             // Reconfigura o Form
             // Setando as Combo de desabilitada pra habilitada
-            form.down('#cmbFornecedores').setDisabled(false);
             form.down('#cmbQuadras').setDisabled(false);
+
+            // Desabilitando Campos
+            form.down('#cmbConfinamento').setDisabled(true);
+            form.down('#dtfDataCompra').setDisabled(true);
+            form.down('#cmbFornecedores').setDisabled(true);
 
             // Se a Nota Estiver Fechada (status == 2) Nao permite salvar
             if (data.data.status == 2) {
@@ -184,6 +285,7 @@ Ext.define('Rebanho.controller.CompraAnimais', {
 
     onBtnCancelarClick: function(){
         this.getCompraAnimaisWindow().close();
+        this.win = null;
     },
     
     /**Funcao: onBtnSalvarClick()
@@ -203,7 +305,7 @@ Ext.define('Rebanho.controller.CompraAnimais', {
         if(form.getForm().isValid()){
 
             if (values.id > 0){
-                console.log(record);
+                //console.log(record);
                 record.set(values);
             }
             else {

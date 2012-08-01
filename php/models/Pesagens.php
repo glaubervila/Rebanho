@@ -156,12 +156,15 @@ class Pesagens extends Base {
 
             // Informacoes do Animal
             $animal = $this->find($row->animal_id, 'animais');
-
             $registro->sexo = $animal->sexo;
+            $registro->idade = $animal->idade;
+
+            // Informacoes do Codigo
+            $codigos = Animais::getCodigosById($row->animal_id, $animal->confinamento_id);
+            $registro->codigo = $codigos[0]->codigo;
 
             // Informacoes da Quadra
             $quadra = $this->find($row->quadra_id, 'quadras', 'quadra');
-
             $registro->quadra = $quadra->quadra;
 
             $aRegistros[] = $registro;
@@ -181,6 +184,22 @@ class Pesagens extends Base {
         else {
             return $result;
         }
+    }
+
+
+    public function RelatorioPorData($request){
+
+        $confinamento = $request["confinamento"];
+        // Lembrar de Tratar a Data AKI!!!
+        $data = $request["data"];
+
+
+        // Recuperar Todas As Informacoes para o Relatorio Por Data
+
+        // Instanciar a Classe Reports do Relatorio
+        $report = new PesagensPorData();
+        $report->geraRelatorio();
+
     }
 
 }

@@ -54,12 +54,14 @@ Ext.define('Rebanho.view.compras.animais.CompraAnimaisForm' ,{
                         },
                         items:[{
                             xtype:'cmbconfinamento',
+                            itemId: 'cmbConfinamento',
                             fieldLabel:'Confinamento',
                             name: 'confinamento_id',
                             width: 200,
                             allowBlank: false,
                         },{
                             xtype: 'datefield',
+                            itemId: 'dtfDataCompra',
                             fieldLabel:'Data da Compra',
                             name: 'data_compra',
                             flex: 1,
@@ -281,10 +283,12 @@ Ext.define('Rebanho.view.compras.animais.CompraAnimaisForm' ,{
                             flex: 1,
                             lastQuery:'',
                             disabled: true,
+                            allowBlank: false,
                         },{
                             fieldLabel:'Idade',
                             name: 'idade',
                             margins: '0 0 0 5',
+                            allowBlank: false,
                             flex: 1,
                         }]
                     },

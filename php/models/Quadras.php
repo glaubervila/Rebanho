@@ -64,9 +64,11 @@ class Quadras extends Base {
         // Query para recuperar todas as quadras e o nome do confinamento
         $query = new StdClass();
         $query->sql = "SELECT quadras.*, confinamentos.confinamento FROM quadras INNER JOIN confinamentos ON quadras.confinamento_id = confinamentos.id ";
-        //$query->sql = "SELECT * FROM quadras";
+
+        $query->filter = true;
         $query->limit = true;
         $query->order = true;
+
 
         $result = $this->fetchAll($query);
 

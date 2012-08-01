@@ -90,7 +90,13 @@ Ext.define('Rebanho.view.compras.animais.CompraAnimaisGrid' ,{
 
         this.dockedItems= [{
             xtype: 'toolbar',
-            items: [{
+            items: [
+            // Combo Box Confinamentos
+            {
+                xtype:'cmbconfinamento',
+                itemId   :'confinamento',
+            },
+            {
                 text: 'Novo',
                 iconCls: 'icon-add',
                 action: 'action_novo',

@@ -16,8 +16,11 @@ Ext.define('Rebanho.view.compras.animais.SelecaoNotaAbertaCombo', {
 
     initComponent: function() {
 
-        this.store = Ext.create('Ext.data.Store',{
+        // Setando o Atributo Confinamento
+        this.confinamento = Ext.getCmp('main_viewport').getConfinamentoId();
 
+        this.store = Ext.create('Ext.data.Store',{
+            
             autoSync: true,
 
             fields: [
@@ -44,6 +47,7 @@ Ext.define('Rebanho.view.compras.animais.SelecaoNotaAbertaCombo', {
                 extraParams:{
                     classe: 'NotasEntrada',
                     action: 'getNotasAbertas',
+                    confinamento: this.confinamento,
                 },
                 reader: {
                     type: 'json',

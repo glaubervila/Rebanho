@@ -21,7 +21,10 @@ Ext.application({
         'Ext' : 'extjs/src',
         'Ext.ux' : 'extjs/ux',
     },
-    requires           : ['Rebanho.Initialization'],
+    requires           : [
+        'Rebanho.Initialization',
+        'Ext.ux.grid.Printer',
+    ],
     appFolder          : 'app',
     enableRouter       : true,
     routes: {

@@ -18,6 +18,8 @@ Ext.define('Rebanho.view.cadastros.confinamentos.ConfinamentosCombo', {
 
     displayField: 'confinamento',
 
+    value: 0,
+
     initComponent: function() {
 
         this.store = 'Confinamentos',

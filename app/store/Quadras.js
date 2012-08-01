@@ -7,6 +7,8 @@ Ext.define('Rebanho.store.Quadras', {
 
     //autoLoad:true,
 
+    remoteFilter: true,
+
     pageSize: 20,
 
     proxy: {

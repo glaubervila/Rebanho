@@ -20,6 +20,7 @@ Ext.define('Rebanho.view.ocorrencias.pesagens.PesagensGrid' ,{
             {
                 dataIndex: 'icone',
                 width: 38,
+                printAble: false,
             },
             {
                 text: "Confinamento",
@@ -28,11 +29,11 @@ Ext.define('Rebanho.view.ocorrencias.pesagens.PesagensGrid' ,{
             },
             {
                 text: "Identificação",
-                dataIndex: 'id',
+                dataIndex: 'codigo',
                 width: 200,
             },
             {
-                text: "peso",
+                text: "Peso",
                 dataIndex: 'peso',
                 sortable: true,
                 width: 100,
@@ -44,12 +45,17 @@ Ext.define('Rebanho.view.ocorrencias.pesagens.PesagensGrid' ,{
                 width: 50,
             },
             {
-                text: "quadra",
+                text: "Quadra",
                 dataIndex: 'quadra',
                 sortable: true,
                 flex:true,
             },
-
+            {
+                text: "Idade",
+                dataIndex: 'idade',
+                sortable: true,
+                flex:true,
+            },
         ];
 
         this.dockedItems= [{
@@ -72,12 +78,11 @@ Ext.define('Rebanho.view.ocorrencias.pesagens.PesagensGrid' ,{
                 '-',
                 {
                     xtype: 'button',
-                    text: 'Finalizar Pesagem',
-                    itemId: 'btnFinalizar',
-                    action: 'action_finalizar',
-                    iconCls: 'icon-tick',
-                    tooltip: 'Click para Finalizar a Pesagem.<br>Após Finalizar Nenhuma alteração poderá ser feita.',
-                    disabled: true,
+                    text: 'Relatório',
+                    itemId: 'btnRelatorio',
+                    action: 'action_relatorio',
+                    iconCls: 'icon-printer',
+                    tooltip: 'Click para Imprimir um Relatório da Pesagem.<br>O Relatório Conterá todas as Pesagens na Data Atual.',
                 },
                 '-',
                 // Contadores

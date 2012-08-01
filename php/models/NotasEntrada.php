@@ -15,17 +15,27 @@ class NotasEntrada extends Base {
 
     /** Metodo: getNotasAbertas
      * Retorna uma lista das Notas de Compras
-     * que estao com o status = 1
+     * que estao com o status = 1 ou 4
      */
-    public function getNotasAbertas(){
+    public function getNotasAbertas($data){
         $result = new StdClass();
 
+        // Recerando o Confinamento
+        $confinamento_id = $data['confinamento'];
 
-        $data = $this->getAt(null, 'status IN(1,4)', 'compras');
+        // Se o Confinamento for 0 Traz todas
+        if ($confinamento_id == 0) {
+            $rows = $this->getAt(null, 'status IN(1,4)', 'compras');
+        }
+        else {
+            // Se houver Confinamento traz so as notas do confinamento
+            $rows = $this->getAt(null, "status IN(1,4) AND confinamento_id = {$confinamento_id}", 'compras');
+        }
 
-        if ($data){
 
-            foreach ($data as $row){
+        if ($rows){
+
+            foreach ($rows as $row){
                 $record = $row;
 
                 // Para Cada Registro Recuperar o Nome do Fornecedor e a Fazenda
