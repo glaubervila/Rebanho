@@ -55,6 +55,8 @@ Ext.define('Rebanho.controller.CompraAnimais', {
             'compraanimaisgrid': {
                 // Ao Renderizar a Grid
                 render: this.onGridRender,
+                // Depois de Renderizar a Grid
+                afterrender: this.onGridAfterRender,
                 // DoubleClick em uma linha da Grid
                 itemdblclick: this.onBtnEditarClick,
                 // Ao Selecionar um Registro na Grid
@@ -101,6 +103,18 @@ Ext.define('Rebanho.controller.CompraAnimais', {
 
     },
 
+    onGridAfterRender: function(){
+        console.log('CompraAnimais - onGridAfterRender');
+        // Setando o Valor da Combo Confinamento
+        cmbConfinamento = this.getCompraAnimaisGrid().down('#confinamento');
+        cmbConfinamento.setValue(this.confinamento);
+
+        // Se o Usuario Pertencer a um Confinamento desabilitar a Combo
+        if (this.confinamento > 0){
+            cmbConfinamento.disable();
+        }
+    },
+    
     /** Funcao: onGridRender
      * Executada no evendo render da grid
      * Recupera o confinamento do usuario
@@ -108,14 +122,10 @@ Ext.define('Rebanho.controller.CompraAnimais', {
      * Executa o Load da Store
      */
     onGridRender: function(){
-        console.log('CompraAnimais - onAfterRender');
+        console.log('CompraAnimais - onGridRender');
 
         // Setando o Atributo Confinamento
         this.confinamento = Ext.getCmp('main_viewport').getConfinamentoId();
-
-        // Setando o Valor da Combo Confinamento
-        cmbConfinamento = this.getCompraAnimaisGrid().down('#confinamento');
-        cmbConfinamento.setValue(this.confinamento);
 
         // Recuperando a Store
         store = this.getStore('CompraAnimais');
@@ -124,8 +134,6 @@ Ext.define('Rebanho.controller.CompraAnimais', {
         if (this.confinamento > 0) {
             // Adicionando novo Filtro pra Trazer so as Notas do Confinamento
             store.filter("confinamento_id", this.confinamento);
-            // Se o Usuario Pertencer a um Confinamento desabilitar a Combo
-            cmbConfinamento.disable();
         }
         else {
             // Carrega a Store

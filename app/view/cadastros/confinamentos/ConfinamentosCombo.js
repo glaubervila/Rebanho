@@ -20,6 +20,11 @@ Ext.define('Rebanho.view.cadastros.confinamentos.ConfinamentosCombo', {
 
     value: 0,
 
+    width: 200,
+
+    emptyText: 'Selecione um Confinamento',
+    submitEmptyText: false,
+
     initComponent: function() {
 
         this.store = 'Confinamentos',

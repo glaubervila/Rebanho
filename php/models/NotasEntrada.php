@@ -189,7 +189,7 @@ class NotasEntrada extends Base {
             $registro->codigo = $codigo[0]->codigo;
 
             // Recuperando o Peso de Entrada
-            $peso_entrada = Pesagens::getPesagemEntrada($animal->id, $objNota);
+            $peso_entrada = Pesagens::getPesagemEntrada($animal->id, $objNota->confinamento_id);
             $registro->peso_entrada = $peso_entrada->peso;
 
             $registros[] = $registro;
@@ -229,7 +229,7 @@ class NotasEntrada extends Base {
 
             $result->quantidade = $quantidade;
             $result->falta = ($quantidade - $pesados);
-            $result->peso_medio = number_format($media, 2, '.','.');
+            $result->peso_medio = number_format($media, 3, '.','.');
             $result->success =  true;
         }
         else {

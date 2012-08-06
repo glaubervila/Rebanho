@@ -8,7 +8,7 @@ class Animais extends Base {
 
     private     $valor = null;
     private     $data = null;
-    protected   $table = "";
+    protected   $table = "animais";
 
 
     /** Metodo: CadastroAnimais
@@ -213,4 +213,108 @@ class Animais extends Base {
 
     }
 
+    public function getAnimaisAtivos($data){
+
+        $strFiltros = $this->parseFilter($data["filter"]);
+//        $strSorters = $this->parseSorter($data["sort"]);
+
+        $aResult = $this->filter(null, 'animais', $strFiltros, null, false);
+
+        // Recuperar as Informacoes de cada animal
+        foreach ($aResult as $row){
+
+            $registro = $row;
+
+            // Informacoes do Codigo
+            $codigos = $this->getCodigosById($row->id, $row->confinamento_id);
+            $registro->codigo = $codigos[0]->codigo;
+
+            // Informacoes da Quadra
+            $quadra = $this->find($row->quadra_id, 'quadras', 'quadra');
+            $registro->quadra = $quadra->quadra;
+
+            $estatistica = $this->getEstatiscaPorAnimal($row->id);
+            $registro->peso_entrada        = $estatistica->peso_entrada;
+            $registro->data_entrada        = $estatistica->data_entrada;
+            $registro->peso_atual          = $estatistica->peso_atual;
+            $registro->data_ultima_pesagem = $estatistica->data_ultima_pesagem;
+            $registro->dias_confinamento   = $estatistica->dias_confinamento;
+            $registro->peso_ganho          = $estatistica->peso_ganho;
+            $registro->ganho_diario        = $estatistica->ganho_diario;
+
+            $aRegistros[] = $registro;
+        }
+
+        $result = new StdClass();
+        $result->success = true;
+        $result->data    = $aRegistros;
+        $result->total   = count($aRegistros);
+
+        if ($data["returnJson"]){
+
+            echo json_encode($result);
+        }
+        else {
+            return $result;
+        }
+
+    }
+
+
+    /** Metodo: getEstatiscaPorAnimal()
+     * Recebe um id de animal
+     * Recupera o Confinamento Atual do Animal
+     * Recupera o Peso e Data de Entrada no confinamento
+     * Recupera o Peso Atual e a ultima pesagem
+     * Calcula o Tempo que o Animal ta nesse Confinamento
+     * Calcula o Ganho Diario desse Animal
+     * @param:$animal = chave da tabela animais
+     * @return:
+     *     $obj->data_entrada
+     *     $obj->peso_entrada
+     *     $obj->data_ultima_pesagem
+     *     $obj->peso_atual
+     *     $obj->tempo_confinamento
+     *     $obj->ganho_diario
+     */
+    public function getEstatiscaPorAnimal($animal){
+
+        $obj = new StdClass();
+
+        // Recuperando o Animal
+        $animal = $this->find($animal, 'animais');
+
+        // Informacoes de Peso de Entrada
+        $peso_entrada = Pesagens::getPesagemEntrada($animal->id, $animal->confinamento_id);
+        $obj->peso_entrada = $peso_entrada->peso;
+        $obj->data_entrada = $peso_entrada->data;
+
+        // Informacoes de Peso de Atual
+        $peso_recente = Pesagens::getPesagemRecente($animal->id, $animal->confinamento_id);
+        $obj->peso_atual          = $peso_recente->peso;
+        $obj->data_ultima_pesagem = $peso_recente->data;
+
+        // Calculando o Tempo no Confinamento
+        $data_entrada = strtotime($obj->data_entrada);
+        $data_atual   = strtotime(date('Y-m-d'));
+        //transformação do timestamp em  dias
+        $obj->dias_confinamento = ($data_atual-$data_entrada)/86400;
+
+        // So Calcular se houver pesagem atual
+        if ($obj->peso_atual > 0){
+            // Peso Ganho neste Confinamento
+            $peso_ganho = ($obj->peso_atual - $obj->peso_entrada);
+            $obj->peso_ganho = number_format($peso_ganho, 3, '.',',');
+
+            // Calculando a Media Diaria de Peso Ganho
+
+            $ganho_diario = ($obj->peso_ganho / $obj->dias_confinamento);
+            $obj->ganho_diario = number_format($ganho_diario, 3, '.',',');
+        }
+        else {
+            $obj->peso_ganho = 0;
+            $obj->peso_ganho = 0;
+        }
+        return $obj;
+    }
 }

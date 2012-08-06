@@ -66,7 +66,7 @@ Ext.define('Rebanho.view.compras.fornecedores.FornecedoresForm' ,{
                             name: 'cnpj_cpf',
                             flex: 1,
                             allowBlank: false,
-                            minLength: 13,
+                            minLength: 11,
                             maxLength: 20,
                         },{
                             fieldLabel:'IE/RG',

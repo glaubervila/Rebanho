@@ -53,6 +53,14 @@ Ext.define('Rebanho.view.compras.animais.EntradaAnimaisGrid' ,{
                     iconCls: 'icon-scale-16',
                     tooltip: 'Click para Iniciar a Pesagem. a Janela de Codigo será exibida<br>após digitar o codigo, digite o Peso.'
                 },
+                {
+                    xtype: 'button',
+                    text: 'Digitar Código',
+                    action: 'action_codigo',
+                    iconCls: 'icon-barcode-16',
+                    enableToggle: true,
+                    tooltip: 'Click para Digitar o Código do Animal antes do Peso. a Janela de Codigo será exibida<br>Digite o Codigo e após digite o Peso.<br>Se estiver desativada está opção aparecerá a janela de peso seguindo a ordem dos códigos dos animais'
+                },
                 '-',
                 {
                     xtype: 'button',

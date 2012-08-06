@@ -58,6 +58,9 @@ Ext.application({
         // Ocorrencias
         'Pesagens',
 
+        // Animais
+        'Animais',
+
         // Cadastros
         'Usuarios',
         'Caracteristicas',

@@ -153,7 +153,7 @@ Ext.define('Rebanho.controller.Pesagens', {
                 callback:this.onLoadStore,
                 scope: this,
             });
-            
+
             // Limpando o Action da Grid
             store.proxy.setExtraParam('action','');
         }
@@ -239,7 +239,15 @@ Ext.define('Rebanho.controller.Pesagens', {
                 if (btn == 'ok'){
                     // Verifica se tem PESO
                     if (peso != ''){
-                        this.gravarPesagem(peso);
+
+                        if (peso > 0) {
+                            this.gravarPesagem(peso);
+                        }
+                        else {
+                            // Peso Negativo Digitar de Novo
+                            Ext.BoxMsg.msg('<font color=#D5D500>Atenção!</font>', 'Peso Deve ser Valor Positivo!');
+                            this.digitarPeso();
+                        }
                     }
                 }
             }
@@ -314,15 +322,18 @@ Ext.define('Rebanho.controller.Pesagens', {
 
         if (errors.isValid()){
             if (pesagem.save()){
+                // Mostrando Mensagem de Sucesso
+                Ext.BoxMsg.msg('Sucesso!', 'Registro Gravado com <font color=green><b>Sucesso</b></font>!');
+
                 this.loadStore();
             }
         }
         else {
             console.log(errors.items);
+            Ext.MessageBox.show({ title:'Desculpe!', msg: 'Houve um Erro na Gravação do Registro', buttons: Ext. MessageBox.OK, icon:  Ext.MessageBox.ERROR });
         }
 
         this.inicioPesagem();
-
     },
 
     getContadores: function(){

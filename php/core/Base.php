@@ -101,7 +101,7 @@ abstract class Base {
      * @param:$value - array ou string dos valores
      * @param:$tabela - nome da tabela onde fazer a query
      */
-    public function findBy($field, $value, $table) {
+    public function findBy($field, $value, $table, $debug = false) {
         $db = $this->getDb();
 
         $sql = "SELECT * FROM ";
@@ -131,6 +131,9 @@ abstract class Base {
         else {
             $sql .= " WHERE $field = $value";
             $stm = $db->prepare($sql);
+        }
+        if ($debug){
+            echo "Query [$sql] Value [".implode(',',$value)."] ";
         }
 
         $stm->execute();
@@ -239,29 +242,6 @@ abstract class Base {
         $start = $_GET['start'];
         $limit = $_GET['limit'];
 
-        $sorts = json_decode($_GET['sort']);
-
-        // Montando String Filter (Where)
-        $filter = $this->parseFilter($_GET['filter']);
-        // Montando String Sort (Order)
-        $sort = $this->parseSorter($_GET['sort']);
-
-//         if ($sorts){
-//             foreach ($sorts as $sort) {
-// 
-//                 if ($sort->property AND $dir = $sort->direction){
-//                     $orders[] = $sort->property . ' ' . $sort->direction;
-//                 }
-//             }
-// 
-//             if ($orders[0]){
-//                 $order = implode(', ', $orders );
-//             }
-//             else {
-//                 $order = null;
-//             }
-//         }
-
         $db = $this->getDb();
 
         $db->exec("SET NAMES utf8");
@@ -270,19 +250,21 @@ abstract class Base {
 
             $sql = $query->sql;
 
-            if ($query->filter OR $filter){
+            if ($query->filter){
+                $filter = $this->parseFilter($query->filter);
                 if ($filter){
                     $sql .= " WHERE $filter ";
                 }
             }
 
-            if ($query->order OR $sort){
-                if ($order){
+            if ($query->order){
+                $sort = $this->parseSorter($query->order);
+                if ($sort){
                     $sql .= " ORDER BY $sort";
                 }
             }
 
-            if ($query->limit OR $limit){
+            if ($query->limit){
                 if($start !== null && $start !== '' && $limit !== null && $limit !== ''){
                     $sql .= " LIMIT " . $start . " , " . $limit;
                 }
@@ -330,6 +312,12 @@ abstract class Base {
 
         }
         else {
+            // Montando String Filter (Where)
+            $filter = $this->parseFilter($_GET['filter']);
+            // Montando String Sort (Order)
+            $sort = $this->parseSorter($_GET['sort']);
+
+
             $sql = "SELECT * FROM " . $this->getTable();
 
             if ($filter) {
@@ -345,7 +333,6 @@ abstract class Base {
                 $limit = $_GET['limit'];
                 $sql .= " LIMIT ". $start . " , " . $limit;
             }
-
             if ($debug){
                 echo $sql;
             }
@@ -647,9 +634,10 @@ abstract class Base {
         }
 
         foreach ($filtros as $filtro){
-
-            $aStrings[] = "{$filtro->property} = \"{$filtro->value}\"";
-
+            // Só Adiciona o Filtro se esse tiver Valor
+            if ($filtro->value){
+                $aStrings[] = "{$filtro->property} = \"{$filtro->value}\"";
+            }
         }
 
         $string = implode($aStrings, ' AND ');

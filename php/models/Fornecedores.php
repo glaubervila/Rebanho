@@ -110,7 +110,7 @@ class Fornecedores extends Base {
     public function getAt($data){
         $result = new StdClass();
 
-        $data = $this->findBy($data['field'], $data['value'], $this->getTable());
+        $data = $this->findAllBy($data['field'], $data['value'], $this->getTable());
 
         if ($data){
             $result->success = true;

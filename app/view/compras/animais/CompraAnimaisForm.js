@@ -143,7 +143,7 @@ Ext.define('Rebanho.view.compras.animais.CompraAnimaisForm' ,{
                         name: 'valor_comissao',
                         margins: '0 0 0 5',
                         flex: 1,
-                        maxLength: 10,
+                        maxLength: 12,
                     }]
                 },{
                     xtype: 'fieldcontainer',
@@ -163,7 +163,7 @@ Ext.define('Rebanho.view.compras.animais.CompraAnimaisForm' ,{
                         name: 'valor_frete',
                         margins: '0 0 0 5',
                         flex: 1,
-                        maxLength: 10,
+                        maxLength: 12,
                     }]
                 },{
                     xtype: 'fieldcontainer',

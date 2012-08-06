@@ -129,6 +129,28 @@ Ext.define('Rebanho.view.layout.Header', {
         },
         {
             xtype: 'buttongroup',
+            title: 'Animais',
+            defaults: {
+                scale: 'small'
+            },
+            items:[
+                {
+                    text: 'Animais',
+                    iconCls: 'icon-cow',
+                    menu: [
+                        {
+                            text: 'Animais por Confinamentos',
+                            iconCls: 'icon-report',
+                            handler: function(){
+                                var tabs = Ext.getCmp('mainTabpanel').novaAba('animaisgrid');
+                            },
+                        },
+                    ]
+                },
+            ]
+        },
+        {
+            xtype: 'buttongroup',
             title: 'Vendas',
             defaults: {
                 scale: 'small'
@@ -226,12 +248,12 @@ Ext.define('Rebanho.view.layout.Header', {
 //                 var tabs = Ext.getCmp('mainTabpanel').novaAba('pesagensgrid');
 //             },
 //         },
-//         {
-//             text: 'TESTE2',
-//             handler: function(){
-//                 Ext.create('Rebanho.view.ocorrencias.pesagens.PesagensPorDataWindow',{});
-//             },
-//         },
+        {
+            text: 'TESTE2',
+            handler: function(){
+                Ext.create('Rebanho.view.animais.AnimaisWindow',{});
+            },
+        },
 
 
     ]

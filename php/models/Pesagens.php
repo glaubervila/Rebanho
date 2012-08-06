@@ -86,15 +86,34 @@ class Pesagens extends Base {
      * Retorna a pesagem que tiver o tipo = 1 para o confinamento que ta no objeto nota
      * da entrada do animal
      * @param:$animal - id do animal
-     * @param:$nota   - objeto nota 
+     * @param:$confinamento - id do Confinamento que se quer a entrada
      */
-    public function getPesagemEntrada($animal, $nota){
+    public function getPesagemEntrada($animal, $confinamento){
 
         // Recuperando o Peso de Entrada Usando o Confinamento o animal e o tipo
-        $pesagem = $this->findBy(array('confinamento_id','animal_id','tipo'), array($nota->confinamento_id, $animal, 1), 'pesagens');
+        $pesagem = $this->findBy(array('confinamento_id','animal_id','tipo'), array($confinamento, $animal, 1), 'pesagens');
 
         return $pesagem;
     }
+
+    /** Metodo: getPesagemRecente
+     * Retorna a Pesagem mais recente, busca todas as pesagens pelo animal_id e confinamento_id
+     * que seja do tipo 2 ordenado pela data decrescente (mais recente) e limitado a 1
+     * @param:$animal - id do animal
+     * @param:$confinamento - id do Confinamento que se quer a entrada
+     */
+    public function getPesagemRecente($animal, $confinamento){
+
+        $query = new StdClass();
+        $query->sql = "SELECT * FROM pesagens WHERE animal_id = {$animal} AND confinamento_id = {$confinamento} AND tipo = 2 ORDER BY data DESC LIMIT 1;";
+        $query->filter = false;
+        $query->limit  = false;
+        $query->order  = false;
+
+        $pesagem = $this->fetchAll($query);
+        return $pesagem->data[0];
+    }
+
 
 
     public function getCntPesados($data){

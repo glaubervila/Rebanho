@@ -39,9 +39,11 @@
 .icon-barcode-32 { background-image: url(barcode.png) !important; background-repeat: no-repeat; }
 .icon-tools_box { background-image: url(tools_box.png) !important; background-repeat: no-repeat; }
 .icon-cross { background-image: url(cross.png) !important; background-repeat: no-repeat; }
+.icon-cow { background-image: url(cow.png) !important; background-repeat: no-repeat; }
 .icon-disk { background-image: url(disk.png) !important; background-repeat: no-repeat; }
 .icon-cancel { background-image: url(cancel.png) !important; background-repeat: no-repeat; }
 .icon-coins_add { background-image: url(coins_add.png) !important; background-repeat: no-repeat; }
+.icon-filter { background-image: url(filter.png) !important; background-repeat: no-repeat; }
 .icon-find { background-image: url(find.png) !important; background-repeat: no-repeat; }
 .icon-grid { background-image: url(grid.png) !important; background-repeat: no-repeat; }
 .icon-group { background-image: url(group.png) !important; background-repeat: no-repeat; }
@@ -60,6 +62,7 @@
 .icon-user_suit { background-image: url(user_suit.gif) !important; background-repeat: no-repeat; }
 .icon-scale-32 { background-image: url(scale.png) !important; background-repeat: no-repeat; }
 .icon-scale-16 { background-image: url(scale_16.png) !important; background-repeat: no-repeat; }
+
 
 /*Field Star Rating*/
 .x-form-rating-field {

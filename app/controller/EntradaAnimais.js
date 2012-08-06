@@ -51,6 +51,8 @@ Ext.define('Rebanho.controller.EntradaAnimais', {
     quantidade_falta: 'false',
     // Chave estrangeira Confinamento
     confinamento: 0,
+    // Flag Digitar Codigo
+    toggleCodigo: false,
 
     init: function() {
 
@@ -69,7 +71,11 @@ Ext.define('Rebanho.controller.EntradaAnimais', {
 
             // Ao Clicar no Pesar
             'entradaanimaisgrid button[action=action_pesar]': {
-                click: this.digitarCodigo
+                click: this.inicioPesagem
+            },
+            // Ao Clicar no Botao Digitar Codigo
+            'entradaanimaisgrid button[action=action_codigo]': {
+                toggle: this.onToggleCodigo
             },
 
             // Ao Clicar em Finalizar
@@ -77,26 +83,22 @@ Ext.define('Rebanho.controller.EntradaAnimais', {
                 click: this.finalizarPesagem
             },
 
-            
         });
     },
-
-    /** Funcao: onLoadStore
-     * Executada toda vez que da Load na Store
-     */
-    onLoadStore: function(){
-        console.log('EntradaAnimais - onLoadStore');
-    },
-
 
     /** Funcao: onRenderPanel
      * Funcao executada quando o painel for renderizado
      * vai criar uma janela para Selecao da Nota de Etrada
      */
     onRenderPanel: function (){
-
+        console.log('EntradaAnimais - onRenderPanel');
         // Setando o Atributo Confinamento
         this.confinamento = Ext.getCmp('main_viewport').getConfinamentoId();
+
+        // Limpando a Store
+        // Recuperar a Store
+        var store = this.getStore('EntradaAnimais');
+        store.removeAll();
 
         // Criar a Janela de Selecao de Nota
         this.windowSelecaoNota();
@@ -114,7 +116,7 @@ Ext.define('Rebanho.controller.EntradaAnimais', {
      * close, selectNota
      */
     windowSelecaoNota: function() {
-
+        console.log('EntradaAnimais - windowSelecaoNota');
         // Verifica se Existe uma Janela
         if (this.winSelecaoNota){
             //Se existir destroy
@@ -144,7 +146,7 @@ Ext.define('Rebanho.controller.EntradaAnimais', {
      * fecha a Tab toda.
      */
     onWindowSelecaoNotaClose: function(window, controller){
-
+        console.log('EntradaAnimais - onWindowSelecaoNotaClose');
         // Verifica se tem uma Nota Selecionada
         // obs: se a nota estiver com status "Aguardando Pesagem" Nao mostra a janela
         if (this.idNotaAberta != 0){
@@ -190,7 +192,7 @@ Ext.define('Rebanho.controller.EntradaAnimais', {
      * depois de criados carrega a grid.
      */
     inicioEntradaAnimais: function(idNotaAberta, identificacao){
-
+        console.log('EntradaAnimais - inicioEntradaAnimais');
         Ext.Ajax.request({
             url : 'php/main.php',
             method : 'POST',
@@ -233,15 +235,12 @@ Ext.define('Rebanho.controller.EntradaAnimais', {
      * depois executa a funcao setContadores
      */
     inicioPesagem: function(){
-
+        console.log('EntradaAnimais - inicioPesagem');
         // Recuperando a Store
         store = this.getStore('EntradaAnimais');
 
-        // Limpando a Store
-        store.removeAll();
-        store.load();
-
         // Limpando o Filtro
+        store.removeAll();
         store.clearFilter(true);
         // Adicionando novo Filtro pra Pegar todos os animais dessa nota
         store.filter("compra_id", this.idNotaAberta);
@@ -249,7 +248,7 @@ Ext.define('Rebanho.controller.EntradaAnimais', {
 
         Ext.Ajax.request({
             url : 'php/main.php',
-            method : 'POST',
+            method : 'GET',
             params: {
                 classe: 'NotasEntrada',
                 action: 'getContadores',
@@ -268,22 +267,42 @@ Ext.define('Rebanho.controller.EntradaAnimais', {
                     // Executando a funcao setContadores
                     this.setContadores(retorno);
 
-                    // Verifica se Todos Foram Pesados
-                    if ((this.quantidade_total == this.quantidade_pesada) && (this.quantidade_falta ==0)){
+                    // Verificar se é a 1 Pesagem, se for nao Abre a Janela de Codigo
+                    // Para que o usuario possa escolher se vai usar codigo ou nao
+                    if (!this.quantidade_pesada == 0){
+                        // Se nao for a primeira pesagem faz o looping
 
-                        // Se a Pesagem estiver Completa
-                        Ext.Msg.show({
-                            title:'Pesagem Completa',
-                            msg: 'Pesagem Completa Confira os Dados e Click no Botão Finalizar Pesagem!',
-                            buttons: Ext.Msg.OK,
-                        });
+                        // Verifica se Todos Foram Pesados
+                        if ((this.quantidade_total == this.quantidade_pesada) && (this.quantidade_falta ==0)){
 
-                        // Habilitar o Botao Finalizar Pesagem
-                        this.getEntradaAnimaisGrid().down('#btnFinalizar').enable();
+                            // Se a Pesagem estiver Completa
+                            Ext.Msg.show({
+                                title:'Pesagem Completa',
+                                msg: 'Pesagem Completa Confira os Dados e Click no Botão Finalizar Pesagem!',
+                                buttons: Ext.Msg.OK,
+                            });
+
+                            // Habilitar o Botao Finalizar Pesagem
+                            this.getEntradaAnimaisGrid().down('#btnFinalizar').enable();
+                        }
+                        else {
+                            // Se ainda houver animais a serem Pesados
+                            // Verificar se a opcao de digitar codigo esta marcada
+                            if (this.toggleCodigo){
+                                this.digitarCodigo();
+                            }
+                            else {
+                                this.sequenciaCodigo();
+                            }
+                        }
                     }
                     else {
-                        // Se ainda houver animais a serem Pesados
-                        this.digitarCodigo();
+                        if (this.toggleCodigo){
+                            this.digitarCodigo();
+                        }
+                        else {
+                            this.sequenciaCodigo();
+                        }
                     }
                 }
                 else {
@@ -295,6 +314,24 @@ Ext.define('Rebanho.controller.EntradaAnimais', {
 
     },
 
+    /** Funcao: sequenciaCodigo()
+     * Executada quando a opcao de digitar codigo esta desligada
+     * pega o registro na store pela ordem(index)
+     * e executa a funcao de digitarPeso()
+     */
+    sequenciaCodigo: function(){
+
+        var store = this.getEntradaAnimaisGrid().getStore();
+        animal = store.getAt(this.quantidade_pesada);
+
+        if (animal){
+            // Se encontrar um Animal Passa para o Prompt de Peso
+            this.digitarPeso(animal, 0);
+        }
+        else {
+            this.inicioPesagem();
+        }
+    },
 
     /** Funcao: digitarCodigo
      * Executada quando se digita um codigo na Janela Prompt de Codigo
@@ -303,7 +340,7 @@ Ext.define('Rebanho.controller.EntradaAnimais', {
      * e chamar a Funcao digitarPeso para o campo de peso
      */
      digitarCodigo: function(codigo){
-
+        console.log('EntradaAnimais - digitarCodigo');
         // Mostrar o Prompt para informar o Codigo
         Ext.Msg.show({
             title:'Código do Animal',
@@ -346,7 +383,7 @@ Ext.define('Rebanho.controller.EntradaAnimais', {
      * @param:{string} codigo = codigo do animal
      */
      digitarPeso: function(animal, codigo){
-
+        console.log('EntradaAnimais - digitarPeso');
         // Mostrar o Prompt para informar o Codigo
         Ext.Msg.show({
             title:'Peso do Animal',
@@ -361,7 +398,14 @@ Ext.define('Rebanho.controller.EntradaAnimais', {
                 if (btn == 'ok'){
                     // Verifica se tem Identificacao
                     if (peso != ''){
-                        this.gravarPesagem(animal,codigo,peso);
+                        if (peso > 0) {
+                            this.gravarPesagem(animal,codigo,peso);
+                        }
+                        else {
+                            // Peso Negativo Digitar de Novo
+                            Ext.BoxMsg.msg('<font color=#D5D500>Atenção!</font>', 'Peso Deve ser Valor Positivo!');
+                            this.digitarPeso(animal,codigo);
+                        }
                     }
                 }
             }
@@ -376,7 +420,7 @@ Ext.define('Rebanho.controller.EntradaAnimais', {
      * @param:{float}  peso   = peso digitado no prompt peso
      */
     gravarPesagem: function(animal, codigo, peso){
-
+        console.log('EntradaAnimais - gravarPesagem');
         // Criando o Registro
         var pesagem = Ext.create('Rebanho.model.Pesagem', {
             confinamento_id : animal.data.confinamento_id,
@@ -387,20 +431,29 @@ Ext.define('Rebanho.controller.EntradaAnimais', {
             tipo: 1,
         });
 
-        // Recuperar a Store e adicionar o Registro
-        var store_pesagem = this.getStore('Pesagens');
+        // Recuperar a Store
+        var store = this.getStore('EntradaAnimais');
 
         errors = pesagem.validate();
 
         if (errors.isValid()){
-            store_pesagem.add(pesagem);
+            // Salvando Usando o Model
+            if (pesagem.save()){
+                console.log('load da store EntradaAnimais');
+                // Dando Load Na Grid e usando o callback para Voltar ao Inicio
+                store.load({
+                    callback:function(){
+                        Ext.BoxMsg.msg('Sucesso!', 'Registro Gravado com <font color=green><b>Sucesso</b></font>!');
+                        this.inicioPesagem();
+                    },
+                    scope: this,
+                });
+            }
         }
         else {
             console.log(errors.items);
+            Ext.MessageBox.show({ title:'Desculpe!', msg: 'Houve um Erro na Gravação do Registro', buttons: Ext. MessageBox.OK, icon:  Ext.MessageBox.ERROR });
         }
-
-        this.inicioPesagem();
-
     },
 
     /** Funcao: setContadores
@@ -409,6 +462,7 @@ Ext.define('Rebanho.controller.EntradaAnimais', {
      * @param:{object} contadores - objeto com os contadores
      */
     setContadores: function(contadores){
+        console.log('EntradaAnimais - setContadores');
 
         var grid = this.getEntradaAnimaisGrid();
         grid.down('#tbquantidade').setText('<b>Quantidade: <font color="blue"> '+contadores.quantidade+' </font></b>');
@@ -466,7 +520,21 @@ Ext.define('Rebanho.controller.EntradaAnimais', {
                 }
             },
         })
-    }
+    },
+
+    /** Funcao: onToggleCodigo
+     * usada para marcar a opcao de digitar codigo antes do peso
+     * ou se estiver desmarcada nao digita peso antes
+     */
+    onToggleCodigo: function(button, pressed){
+        console.log('onToggleCodigo('+pressed+')');
+        if (pressed){
+            this.toggleCodigo = true;
+        }
+        else {
+            this.toggleCodigo = false;
+        }
+    },
 
 });
 

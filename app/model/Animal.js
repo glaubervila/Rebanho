@@ -26,6 +26,19 @@ Ext.define('Rebanho.model.Animal', {
         {name:'status', type: 'string'},
         {name:'codigo', type: 'string'},
 
+        // Campos Estrangeiros
+        {name:'quadra', type: 'string'},
+        {name:'codigo', type: 'string'},
+        {name:'data_entrada', type: 'date', dateFormat: 'Y-m-d'},
+        {name:'peso_entrada', type: 'float'},
+        {name:'data_ultima_pesagem', type: 'date', dateFormat: 'Y-m-d'},
+        {name:'peso_atual', type: 'float'},
+        {name:'peso_ganho', type: 'float'},
+        {name:'ganho_diario', type: 'float'},
+        {name:'dias_confinamento', type: 'string', convert:function(value,record){
+            dias =  value + ' - Dias';
+            return dias;
+        }},
     ],
 
     associations: [
@@ -47,6 +60,7 @@ Ext.define('Rebanho.model.Animal', {
         }
 
     ],
+
 // EXEMPLO USANDO ASSOCIAÇÃO
 //          var store = this.getEntradaAnimaisGrid().getStore();
 //         //console.log(store);
