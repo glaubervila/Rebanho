@@ -1,0 +1,12 @@
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL';
+
+ALTER TABLE `rebanho`.`compras` ADD COLUMN `peso_medio` DECIMAL(10,3) NULL DEFAULT NULL  AFTER `quadra_id` , ADD COLUMN `peso_medio_arroba` DECIMAL(10,3) NULL DEFAULT NULL  AFTER `peso_medio` , ADD COLUMN `diferenca_total` DECIMAL(10,3) NULL DEFAULT NULL COMMENT 'Diferencao total = Peso de Saida - Peso de Entrada'  AFTER `peso_medio_arroba` , ADD COLUMN `diferenca_media` DECIMAL(10,3) NULL DEFAULT NULL COMMENT 'diferenca_total / quantidade'  AFTER `diferenca_total` , CHANGE COLUMN `peso_entrada` `peso_entrada` DECIMAL(10,3) NULL DEFAULT NULL  , CHANGE COLUMN `peso_saida` `peso_saida` DECIMAL(10,3) NULL DEFAULT NULL  ;
+
+ALTER TABLE `rebanho`.`animais` CHANGE COLUMN `status` `status` CHAR(1) NULL DEFAULT NULL COMMENT '0 - Morto\n1 - Vivo\n2 - Vendido'  ;
+
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;

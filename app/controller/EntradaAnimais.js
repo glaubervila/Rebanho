@@ -511,8 +511,12 @@ Ext.define('Rebanho.controller.EntradaAnimais', {
 
                     Ext.BoxMsg.msg('Sucesso!', 'Compra de Animais Finalizada Com sucesso!');
 
+                    // Recarregando a Store de Compras
+                    this.getStore('CompraAnimais').load();
+                    
                     // Fechando o Aba
                     Ext.getCmp('mainTabpanel').fecharAbaAtiva();
+
                 }
                 else {
                     // Mostrando Mensagem de Erro

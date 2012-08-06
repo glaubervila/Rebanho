@@ -9,7 +9,7 @@ Ext.define('Rebanho.view.compras.animais.CompraAnimaisWindow' ,{
 
     autoShow: true,
 
-    width: 700,
+    width: 750,
 
     height: 450,
 

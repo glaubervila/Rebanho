@@ -166,13 +166,30 @@ class NotasEntrada extends Base {
         echo json_encode($result);
     }
 
+    /** Methodo:getAnimaisNota($data)
+     * Recupera os dados da nota, e faz uma busca por todos os animais desta nota
+     * Se for uma Chamada via Request o
+     * @param:$data (array) vindo do main php com os dados de filtros
+     * Se for uma Chamada interna
+     * @param:$data (int) Chave da Nota que se quer buscar os animais
+     * @param:$json (bool) Liga ou desligo Json, tem mais prioridade que o returnJson do Request
+     */
+    public function getAnimaisNota($data, $json = true, $compra_id = null){
 
-    public function getAnimaisNota($data){
+        // Tratamento do Retorno
+        if ($json == false){
+            $data["returnJson"] = false;
+        }
 
         // Recuperando os Paramentros
+        // Se for uma Request usa o Filter
         $filtros = json_decode($data['filter']);
-
         $nota_aberta = $filtros[0]->value;
+
+        // Se for uma chamada interna passa o id por aki
+        if ($compra_id){
+            $nota_aberta = $compra_id;
+        }
 
         // Recuperando o ObjNota
         $objNota = $this->find($nota_aberta, 'compras');
@@ -192,6 +209,10 @@ class NotasEntrada extends Base {
             $peso_entrada = Pesagens::getPesagemEntrada($animal->id, $objNota->confinamento_id);
             $registro->peso_entrada = $peso_entrada->peso;
 
+            // Recuperando o Peso de Compra
+            $peso_entrada = Pesagens::getPesagemCompra($animal->id, $objNota->confinamento_id);
+            $registro->peso_compra = $peso_entrada->peso;
+
             $registros[] = $registro;
 
         }
@@ -199,7 +220,6 @@ class NotasEntrada extends Base {
         $result = new StdClass();
 
         if ($registros) {
-
             $result->success = true;
             $result->data = $registros;
         }
@@ -207,7 +227,12 @@ class NotasEntrada extends Base {
             $result->success = false;
         }
 
-        echo json_encode($result);
+        if ($data["returnJson"]) {
+            echo json_encode($result);
+        }
+        else {
+            return $result;
+        }
 
     }
 
@@ -259,6 +284,16 @@ class NotasEntrada extends Base {
         $cnt = NotasEntrada::getContadores($data, false);
 
         $result = CompraAnimais::finalizaCompra($data[nota_aberta], $cnt->peso_total);
+
+        // Se tiver incluido a compra sem erros
+        if ($result->success == true){
+            // Executar o Metodo Pessagem::criarPesagemCompra
+            $result = Pesagens::criarPesagemCompra($data[nota_aberta]);
+            if ($result->success == true){
+                // Executar Metodo para trocar o Status da Compra para Fechado
+                $result = CompraAnimais::updateStatus($data[nota_aberta], 2);
+            }
+        }
 
         echo json_encode($result);
     }

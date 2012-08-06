@@ -19,6 +19,7 @@ Ext.define('Rebanho.store.CompraAnimais', {
         reader: {
             type: 'json',
             root: 'data',
+            returnJson: true,
             totalProperty: 'total'
         },
 

@@ -9,9 +9,9 @@ Ext.define('Rebanho.view.compras.fornecedores.FornecedoresWindow' ,{
 
     autoShow: true,
 
-    width: 600,
+    width: 650,
 
-    height: 450,
+    height: 520,
 
     iconCls: 'icon-user_suit',
 

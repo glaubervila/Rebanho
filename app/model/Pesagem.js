@@ -12,6 +12,7 @@ Ext.define('Rebanho.model.Pesagem', {
         {name:'confinamento_id', type: 'string'},
         {name:'quadra_id', type: 'string'},
         {name:'animal_id', type: 'string'},
+        {name:'status', type: 'int'},
         {name:'data', type: 'date', dateFormat: 'Y-m-d' },
         {name:'peso', type: 'float'},
         {name:'tipo', type: 'string'},

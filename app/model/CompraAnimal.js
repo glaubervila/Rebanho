@@ -17,7 +17,11 @@ Ext.define('Rebanho.model.CompraAnimal', {
         {name:'quantidade', type: 'int'},
         {name:'valor_nota', type: 'float'},
         {name:'data_pesagem', type: 'date', dateFormat: 'Y-m-d' },
-        {name:'peso_entrada', type: 'float'},
+        {name:'peso_entrada', type: 'float', convert:function(value,record){
+            // Colocar KG no Final do Campo
+            peso = value + ' Kg';
+            return peso;
+        }},
         {name:'peso_saida', type: 'float'},
         {name:'classificacao', type: 'string'},
         {name:'escore', type: 'string'},
@@ -33,6 +37,26 @@ Ext.define('Rebanho.model.CompraAnimal', {
         {name:'valor_arroba', type: 'float'},
         {name:'premio', type: 'string'},
         {name:'observacao', type: 'string'},
+        {name:'peso_medio', type: 'float', convert:function(value,record){
+            // Colocar KG no Final do Campo
+            peso = value + ' Kg';
+            return peso;
+        }},
+        {name:'peso_medio_arroba', type: 'float', convert:function(value,record){
+            // Colocar @ no Final do Campo
+            peso = value + ' @';
+            return peso;
+        }},
+        {name:'diferenca_total', type: 'float', convert:function(value,record){
+            // Colocar KG no Final do Campo
+            diferenca = value + ' Kg';
+            return diferenca;
+        }},
+        {name:'diferenca_media', type: 'float', convert:function(value,record){
+            // Colocar KG no Final do Campo
+            diferenca = value + ' Kg';
+            return diferenca;
+        }},
 //         // Campos Estrangeiros Para a Grid
         {name:'fornecedor_nome', type: 'string'},
         {name:'fornecedor_fazenda', type: 'string'},

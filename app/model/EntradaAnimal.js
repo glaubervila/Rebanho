@@ -24,6 +24,7 @@ Ext.define('Rebanho.model.EntradaAnimal', {
         {name:'status', type: 'string'},
         {name:'codigo', type: 'string'},
         {name:'peso_entrada', type: 'float'},
+        {name:'peso_compra', type: 'float'},
 
         // Icone da Grid
         {name:'icone', convert:function(value,record){

@@ -7,6 +7,7 @@ Ext.define('Rebanho.controller.CompraAnimais', {
 
     views: [
         'compras.animais.CompraAnimaisGrid',
+        'compras.animais.EntradaAnimaisList',
         'compras.animais.CompraAnimaisWindow',
         'compras.animais.CompraAnimaisForm',
     ],
@@ -126,6 +127,10 @@ Ext.define('Rebanho.controller.CompraAnimais', {
 
         // Setando o Atributo Confinamento
         this.confinamento = Ext.getCmp('main_viewport').getConfinamentoId();
+
+        // Carregando Stores Secundarias
+        this.getStore('Caracteristicas').load();
+
 
         // Recuperando a Store
         store = this.getStore('CompraAnimais');
@@ -275,9 +280,22 @@ Ext.define('Rebanho.controller.CompraAnimais', {
 
             // Se a Nota Estiver Fechada (status == 2) Nao permite salvar
             if (data.data.status == 2) {
+                form.down('#cmbConfinamento').setDisabled(false);
+                form.down('#dtfDataCompra').setDisabled(false);
+                form.down('#cmbFornecedores').setDisabled(false);
                 // Aqui Evito que a nota seja Alterada
                 form.down('#btnSalvar').setDisabled(true);
             }
+
+            // Carregar a Store de Animais na Compra
+            store = this.getStore('EntradaAnimais');
+
+            // Limpando o Filtro
+            store.removeAll();
+            store.clearFilter(true);
+            // Adicionando novo Filtro pra Pegar todos os animais dessa nota
+            store.filter("compra_id", data.data.id);
+
         }
     },
 

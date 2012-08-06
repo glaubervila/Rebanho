@@ -151,29 +151,87 @@ class CompraAnimais extends Base {
 
             $records[] = $record;
         }
-        $result = $records;
 
-        echo json_encode($result);
+        $data->data = $records;
+
+        echo json_encode($data);
     }
 
-
-    /** Metodo finalizaCompra()
+    /** Metodo: updateStatus($status)
      * Este metodo troca o status de uma compra
-     * @param:{int}id      = chave primaria da compra
+     * @param:$status(int)
+     *    1 - Aberta
+     *    2 - Fechada
+     *    3 - Cancelada
+     *    4 - Aguardando Pesagem
+     */
+    public function updateStatus($compra_id, $status){
+
+        $db = $this->getDb();
+
+        $query = 'UPDATE compras set status = :status WHERE id = :id';
+
+        $stm = $db->prepare($query);
+
+        $stm->bindValue(':id', $compra_id);
+        $stm->bindValue(':status', $status);
+
+        $update = $stm->execute();
+
+        $result = new StdClass();
+
+        if ($update) {
+            $result->success = true;
+        }
+        else {
+            $result->success = false;
+            $result->msg = "Falha ao Trocar o Status!";
+            $result->error = $stm->errorInfo();
+        }
+
+        return $result;
+
+    }
+    /** Metodo finalizaCompra()
+     * Este metodo faz os calculos estatisticas para a compra
+     * atualiza os campos com os valores de media
+     * @param:{int}id = chave primaria da compra
      * @param:{float}peso_entrada = peso total dos animais na nota
      */
     public function finalizaCompra($id, $peso_entrada){
 
         $db = $this->getDb();
 
-        $query = 'UPDATE compras set status = :status, data_pesagem = :data_pesagem, peso_entrada = :peso_entrada WHERE id = :id';
+        // Recuperar a Nota, Para fazer os calculos de estatisticas
+        $compra = $this->find($id, 'compras');
+
+        $qtd_animais = $compra->quantidade;
+        $peso_saida  = $compra->peso_saida;
+        $peso_medio  = ($peso_entrada / $qtd_animais);
+        $diferenca_total = ($peso_saida - $peso_entrada);
+        $diferenca_media = (($peso_saida - $peso_entrada)/$qtd_animais);
+        $peso_medio_arroba = ($peso_medio / 15);
+
+
+
+        // Formatando
+        $peso_medio = number_format($peso_medio, 3, '.',',');
+        $diferenca_total = number_format($diferenca_total, 3, '.',',');
+        $diferenca_media = number_format($diferenca_media, 3, '.',',');
+        $peso_medio_arroba = number_format($peso_medio_arroba, 3, '.',',');
+
+        $query = 'UPDATE compras set data_pesagem = :data_pesagem, peso_entrada = :peso_entrada, peso_medio = :peso_medio, peso_medio_arroba = :peso_medio_arroba, diferenca_total = :diferenca_total, diferenca_media = :diferenca_media WHERE id = :id';
 
         $stm = $db->prepare($query);
 
         $stm->bindValue(':id', $id);
-        $stm->bindValue(':status', 2);
         $stm->bindValue(':data_pesagem', date('Y-m-d'));
         $stm->bindValue(':peso_entrada', $peso_entrada);
+        $stm->bindValue(':peso_medio', $peso_medio);
+        $stm->bindValue(':peso_medio_arroba', $peso_medio_arroba);
+        $stm->bindValue(':diferenca_total', $diferenca_total);
+        $stm->bindValue(':diferenca_media', $diferenca_media);
+
 
         $update = $stm->execute();
 
@@ -186,6 +244,7 @@ class CompraAnimais extends Base {
         else {
             $result->success = false;
             $result->msg = "Falha ao Finalizar a Compra de Animais!";
+            $result->error = $stm->errorInfo();
         }
 
         return $result;

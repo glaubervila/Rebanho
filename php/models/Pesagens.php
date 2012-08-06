@@ -96,6 +96,20 @@ class Pesagens extends Base {
         return $pesagem;
     }
 
+    /** Metodo: getPesagemCompra
+     * Retorna a pesagem que tiver o tipo = 3 para o confinamento que ta no objeto nota
+     * da entrada do animal
+     * @param:$animal - id do animal
+     * @param:$confinamento - id do Confinamento que se quer a entrada
+     */
+    public function getPesagemCompra($animal, $confinamento){
+
+        // Recuperando o Peso de Compra Usando o Confinamento o animal e o tipo
+        $pesagem = $this->findBy(array('confinamento_id','animal_id','tipo'), array($confinamento, $animal, 3), 'pesagens');
+
+        return $pesagem;
+    }
+
     /** Metodo: getPesagemRecente
      * Retorna a Pesagem mais recente, busca todas as pesagens pelo animal_id e confinamento_id
      * que seja do tipo 2 ordenado pela data decrescente (mais recente) e limitado a 1
@@ -221,4 +235,80 @@ class Pesagens extends Base {
 
     }
 
+    /** Metodo: criarPesagemCompra($compra_id)
+     * Recebe uma nota, busca todos os animais da nota
+     * para cada animal recupera o peso de entrada deste animal
+     * cria uma nova pesagem para cada animal com o tipo '3 - compra'
+     * peso de compra = peso de entrada + diferenca_media
+     * @param:$compra_id - Chave de Compra que se quer criar as pesagens de compra
+     */
+    public function criarPesagemCompra($compra_id){
+
+        $db = $this->getDb();
+
+        // Recuperar Dados da Compra
+        $compra = $this->find($compra_id, 'compras');
+
+        $compra_id = (int)$compra->id;
+
+        // Recuperar Todos os Animais para Criar os Pesos de Compra
+        $animais_tmp = NotasEntrada::getAnimaisNota($data, false, $compra_id);
+
+        $animais = $animais_tmp->data;
+
+        // Diferenca Media
+        $diferenca_media = $compra->diferenca_media;
+        $data_compra = $compra->data_compra;
+
+        // Iniciando uma Transacao
+        $db->beginTransaction();
+
+        foreach ($animais as $animal){
+
+            // Somando Diferca + peso_entrada
+            $peso_compra = ($animal->peso_entrada + $diferenca_media);
+
+            $query = 'INSERT INTO pesagens (confinamento_id, quadra_id, animal_id, data, peso, tipo) VALUES (:confinamento_id, :quadra_id, :animal_id, :data, :peso, :tipo);';
+
+            $stm = $db->prepare($query);
+
+            $stm->bindValue(':confinamento_id', $animal->confinamento_id);
+            $stm->bindValue(':quadra_id', $animal->quadra_id);
+            $stm->bindValue(':animal_id', $animal->id);
+            $stm->bindValue(':data', $data_compra);
+            $stm->bindValue(':peso', $peso_compra);
+            $stm->bindValue(':tipo', 3);
+
+            $stm->execute();
+        }
+
+        $result = new StdClass();
+
+        $error = $stm->errorInfo();
+
+        // Se tiver Dado Erro ao Excluir os Animais
+        if ($error[0] != 0){
+
+            // desfaz operacoes realizadas durante a transacao
+            $db->rollback();
+
+            $codigo = $error[1];
+            $erro   = $error[2];
+
+            $msg = "Desculpe mas houve uma falha,<br> e <font color=\"red\"><b>Não</b></font> foi possivel <font color=\"red\"><b>Incluir</b></font> o(s) Registros(s). de <b>Peso de Compra</b><br> Se o problema persistir entre em contato com o administrador do sistema e informe a mensagem abaixo.<br>Código: $codigo  <br>Mensagem: $erro.";
+
+            $result->failure = true;
+            $result->message = $msg;
+
+        }
+        else {
+
+            $db->commit();
+
+            $result->success = true;
+            $result->message = "";
+
+        }
+        return $result;
+    }
 }

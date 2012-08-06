@@ -14,6 +14,7 @@ Ext.define('Rebanho.store.EntradaAnimais', {
         extraParams:{
             classe: 'NotasEntrada',
             action: 'getAnimaisNota',
+            returnJson: true,
         },
         reader: {
             type: 'json',
