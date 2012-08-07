@@ -1,0 +1,132 @@
+<?php
+
+header('Content-Type: text/javascript; charset=UTF-8');
+
+class Ocorrencias extends Base {
+
+    private     $valor = null;
+    private     $data = null;
+    protected   $table = "ocorrencias";
+
+/** Tipos de Ocorrencias
+ *     1 - Entrada no Confinamento
+ *     2 - Pesagem de Entrada
+ *     3 - Pesagem de Compra
+ *     4 - Pesagem
+ *     5 - Manejo de Quadra
+ */
+
+
+    public function insert($data, $json = true){
+
+
+        // Verificar se o Registro e UNICO
+        // Chave UNIQUE = confinamento_id + animal_id + tipo + data
+        $unique = $this->findBy(array('confinamento_id','animal_id','tipo', 'data'), array($data->confinamento_id, $data->animal_id, $data->tipo, $data->data), 'ocorrencias');
+
+        if ($unique){
+
+            $data->id = $unique->id;
+            return  Ocorrencias::update($data, $json);
+
+        }
+        else {
+            $db = $this->getDb();
+
+            $query = 'INSERT INTO ocorrencias (confinamento_id, quadra_id, animal_id, data, tipo, ocorrencia, descricao) VALUES (:confinamento_id, :quadra_id, :animal_id, :data,  :tipo, :ocorrencia, :descricao);';
+
+            $stm = $db->prepare($query);
+
+            $stm->bindValue(':confinamento_id', $data->confinamento_id);
+            $stm->bindValue(':quadra_id', $data->quadra_id);
+            $stm->bindValue(':animal_id', $data->animal_id);
+            $stm->bindValue(':data', $data->data);
+            $stm->bindValue(':tipo', $data->tipo);
+            $stm->bindValue(':ocorrencia', $data->ocorrencia);
+            $stm->bindValue(':descricao', $data->descricao);
+
+            $stm->execute();
+
+            $insert = $db->lastInsertId($query);
+
+            if ($insert) {
+
+                $newData = $data;
+                $newData->id = $insert;
+                if ($json) {
+                    $this->ReturnJsonSuccess($msg,$data);
+                }
+                else {
+                    $return = new StdClass();
+                    $return->success = true;
+                    $return->data = $data;
+                    $return->msg = "Registro Criado com Sucesso!";
+                    return $return;
+                }
+            }
+            else {
+                $error = $stm->errorInfo();
+                if ($json) {
+                    $this->ReturnJsonError($error);
+                }
+                else {
+                    $return = new StdClass();
+                    $return->failure = true;
+                    $return->msg = "Falha ao Criar o Registro de Ocorrencia!";
+                    $return->error = $stm->errorInfo();
+                    return $return;
+                }
+            }
+        }
+    }
+
+    public function update($data, $json = true){
+
+        $db = $this->getDb();
+
+        $query = 'UPDATE ocorrencias SET confinamento_id = :confinamento_id, quadra_id = :quadra_id, animal_id = :animal_id, data = :data, tipo = :tipo, ocorrencia =:ocorrencia, descricao = :descricao WHERE id = :id';
+
+        $stm = $db->prepare($query);
+
+        $stm->bindValue(':id', $data->id);
+        $stm->bindValue(':confinamento_id', $data->confinamento_id);
+        $stm->bindValue(':quadra_id', $data->quadra_id);
+        $stm->bindValue(':animal_id', $data->animal_id);
+        $stm->bindValue(':data', $data->data);
+        $stm->bindValue(':tipo', $data->tipo);
+        $stm->bindValue(':ocorrencia', $data->ocorrencia);
+        $stm->bindValue(':descricao', $data->descricao);
+
+        $stm->execute();
+
+        $update = $stm->execute();
+        if ($update) {
+            if ($json) {
+                $this->ReturnJsonSuccess($msg,$data);
+            }
+            else {
+                $return = new StdClass();
+                $return->success = true;
+                $return->data = $data;
+                $return->msg = "Registro Alterado com Sucesso!";
+
+                return $return;
+            }
+        }
+        else {
+            $error = $stm->errorInfo();
+            if ($json) {
+                $this->ReturnJsonError($error);
+            }
+            else {
+                $return = new StdClass();
+                $return->failure = true;
+                $return->msg = "Falha ao Criar o Registro de Ocorrencia!";
+                $return->error = $stm->errorInfo();
+
+                return $return;
+            }
+        }
+    }
+
+}

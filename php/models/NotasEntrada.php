@@ -347,13 +347,10 @@ class NotasEntrada extends Base {
         $animal_id = $data->id;
         $quadra_id = $data->quadra_id;
 
-        //var_dump($data);
-        $result = $this->updateCampo($animal_id,'quadra_id',$quadra_id,'animais');
-        if ($result->success){
-            // Criar a Ocorrencia de Manejo
-        }
+        $result = Manejos::manejoQuadras($data, $animal_id, $quadra_id, false);
+
         echo json_encode($result);
-        //var_dump($result);
+
     }
 }
 

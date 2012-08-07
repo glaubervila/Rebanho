@@ -596,7 +596,6 @@ Ext.define('Rebanho.controller.EntradaAnimais', {
     },
 
     onEditRowCell: function(editor, e, object){
-        console.log('EDIT');
         // Recupera a Store para alterar o Action
         store = e.grid.getStore('EntradaAnimais');
         // Limpando os ExtraParam
@@ -604,8 +603,6 @@ Ext.define('Rebanho.controller.EntradaAnimais', {
     },
 
     onCancelEditCell: function(editor, e, object){
-        console.log('CancelEdit');
-
         // Recupera a Store para alterar o Action
         store = e.grid.getStore('EntradaAnimais');
         // Limpando os ExtraParam

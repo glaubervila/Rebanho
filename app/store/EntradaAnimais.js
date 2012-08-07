@@ -33,7 +33,6 @@ Ext.define('Rebanho.store.EntradaAnimais', {
 
     listeners: {
         write: function(store, operation){
-            console.log(operation);
             var obj = Ext.decode(operation.response.responseText);
             if (operation.action == 'update'){
                 if (obj.failure){
