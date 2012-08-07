@@ -317,4 +317,40 @@ class Animais extends Base {
         }
         return $obj;
     }
+
+    /** Metodo: updateCampoAnimal
+     * Recebe um campo e um valor e altera faz update neste campo
+     * para um determinado id
+     * @param:$id = id do animal que vai receber a alteracao
+     * @param:$campo = campo a ser alterado
+     * @param:$value = valor a ser alterado
+     */
+    public function updateCampoAnimal($id, $campo, $value){
+        //echo "ENTROU NO UPDATE";
+
+        $db = $this->getDb();
+
+        $sql = "UPDATE animais SET {$campo} = :{$campo} WHERE id = :id";
+
+        $stm = $db->prepare($sql);
+
+        $stm->bindValue(':id', $id);
+        $stm->bindValue(":{$campo}", $value);
+
+        $update = $stm->execute();
+
+        $result = new StdClass();
+
+        if ($update) {
+            $result->success = true;
+            $result->msg = "Operação Realizada com Sucesso!";
+        }
+        else {
+            $result->success = false;
+            $result->msg = "Falha ao Alterar o Campo {$campo} Valor {$value}";
+            $result->error = $stm->errorInfo();
+        }
+
+        return $result;
+    }
 }

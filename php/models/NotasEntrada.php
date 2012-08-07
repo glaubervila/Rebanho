@@ -213,6 +213,10 @@ class NotasEntrada extends Base {
             $peso_entrada = Pesagens::getPesagemCompra($animal->id, $objNota->confinamento_id);
             $registro->peso_compra = $peso_entrada->peso;
 
+            // Informacoes da Quadra
+            $quadra = $this->find($animal->quadra_id, 'quadras', 'quadra');
+            $registro->quadra = $quadra->quadra;
+
             $registros[] = $registro;
 
         }
@@ -296,6 +300,60 @@ class NotasEntrada extends Base {
         }
 
         echo json_encode($result);
+    }
+
+
+    /** Metodo: updateSexo
+     * Executado quando na grid de Entrada de animais
+     * quando se usa o CellEditing no evento 'edit'
+     * Recebe um array com todos os dados do registro
+     * Altera o Sexo do Animal executa o metodo resposavel pelo update
+     * @param:$data - array com os parametros do request
+     */
+    public function updateSexo($data){
+
+        $animal_id = $data->id;
+        $compra_id = $data->compra_id;
+
+        $sexo = $data->sexo;
+
+        $result = Animais::updateCampoAnimal($animal_id, 'sexo', $sexo);
+
+        // recalcular a Quantidade de Machos e Femeas da Compra
+        if ($result->success){
+
+            $animais = $this->findAllBy('compra_id', $compra_id, 'animais');
+            foreach ($animais as $animal){
+                if ($animal->sexo == 'F'){
+                    $femeas++;
+                }
+                else {
+                    $machos++;
+                }
+            }
+
+            // Fazer Updates na Compra com as quantidades de animais
+            $this->updateCampo($compra_id,'qtd_machos',$machos,'compras');
+            $this->updateCampo($compra_id,'qtd_femeas',$femeas,'compras');
+
+        }
+
+        echo json_encode($result);
+
+    }
+
+    public function updateQuadra($data){
+
+        $animal_id = $data->id;
+        $quadra_id = $data->quadra_id;
+
+        //var_dump($data);
+        $result = $this->updateCampo($animal_id,'quadra_id',$quadra_id,'animais');
+        if ($result->success){
+            // Criar a Ocorrencia de Manejo
+        }
+        echo json_encode($result);
+        //var_dump($result);
     }
 }
 

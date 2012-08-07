@@ -68,11 +68,12 @@ class Application {
 
                     $class= $post_vars['classe'];
 
+                    // Se Nao Houver Parametro Action executa action 'SAVE'
+                    $action = $post_vars['action'] ? $post_vars['action'] : 'save';
+
                     $info = $post_vars['data'];
 
                     $data = json_decode($info);
-
-                    $action = 'save';
 
                 break;
 
@@ -81,11 +82,13 @@ class Application {
 
                     $class= $post_vars['classe'];
 
+                    // Se Nao Houver Parametro Action executa action 'SAVE'
+                    $action = $post_vars['action'] ? $post_vars['action'] : 'destroy';
+
                     $info = $post_vars['data'];
 
                     $data = json_decode($info);
 
-                    $action = 'destroy';
 
                 break;
             }

@@ -8,6 +8,7 @@ Ext.define('Rebanho.controller.EntradaAnimais', {
     stores: [
         'EntradaAnimais',
         'Pesagens',
+        'Quadras',
     ],
 
     models: [
@@ -51,6 +52,8 @@ Ext.define('Rebanho.controller.EntradaAnimais', {
     quantidade_falta: 'false',
     // Chave estrangeira Confinamento
     confinamento: 0,
+    // Data da Pesagem
+    data_pesagem: 0,
     // Flag Digitar Codigo
     toggleCodigo: false,
 
@@ -66,12 +69,12 @@ Ext.define('Rebanho.controller.EntradaAnimais', {
 
             'entradaanimaispanel': {
                 // Ao Renderizar o Panel
-                render: this.onRenderPanel
+                render: this.onRenderPanel,
             },
 
             // Ao Clicar no Pesar
             'entradaanimaisgrid button[action=action_pesar]': {
-                click: this.inicioPesagem
+                click: this.inicioPesagem,
             },
             // Ao Clicar no Botao Digitar Codigo
             'entradaanimaisgrid button[action=action_codigo]': {
@@ -81,6 +84,12 @@ Ext.define('Rebanho.controller.EntradaAnimais', {
             // Ao Clicar em Finalizar
             'entradaanimaisgrid button[action=action_finalizar]': {
                 click: this.finalizarPesagem
+            },
+
+            // Actions da Grid 
+            'entradaanimaisgrid': {
+                // DoubleClick em uma linha da Grid
+                itemdblclick: this.onRowDblClick,
             },
 
         });
@@ -95,6 +104,23 @@ Ext.define('Rebanho.controller.EntradaAnimais', {
         // Setando o Atributo Confinamento
         this.confinamento = Ext.getCmp('main_viewport').getConfinamentoId();
 
+        // Carregando a Store de Quadras
+        this.getStore('Quadras').filter("confinamento_id", this.confinamento);
+
+        // Setando a Data da Pesagem
+        this.data_pesagem = Ext.Date.dateFormat(new Date(),'Y-m-d');
+
+        grid = this.getEntradaAnimaisGrid();
+
+        // Adicionando Listenner ao Grid para receber os eventos do Plugin CellEditing
+        grid.on({
+            scope: this,
+            beforeedit: this.onBeforeEditCell,
+            edit: this.onEditRowCell,
+            canceledit: this.onEditRowCell,
+        });
+
+
         // Limpando a Store
         // Recuperar a Store
         var store = this.getStore('EntradaAnimais');
@@ -107,7 +133,6 @@ Ext.define('Rebanho.controller.EntradaAnimais', {
         this.winSelecaoNota.show();
 
     },
-
 
     // ----------< Funcoes da Window de Selecao >----------
     /** Funcao: windowSelecaoNota
@@ -238,6 +263,9 @@ Ext.define('Rebanho.controller.EntradaAnimais', {
         console.log('EntradaAnimais - inicioPesagem');
         // Recuperando a Store
         store = this.getStore('EntradaAnimais');
+
+        // Setando a Action para o Load
+        store.proxy.setExtraParam('action','getAnimaisNota');
 
         // Limpando o Filtro
         store.removeAll();
@@ -381,8 +409,9 @@ Ext.define('Rebanho.controller.EntradaAnimais', {
      * Mostra um Prompt para a Entrada do Peso do animal
      * @param:{object} animal = recebe um record animal
      * @param:{string} codigo = codigo do animal
+     * @param:{bool} looping = se looping for true repete a digitacao do peso
      */
-     digitarPeso: function(animal, codigo){
+     digitarPeso: function(animal, codigo, looping){
         console.log('EntradaAnimais - digitarPeso');
         // Mostrar o Prompt para informar o Codigo
         Ext.Msg.show({
@@ -399,7 +428,7 @@ Ext.define('Rebanho.controller.EntradaAnimais', {
                     // Verifica se tem Identificacao
                     if (peso != ''){
                         if (peso > 0) {
-                            this.gravarPesagem(animal,codigo,peso);
+                            this.gravarPesagem(animal,codigo,peso,looping);
                         }
                         else {
                             // Peso Negativo Digitar de Novo
@@ -418,15 +447,16 @@ Ext.define('Rebanho.controller.EntradaAnimais', {
      * @param:{object} animal = record animal recuperado da store
      * @param:{string} codigo = codigo digitado no prompt codigo
      * @param:{float}  peso   = peso digitado no prompt peso
+     * @param:{bool} looping = se looping for true repete a digitacao do peso
      */
-    gravarPesagem: function(animal, codigo, peso){
+    gravarPesagem: function(animal, codigo, peso, looping){
         console.log('EntradaAnimais - gravarPesagem');
         // Criando o Registro
         var pesagem = Ext.create('Rebanho.model.Pesagem', {
             confinamento_id : animal.data.confinamento_id,
             quadra_id  : animal.data.quadra_id,
             animal_id  : animal.data.id,
-            data : Ext.Date.dateFormat(new Date(),'Y-m-d'),
+            data : this.data_pesagem,
             peso: peso,
             tipo: 1,
         });
@@ -444,7 +474,9 @@ Ext.define('Rebanho.controller.EntradaAnimais', {
                 store.load({
                     callback:function(){
                         Ext.BoxMsg.msg('Sucesso!', 'Registro Gravado com <font color=green><b>Sucesso</b></font>!');
-                        this.inicioPesagem();
+                        if (looping !=false) {
+                            this.inicioPesagem();
+                        }
                     },
                     scope: this,
                 });
@@ -540,5 +572,44 @@ Ext.define('Rebanho.controller.EntradaAnimais', {
         }
     },
 
+    onRowDblClick: function(){
+        console.log('EntradaAnimais - onRowDblClick');
+        var records = this.getEntradaAnimaisGrid().getSelectionModel().getSelection();
+        var animal = records[0];
+        this.digitarPeso(animal, animal.data.codigo, false);
+    },
+
+    onBeforeEditCell: function(editor, e, object){
+        col = e.column.dataIndex;
+
+        // Recupera a Store para alterar o Action
+        store = e.grid.getStore('EntradaAnimais');
+
+        // Setando a Action para o Update
+        if (col == 'sexo') {
+            store.proxy.setExtraParam('action','updateSexo');
+        }
+        else if (col == 'quadra_id'){
+            store.proxy.setExtraParam('action','updateQuadra');
+        }
+
+    },
+
+    onEditRowCell: function(editor, e, object){
+        console.log('EDIT');
+        // Recupera a Store para alterar o Action
+        store = e.grid.getStore('EntradaAnimais');
+        // Limpando os ExtraParam
+        store.proxy.setExtraParam('action','');
+    },
+
+    onCancelEditCell: function(editor, e, object){
+        console.log('CancelEdit');
+
+        // Recupera a Store para alterar o Action
+        store = e.grid.getStore('EntradaAnimais');
+        // Limpando os ExtraParam
+        store.proxy.setExtraParam('action','');
+    },
 });
 

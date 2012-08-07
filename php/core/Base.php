@@ -141,7 +141,7 @@ abstract class Base {
         return $stm->fetchObject();
     }
 
-    public function findAllBy($field, $value, $table){
+    public function findAllBy($field, $value, $table, $debug){
 
         $db = $this->getDb();
         if ($table) {
@@ -152,6 +152,11 @@ abstract class Base {
         }
 
         $stm = $db->prepare($sql);
+
+        if ($debug){
+            echo $sql;
+        }
+
         $stm->execute();
         return $stm->fetchAll(\PDO::FETCH_OBJ);
 
@@ -672,4 +677,42 @@ abstract class Base {
         return $string;
 
     }
+
+    /** Metodo: updateCampo
+     * Recebe um campo e um valor e altera faz update neste campo
+     * para um determinado id
+     * @param:$id = id do animal que vai receber a alteracao
+     * @param:$campo = campo a ser alterado
+     * @param:$value = valor a ser alterado
+     * @param:$table = nome da tabela a ser alterada
+     */
+    public function updateCampo($id, $campo, $value, $table){
+
+        $db = $this->getDb();
+
+        $sql = "UPDATE {$table} SET {$campo} = :{$campo} WHERE id = :id";
+
+        $stm = $db->prepare($sql);
+
+        $stm->bindValue(':id', $id);
+        $stm->bindValue(":{$campo}", $value);
+
+        $update = $stm->execute();
+
+        $result = new StdClass();
+
+        if ($update) {
+            $result->success = true;
+            $result->msg = "Operação Realizada com Sucesso!";
+        }
+        else {
+            $result->success = false;
+            $result->msg = "Falha ao Alterar o Campo {$campo} Valor {$value}";
+            $result->error = $stm->errorInfo();
+        }
+
+        return $result;
+    }
+
+
 }

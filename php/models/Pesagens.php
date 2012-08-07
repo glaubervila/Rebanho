@@ -9,7 +9,7 @@ class Pesagens extends Base {
     protected   $table = "pesagens";
 
 
-    public function insert($data){
+    public function insert($data, $json = true){
 
         // Verificar se o Registro e UNICO
         // Chave UNIQUE = confinamento_id + animal_id + tipo
@@ -17,7 +17,7 @@ class Pesagens extends Base {
 
         if ($unique){
             $data->id = $unique->id;
-            Pesagens::update($data);
+            Pesagens::update($data, $json);
         }
         else {
             $db = $this->getDb();
@@ -52,12 +52,11 @@ class Pesagens extends Base {
         }
     }
 
-    public function update($data){
+    public function update($data, $json = true){
 
         $db = $this->getDb();
 
         $query = 'UPDATE pesagens SET confinamento_id = :confinamento_id, quadra_id = :quadra_id, animal_id = :animal_id, data = :data, peso = :peso, tipo =:tipo WHERE id = :id';
-
 
         $stm = $db->prepare($query);
 
@@ -74,7 +73,12 @@ class Pesagens extends Base {
         $update = $stm->execute();
 
         if ($update) {
-            $this->ReturnJsonSuccess($msg,$data);
+            if ($json) {
+                $this->ReturnJsonSuccess($msg,$data);
+            }
+            else {
+                return $update;
+            }
         }
         else {
             $error = $stm->errorInfo();
@@ -311,4 +315,5 @@ class Pesagens extends Base {
         }
         return $result;
     }
+
 }

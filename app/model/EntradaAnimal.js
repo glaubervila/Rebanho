@@ -25,7 +25,7 @@ Ext.define('Rebanho.model.EntradaAnimal', {
         {name:'codigo', type: 'string'},
         {name:'peso_entrada', type: 'float'},
         {name:'peso_compra', type: 'float'},
-
+        {name:'quadra', type: 'string'},
         // Icone da Grid
         {name:'icone', convert:function(value,record){
             // Se tiver Peso Coloca o Icone de Tick

@@ -3,6 +3,7 @@ Ext.define('Rebanho.view.compras.animais.EntradaAnimaisGrid' ,{
 
     requires: [
         'Ext.ux.grid.column.ActionButtonColumn',
+        'Ext.grid.plugin.RowEditing',
     ],
 
     alias : 'widget.entradaanimaisgrid',
@@ -14,6 +15,14 @@ Ext.define('Rebanho.view.compras.animais.EntradaAnimaisGrid' ,{
     initComponent: function() {
 
         this.store = 'EntradaAnimais';
+
+        // RowEdit Plugin
+        this.plugins= [
+            Ext.create('Ext.grid.plugin.CellEditing',{
+                triggerEvent: 'cellclick',
+                clicksToEdit: 1,
+            }),
+        ],
 
 
         this.columns = [
@@ -31,16 +40,27 @@ Ext.define('Rebanho.view.compras.animais.EntradaAnimaisGrid' ,{
                 text: "Peso Entrada",
                 dataIndex: 'peso_entrada',
                 sortable: true,
-                //flex:true,
                 width: 200,
             },
             {
                 text: "Sexo",
                 dataIndex: 'sexo',
                 sortable: true,
-                //flex:true,
                 width: 50,
+                field: {
+                    xtype: 'textfield',
+                },
             },
+            {
+                text: "Quadra",
+                dataIndex: 'quadra_id',
+                width: 150,
+                renderer: this.rendererQuadra,
+                field: {
+                    xtype: 'cmbquadras',
+                },
+            },
+
         ];
 
         this.dockedItems= [{
@@ -87,4 +107,7 @@ Ext.define('Rebanho.view.compras.animais.EntradaAnimaisGrid' ,{
         this.callParent(arguments);
     },
 
+    rendererQuadra:function(value, obj, record){
+        return record.get('quadra');
+    }
  }); 

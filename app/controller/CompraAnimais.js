@@ -208,6 +208,13 @@ Ext.define('Rebanho.controller.CompraAnimais', {
             store_quadras.load();
 
         }
+
+        // Limpando a Store de Pesagens
+        store = this.getStore('EntradaAnimais');
+        // Limpando o Filtro
+        store.removeAll();
+        store.clearFilter(true);
+
     },
 
     /** Funcao executada quando seleciona um confinamento
@@ -289,7 +296,7 @@ Ext.define('Rebanho.controller.CompraAnimais', {
 
             // Carregar a Store de Animais na Compra
             store = this.getStore('EntradaAnimais');
-
+            store.proxy.setExtraParam('action','getAnimaisNota');
             // Limpando o Filtro
             store.removeAll();
             store.clearFilter(true);
