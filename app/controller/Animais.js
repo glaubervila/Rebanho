@@ -1,10 +1,16 @@
 Ext.define('Rebanho.controller.Animais', {
     extend: 'Ext.app.Controller',
 
-    require:[ ],
+    require:[
+        'Rebanho.view.ocorrencias.pesagens.PesagensPorAnimalGrid',
+        'Rebanho.view.ocorrencias.OcorrenciasPorAnimalGrid',
+    ],
 
     stores: [
         'Animais',
+        'Pesagens',
+        'Ocorrencias',
+        'Caracteristicas',
     ],
 
     models: [
@@ -15,6 +21,7 @@ Ext.define('Rebanho.controller.Animais', {
         'Rebanho.view.animais.AnimaisGrid',
         'Rebanho.view.animais.AnimaisForm',
         'Rebanho.view.animais.AnimaisWindow',
+        'Rebanho.view.animais.LocalizarAnimalWindow',
     ],
 
     refs: [
@@ -35,6 +42,10 @@ Ext.define('Rebanho.controller.Animais', {
     // Atributos
     // Chave estrangeira confinamento_id
     confinamento: 0,
+    // Chave do Animal
+    animal_id: 0,
+    // Record do Animal
+    animal: false,
 
     init: function() {
 
@@ -57,6 +68,10 @@ Ext.define('Rebanho.controller.Animais', {
             },
 
             // ----------< Actions do Form >----------
+            'animaisform': {
+                afterrender: this.onFormAfterRender,
+            },
+
         });
     },
 
@@ -69,6 +84,9 @@ Ext.define('Rebanho.controller.Animais', {
     onAfterRender: function(){
         console.log('AnimaisGrid - onAfterRender');
 
+        // Carregando a Store de Caracteristicas
+        this.getStore('Caracteristicas').load();
+        
         // Setando o Atributo Confinamento
         this.confinamento = Ext.getCmp('main_viewport').getConfinamentoId();
 
@@ -128,9 +146,6 @@ Ext.define('Rebanho.controller.Animais', {
         confinamento = this.confinamento;
         quadra = this.getAnimaisGrid().down('#cmbQuadras').getValue();
 
-        console.log(confinamento);
-        console.log(quadra);
-
         // Recuperando a Store
         store = this.getStore('Animais');
 
@@ -151,8 +166,11 @@ Ext.define('Rebanho.controller.Animais', {
     onItemDblClick: function(){
         var records = this.getAnimaisGrid().getSelectionModel().getSelection();
         var data = records[0];
-        console.log(data);
         if (data){
+            // Setando os Atributos de animais
+            this.animal_id = data.data.id;
+            this.animal = data;
+
             // Carrega a janela de Animais
             this.criaWindowAnimais();
             this.getAnimaisForm().getForm().loadRecord(data);
@@ -161,13 +179,45 @@ Ext.define('Rebanho.controller.Animais', {
 
     // ----------< Funcoes do Form de Animais >----------
 
+    onFormAfterRender: function(){
+//        console.log('Animais - onFormAfterRender(animal_id: '+this.animal_id+')');
+
+        // Se tiver um animal_id
+        if (this.animal_id !=0){
+            // Carregar a Store de Confinamento
+            //this.getStore('Confinamentos').load();
+
+            // Carregar a Stores de Pesagens
+            store_pesagens = this.getStore('Pesagens');
+            // Limpando o Filtro
+            store_pesagens.clearFilter(true);
+
+            // Adicionando novo Filtro pra Pegar todas as Ocorrencias deste animal
+            store_pesagens.filter([
+                {property: "animal_id", value: this.animal_id},
+            ]);
+
+            // Carrefar a Store de Ocorrencias
+            store_ocorrencia = this.getStore('Ocorrencias');
+
+            // Limpando o Filtro
+            store_ocorrencia.clearFilter(true);
+
+            // Adicionando novo Filtro pra Pegar todas as Ocorrencias deste animal
+            store_ocorrencia.filter([
+                {property: "animal_id", value: this.animal_id},
+            ]);
+        }
+
+    },
+
     criaWindowAnimais: function(){
         if (this.win){
             this.win.close();
             this.win = null;
         }
         this.win = Ext.widget('animaiswindow');
-    }
+    },
 
 
 });

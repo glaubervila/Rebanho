@@ -18,6 +18,7 @@ Ext.define('Rebanho.view.Viewport', {
 
     getConfinamentoId:function(){
         return parseInt(this.confinamento_id);
+        //return this.confinamento_id;
     },
 
 });

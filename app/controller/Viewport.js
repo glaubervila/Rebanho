@@ -27,7 +27,7 @@ Ext.define('Rebanho.controller.Viewport', {
     },
 
     onViewportRendered: function(p) {
-        console.log("Viewport - onViewportRendered");
+        //console.log("Viewport - onViewportRendered");
 
         p.add(this.defaultItem);
 
@@ -35,7 +35,7 @@ Ext.define('Rebanho.controller.Viewport', {
     },
 
     onViewportAfterRender: function(p){
-        console.log("Viewport - onViewportAfeterRender");
+        //console.log("Viewport - onViewportAfeterRender");
 
     },
 

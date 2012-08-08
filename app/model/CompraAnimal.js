@@ -37,14 +37,10 @@ Ext.define('Rebanho.model.CompraAnimal', {
         {name:'valor_arroba', type: 'float'},
         {name:'premio', type: 'string'},
         {name:'observacao', type: 'string'},
+        {name:'valor_kg_vivo', type: 'float'},
         {name:'peso_medio', type: 'float', convert:function(value,record){
             // Colocar KG no Final do Campo
             peso = value + ' Kg';
-            return peso;
-        }},
-        {name:'peso_medio_arroba', type: 'float', convert:function(value,record){
-            // Colocar @ no Final do Campo
-            peso = value + ' @';
             return peso;
         }},
         {name:'diferenca_total', type: 'float', convert:function(value,record){

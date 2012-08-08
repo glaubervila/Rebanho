@@ -62,7 +62,17 @@ Ext.define('Rebanho.view.compras.animais.EntradaAnimaisWindow' ,{
                                         Ext.MessageBox.show({ title:'Atenção!', msg: 'Não Há Compras Aguardando Pesagem.<br> Cadastre uma Compra Acessando o Menu<br> Compras -> Compras Animais.', buttons: Ext. MessageBox.OK, icon:  Ext.MessageBox.WARNING });
                                     }
                                 },
-                            }]
+                            },
+                            {
+                                xtype: 'datefield',
+                                itemId: 'dtfDataEntrada',
+                                fieldLabel:'Data de Entrada',
+                                name: 'data_entrada',
+                                allowBlank: false,
+                                format: 'd/m/y',
+                                submitFormat: 'Y-m-d',
+                            },
+                            ]
                         },
                         {
                             xtype: 'fieldset',
@@ -154,8 +164,16 @@ Ext.define('Rebanho.view.compras.animais.EntradaAnimaisWindow' ,{
                         // Recuperando o Registro
                         var values = this.down('form').getForm().getValues();
 
-                        // Disparando Evendo de Selecao
-                        this.fireEvent('selecionou_nota_entrada', this, values);
+                        // verifico se tem a data de Entrada
+                        if (values.data_entrada){
+                            // Disparando Evendo de Selecao
+                            this.fireEvent('selecionou_nota_entrada', this, values);
+                        }
+                        else {
+                            // Se não tiver mostra a mensagem de obrigatorio
+                            Ext.MessageBox.show({ title:'Atenção!', msg: 'Campo Data de Entrada, Preenchimento Obrigatório!', buttons: Ext. MessageBox.OK, icon:  Ext.MessageBox.WARNING });
+                        }
+//                         console.log(values);
                     }
                 },
             }]

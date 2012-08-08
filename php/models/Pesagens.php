@@ -21,9 +21,10 @@ class Pesagens extends Base {
         }
         else {
             $db = $this->getDb();
+            // Iniciando uma Transacao
+            $db->beginTransaction();
 
             $query = 'INSERT INTO pesagens (confinamento_id, quadra_id, animal_id, data, peso, tipo) VALUES (:confinamento_id, :quadra_id, :animal_id, :data, :peso, :tipo);';
-
 
             $stm = $db->prepare($query);
 
@@ -38,14 +39,33 @@ class Pesagens extends Base {
 
             $insert = $db->lastInsertId($query);
 
+            // Criando uma Ocorrencia de Pesagem
+            $descricao = "Pesagem - {$data->peso} Kg";
+
+            $query_ocorrencia = "INSERT INTO rebanho.ocorrencias (confinamento_id, quadra_id, animal_id, ocorrencia, descricao, data) VALUES (:confinamento_id, :quadra_id, :animal_id, :ocorrencia, :descricao, :data);";
+
+            $stm = $db->prepare($query_ocorrencia);
+
+            $stm->bindValue(':confinamento_id', $data->confinamento_id);
+            $stm->bindValue(':quadra_id', $data->quadra_id);
+            $stm->bindValue(':animal_id', $data->animal_id);
+            $stm->bindValue(':ocorrencia', 'Pesagem');
+            $stm->bindValue(':descricao', $descricao);
+            $stm->bindValue(':data', $data->data);
+
+            $stm->execute();
+
+
             if ($insert) {
 
+                $db->commit();
                 $newData = $data;
                 $newData->id = $insert;
 
                 $this->ReturnJsonSuccess($msg,$data);
             }
             else {
+                $db->rollback();
                 $error = $stm->errorInfo();
                 $this->ReturnJsonError($error);
             }
@@ -284,6 +304,23 @@ class Pesagens extends Base {
             $stm->bindValue(':tipo', 3);
 
             $stm->execute();
+
+            // Crio a Ocorrencia de Peso de Compra
+            $descricao = "Peso de Compra - {$peso_compra} Kg";
+
+            $query_ocorrencia = "INSERT INTO rebanho.ocorrencias (confinamento_id, quadra_id, animal_id, ocorrencia, descricao, data) VALUES (:confinamento_id, :quadra_id, :animal_id, :ocorrencia, :descricao, :data);";
+
+            $stm = $db->prepare($query_ocorrencia);
+
+            $stm->bindValue(':confinamento_id', $animal->confinamento_id);
+            $stm->bindValue(':quadra_id', $animal->quadra_id);
+            $stm->bindValue(':animal_id', $animal->id);
+            $stm->bindValue(':ocorrencia', 'Compra');
+            $stm->bindValue(':descricao', $descricao);
+            $stm->bindValue(':data', $data_compra);
+
+            $stm->execute();
+
         }
 
         $result = new StdClass();

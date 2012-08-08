@@ -331,8 +331,9 @@ Ext.define('Rebanho.view.compras.animais.CompraAnimaisForm' ,{
                             width: 200,
                             readOnly: true,
                         },{
-                            fieldLabel:'Peso Médio em @',
-                            name: 'peso_medio_arroba',
+                            xtype: 'field-money',
+                            fieldLabel:'Valor Kg Vivo',
+                            name: 'valor_kg_vivo',
                             width: 200,
                             readOnly: true,
                         },{

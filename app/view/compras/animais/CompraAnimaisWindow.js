@@ -11,7 +11,7 @@ Ext.define('Rebanho.view.compras.animais.CompraAnimaisWindow' ,{
 
     width: 750,
 
-    height: 450,
+    height: 500,
 
     iconCls: 'icon-application_form',
 

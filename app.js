@@ -56,7 +56,9 @@ Ext.application({
         'Fornecedores',
 
         // Ocorrencias
+        'Ocorrencias',
         'Pesagens',
+
 
         // Animais
         'Animais',

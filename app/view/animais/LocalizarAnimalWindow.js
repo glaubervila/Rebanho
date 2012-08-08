@@ -1,19 +1,19 @@
-Ext.define('Rebanho.view.animais.AnimaisWindow' ,{
+Ext.define('Rebanho.view.animais.LocalizarAnimalWindow' ,{
     extend: 'Ext.window.Window',
 
-    alias : 'widget.animaiswindow',
+    alias : 'widget.localizaranimalwindow',
 
-    title: 'Cadastro De Animais',
+    title: 'Localizar Animal',
 
     layout: 'fit',
 
     autoShow: true,
 
-    width: 850,
+    width: 400,
 
-    height: 400,
+    height: 200,
 
-    iconCls: 'icon-user_suit',
+    iconCls: 'icon-find',
 
     initComponent: function() {
 
@@ -22,7 +22,7 @@ Ext.define('Rebanho.view.animais.AnimaisWindow' ,{
         Ext.applyIf(me, {
 
             items: [
-                Ext.widget('animaisform'),
+                
             ]
         });
 

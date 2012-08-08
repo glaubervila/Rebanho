@@ -9,14 +9,14 @@ Ext.define('Rebanho.view.layout.Header', {
 
     region:'north',
 
-    height: 53,
+    height: 60,
 
     items: [
         {
             xtype: 'buttongroup',
             title: 'Compras',
             defaults: {
-                scale: 'small'
+                scale: 'small',
             },
             items: [
                 {
@@ -143,6 +143,13 @@ Ext.define('Rebanho.view.layout.Header', {
                             iconCls: 'icon-report',
                             handler: function(){
                                 var tabs = Ext.getCmp('mainTabpanel').novaAba('animaisgrid');
+                            },
+                        },
+                        {
+                            text: 'Localizar Animal',
+                            iconCls: 'icon-find',
+                            handler: function(){
+                                Ext.create('Rebanho.view.animais.LocalizarAnimalWindow',{});
                             },
                         },
                     ]

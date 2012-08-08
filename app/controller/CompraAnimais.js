@@ -339,10 +339,14 @@ Ext.define('Rebanho.controller.CompraAnimais', {
 
             if (values.id > 0){
                 //console.log(record);
+                console.log(values);
                 record.set(values);
             }
             else {
+                //console.log(values);
                 var record = Ext.create('Rebanho.model.CompraAnimal', values);
+                // Setando o Confinamento
+                record.set('confinamento_id', this.confinamento);
                 // Criando o Registro pela Store
                 store.add(record);
                 this.getCompraAnimaisForm().getForm().reset();

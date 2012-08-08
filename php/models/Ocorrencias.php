@@ -129,4 +129,29 @@ class Ocorrencias extends Base {
         }
     }
 
+    public function load($data){
+
+        $data = $this->fetchAll();
+
+        foreach ($data->data as $row){
+            $record = $row;
+
+            // Para Cada Registro Recuperar o Nome do Confinamento
+            $confinamento = $this->find($record->confinamento_id, 'confinamentos');
+            $record->confinamento  = $confinamento->confinamento;
+
+            // Informacoes da Quadra
+            $quadra = $this->find($row->quadra_id, 'quadras', 'quadra');
+            $record->quadra = $quadra->quadra;
+
+            $records[] = $record;
+        }
+
+        $data->data = $records;
+
+        echo json_encode($data);
+
+    }
+
+
 }

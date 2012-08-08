@@ -64,6 +64,7 @@ class NotasEntrada extends Base {
         // Recuperando os Paramentros
         $notaAberta    = $data['nota_aberta'];
         $identificacao = $data['identificacao'];
+        $data_pesagem  = $data['data_pesagem'];
 
         // Recuperar a Nota
         $objNota = $this->findBy('id', $notaAberta, 'compras');
@@ -90,7 +91,7 @@ class NotasEntrada extends Base {
                 $identificacao = new StdClass();
                 $identificacao->confinamento_id = $objNota->confinamento_id;
                 $identificacao->codigo          = $k;
-                $identificacao->data            = date('Y-m-d');
+                $identificacao->data            = $data_pesagem;
 
                 // Criando Um Animal
                 $animal = new StdClass();
@@ -133,7 +134,7 @@ class NotasEntrada extends Base {
 
                 $stm->bindValue(':id', $objNota->id);
                 $stm->bindValue(':status', 4);
-                $stm->bindValue(':data_pesagem', date('Y-m-d'));
+                $stm->bindValue(':data_pesagem', $data_pesagem);
 
 
                 $update = $stm->execute();

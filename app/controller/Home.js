@@ -8,7 +8,7 @@ Ext.define('Rebanho.controller.Home', {
     },
 
     index:function(){
-        console.log('controller.Home.index()');
+        //console.log('controller.Home.index()');
 
         this.render('home.Home');
     },

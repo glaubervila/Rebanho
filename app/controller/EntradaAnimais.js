@@ -108,7 +108,9 @@ Ext.define('Rebanho.controller.EntradaAnimais', {
         this.getStore('Quadras').filter("confinamento_id", this.confinamento);
 
         // Setando a Data da Pesagem
-        this.data_pesagem = Ext.Date.dateFormat(new Date(),'Y-m-d');
+        if (this.data_pesagem == 0){
+            this.data_pesagem = Ext.Date.dateFormat(new Date(),'Y-m-d');
+        }
 
         grid = this.getEntradaAnimaisGrid();
 
@@ -156,6 +158,8 @@ Ext.define('Rebanho.controller.EntradaAnimais', {
                 , selecionou_nota_entrada: function (window, values){
                     // Setando o Chave Primaria da Nota
                     this.idNotaAberta = values.notaaberta;
+                    // Setando a Data de Entrada
+                    this.data_pesagem = values.data_entrada;
                     // Setando o Status da Nota
                     this.statusNota = values.status;
 
@@ -226,6 +230,7 @@ Ext.define('Rebanho.controller.EntradaAnimais', {
                 action: 'inicioEntradaAnimais',
                 nota_aberta: idNotaAberta,
                 identificacao: identificacao,
+                data_pesagem: this.data_pesagem,
             },
             scope:this,
             success: function ( result, request ) {

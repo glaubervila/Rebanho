@@ -113,7 +113,7 @@ class Animais extends Base {
                 $stm->bindValue(':animal_id', $idAnimal);
                 $stm->bindValue(':ocorrencia', 'Entrada');
                 $stm->bindValue(':descricao', $descricao);
-                $stm->bindValue(':data', date('Y-m-d'));
+                $stm->bindValue(':data', $codigo->data);
 
                 $stm->execute();
 

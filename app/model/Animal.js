@@ -13,7 +13,7 @@ Ext.define('Rebanho.model.Animal', {
 
     fields: [
         {name:'id', type: 'int'},
-        {name:'confinamento_id', type: 'string'},
+        {name:'confinamento_id', type: 'int'},
         {name:'quadra_id', type: 'int'},
         {name:'compra_id', type: 'int'},
         {name:'fornecedor_id', type: 'int'},

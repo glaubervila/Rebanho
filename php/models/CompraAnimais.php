@@ -207,10 +207,12 @@ class CompraAnimais extends Base {
 
         $qtd_animais = $compra->quantidade;
         $peso_saida  = $compra->peso_saida;
+        $valor_compra = $compra->valor_nota;
+
         $peso_medio  = ($peso_entrada / $qtd_animais);
         $diferenca_total = ($peso_saida - $peso_entrada);
         $diferenca_media = (($peso_saida - $peso_entrada)/$qtd_animais);
-        $peso_medio_arroba = ($peso_medio / 15);
+        $valor_kg_vivo = ($valor_compra / $peso_saida);
 
 
 
@@ -218,9 +220,9 @@ class CompraAnimais extends Base {
         $peso_medio = number_format($peso_medio, 3, '.',',');
         $diferenca_total = number_format($diferenca_total, 3, '.',',');
         $diferenca_media = number_format($diferenca_media, 3, '.',',');
-        $peso_medio_arroba = number_format($peso_medio_arroba, 3, '.',',');
+        $valor_kg_vivo = number_format($valor_kg_vivo, 2, '.',',');
 
-        $query = 'UPDATE compras set data_pesagem = :data_pesagem, peso_entrada = :peso_entrada, peso_medio = :peso_medio, peso_medio_arroba = :peso_medio_arroba, diferenca_total = :diferenca_total, diferenca_media = :diferenca_media WHERE id = :id';
+        $query = 'UPDATE compras set data_pesagem = :data_pesagem, peso_entrada = :peso_entrada, peso_medio = :peso_medio, valor_kg_vivo = :valor_kg_vivo, diferenca_total = :diferenca_total, diferenca_media = :diferenca_media WHERE id = :id';
 
         $stm = $db->prepare($query);
 
@@ -228,7 +230,7 @@ class CompraAnimais extends Base {
         $stm->bindValue(':data_pesagem', date('Y-m-d'));
         $stm->bindValue(':peso_entrada', $peso_entrada);
         $stm->bindValue(':peso_medio', $peso_medio);
-        $stm->bindValue(':peso_medio_arroba', $peso_medio_arroba);
+        $stm->bindValue(':valor_kg_vivo', $valor_kg_vivo);
         $stm->bindValue(':diferenca_total', $diferenca_total);
         $stm->bindValue(':diferenca_media', $diferenca_media);
 

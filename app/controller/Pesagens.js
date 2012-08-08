@@ -16,6 +16,8 @@ Ext.define('Rebanho.controller.Pesagens', {
         'ocorrencias.pesagens.PesagensGrid',
         // Janela de Relatorio por Data
         'ocorrencias.pesagens.PesagensPorDataWindow',
+        // Grid de Pesagem Por Animal
+        'ocorrencias.pesagens.PesagensPorAnimalGrid',
     ],
 
     refs: [

@@ -9,7 +9,7 @@ Ext.define('Rebanho.model.Pesagem', {
 
     fields: [
         {name:'id', type: 'int'},
-        {name:'confinamento_id', type: 'string'},
+        {name:'confinamento_id', type: 'int'},
         {name:'quadra_id', type: 'string'},
         {name:'animal_id', type: 'string'},
         {name:'status', type: 'int'},
