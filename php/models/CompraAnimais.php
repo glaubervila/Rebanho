@@ -195,12 +195,15 @@ class CompraAnimais extends Base {
     /** Metodo finalizaCompra()
      * Este metodo faz os calculos estatisticas para a compra
      * atualiza os campos com os valores de media
-     * @param:{int}id = chave primaria da compra
+     * @param:{int}data = Request
      * @param:{float}peso_entrada = peso total dos animais na nota
      */
-    public function finalizaCompra($id, $peso_entrada){
+    public function finalizaCompra($data, $peso_entrada){
 
         $db = $this->getDb();
+
+        $id = $data["nota_aberta"];
+        $data_pesagem = $data["data_pesagem"];
 
         // Recuperar a Nota, Para fazer os calculos de estatisticas
         $compra = $this->find($id, 'compras');
@@ -208,6 +211,7 @@ class CompraAnimais extends Base {
         $qtd_animais = $compra->quantidade;
         $peso_saida  = $compra->peso_saida;
         $valor_compra = $compra->valor_nota;
+
 
         $peso_medio  = ($peso_entrada / $qtd_animais);
         $diferenca_total = ($peso_saida - $peso_entrada);
@@ -227,7 +231,7 @@ class CompraAnimais extends Base {
         $stm = $db->prepare($query);
 
         $stm->bindValue(':id', $id);
-        $stm->bindValue(':data_pesagem', date('Y-m-d'));
+        $stm->bindValue(':data_pesagem', $data_pesagem);
         $stm->bindValue(':peso_entrada', $peso_entrada);
         $stm->bindValue(':peso_medio', $peso_medio);
         $stm->bindValue(':valor_kg_vivo', $valor_kg_vivo);

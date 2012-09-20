@@ -33,8 +33,8 @@ class Animais extends Base {
         $ultimo_codigo = $this->getAt('MAX(id) as id', null, 'animais_codigos');
         $next_codigo = ($ultimo_codigo[0]->id + 1);
 
-        $ultima_ocorrencia = $this->getAt('MAX(id) as id', null, 'ocorrencias');
-        $next_ocorrencia = ($ultima_ocorrencia[0]->id + 1);
+//         $ultima_ocorrencia = $this->getAt('MAX(id) as id', null, 'ocorrencias');
+//         $next_ocorrencia = ($ultima_ocorrencia[0]->id + 1);
 
         // Para Cada Animal fazer o Insert
         foreach ($animais as $animal) {
@@ -72,7 +72,7 @@ class Animais extends Base {
                 foreach ($animal->codigos as $codigo){
 
                     // Query de Insert dos Codigos
-                    $query_codigos = "INSERT INTO rebanho.animais_codigos (id, confinamento_id, animal_id, codigo, tipo, data) VALUES (:id, :confinamento_id, :animal_id, :codigo, :tipo, :data);";
+                    $query_codigos = "INSERT INTO animais_codigos (id, confinamento_id, animal_id, codigo, tipo, data) VALUES (:id, :confinamento_id, :animal_id, :codigo, :tipo, :data);";
 
                     $stm = $db->prepare($query_codigos);
 
@@ -103,14 +103,14 @@ class Animais extends Base {
 
                 $descricao = "Entrada - {$confinamento->confinamento}";
 
-                $query_ocorrencia = "INSERT INTO rebanho.ocorrencias (id, confinamento_id, quadra_id, animal_id, ocorrencia, descricao, data) VALUES (:id, :confinamento_id, :quadra_id, :animal_id, :ocorrencia, :descricao, :data);";
+                $query_ocorrencia = "INSERT INTO ocorrencias (confinamento_id, quadra_id, animal_id, ocorrencia, descricao, data, tipo) VALUES (:confinamento_id, :quadra_id, :animal_id, :ocorrencia, :descricao, :data, :tipo);";
 
                 $stm = $db->prepare($query_ocorrencia);
 
-                $stm->bindValue(':id', $next_ocorrencia);
                 $stm->bindValue(':confinamento_id', $animal->confinamento_id);
                 $stm->bindValue(':quadra_id', $animal->quadra_id);
                 $stm->bindValue(':animal_id', $idAnimal);
+                $stm->bindValue(':tipo', 1);
                 $stm->bindValue(':ocorrencia', 'Entrada');
                 $stm->bindValue(':descricao', $descricao);
                 $stm->bindValue(':data', $codigo->data);
@@ -128,7 +128,6 @@ class Animais extends Base {
             // incremento do Ultimo Id
             $next_id++;
             $next_codigo++;
-            $next_ocorrencia++;
         }
 
         $result = new StdClass();

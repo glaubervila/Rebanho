@@ -22,7 +22,27 @@ Ext.define('Rebanho.view.animais.LocalizarAnimalWindow' ,{
         Ext.applyIf(me, {
 
             items: [
-                
+                Ext.create('Ext.form.Panel',{
+                    fieldDefaults: {
+                        labelAlign: 'top',
+                        labelWidth: 100,
+                    },
+                    layout:'form',
+                    bodyStyle:'padding:4px',
+                    items:[
+                    {
+                        xtype: 'textfield',
+                        name: 'codigo',
+                    },
+                    ]
+                    , buttons: [{
+                        text: 'Pesquisar',
+                        iconCls: 'icon-zoom',
+                        action: 'action_pesquisar',
+                        itemId: 'btnPesquisar',
+                        tooltip: 'Click para Pesquisar um Registros Pelo Código.',
+                    }]
+                })
             ]
         });
 

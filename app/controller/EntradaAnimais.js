@@ -104,9 +104,11 @@ Ext.define('Rebanho.controller.EntradaAnimais', {
         // Setando o Atributo Confinamento
         this.confinamento = Ext.getCmp('main_viewport').getConfinamentoId();
 
-        // Carregando a Store de Quadras
-        this.getStore('Quadras').filter("confinamento_id", this.confinamento);
-
+        if (this.confinamento != 0){
+            // Carregando a Store de Quadras
+            this.getStore('Quadras').filter("confinamento_id", this.confinamento);
+        }
+        
         // Setando a Data da Pesagem
         if (this.data_pesagem == 0){
             this.data_pesagem = Ext.Date.dateFormat(new Date(),'Y-m-d');
@@ -163,6 +165,11 @@ Ext.define('Rebanho.controller.EntradaAnimais', {
                     // Setando o Status da Nota
                     this.statusNota = values.status;
 
+                    this.confinamento_id = values.confinamento_id;
+
+                    // Carregando a Store de Quadras
+                    this.getStore('Quadras').filter("confinamento_id", this.confinamento_id);
+
                     // Fechando a Janela
                     window.close();
                 }
@@ -181,7 +188,7 @@ Ext.define('Rebanho.controller.EntradaAnimais', {
         if (this.idNotaAberta != 0){
 
             if  (this.statusNota == 4) {
-                controller.scope.inicioEntradaAnimais(controller.scope.idNotaAberta);
+                this.inicioEntradaAnimais(controller.scope.idNotaAberta);
             }
             else {
                 // Se tiver Pedir o Numero Inicial dos Codigos
@@ -192,20 +199,22 @@ Ext.define('Rebanho.controller.EntradaAnimais', {
                         // Verifica se tem Identificacao
                         if (text != ''){
                             // Seta o Atributo Identificacao
-                            controller.scope.identificacao = text;
+                            //controller.scope.identificacao = text;
+                            this.identificacao = text;
                             // Executa a Funcao Responsavel por criar os registros
-                            controller.scope.inicioEntradaAnimais(controller.scope.idNotaAberta, controller.scope.identificacao);
+                            //controller.scope.inicioEntradaAnimais(controller.scope.idNotaAberta, controller.scope.identificacao);
+                            this.inicioEntradaAnimais(this.idNotaAberta, this.identificacao);
                         }
                         else {
                             // Se nao tiver abre novamente a janela
-                            controller.scope.onWindowSelecaoNotaClose(window, controller);
+                            this.onWindowSelecaoNotaClose(window, controller);
                         }
                     }
                     else {
                         // abre novamente a janela
-                        controller.scope.onWindowSelecaoNotaClose(window, controller);
+                        this.onWindowSelecaoNotaClose(window, controller);
                     }
-                });
+                },this);
             }
         }
         else {
@@ -266,6 +275,7 @@ Ext.define('Rebanho.controller.EntradaAnimais', {
      */
     inicioPesagem: function(){
         console.log('EntradaAnimais - inicioPesagem');
+
         // Recuperando a Store
         store = this.getStore('EntradaAnimais');
 
@@ -540,6 +550,7 @@ Ext.define('Rebanho.controller.EntradaAnimais', {
                 classe: 'NotasEntrada',
                 action: 'FinalizarNota',
                 nota_aberta: this.idNotaAberta,
+                data_pesagem : this.data_pesagem,
             },
             scope:this,
             success: function ( result, request ) {

@@ -35,12 +35,6 @@ Ext.define('Rebanho.view.layout.Header', {
                                 var tabs = Ext.getCmp('mainTabpanel').novaAba('entradaanimaispanel');
                             },
                         },
-                        {
-                            text: 'Compra de Vacinas/Medicamentos',
-                        },
-                        {
-                            text: 'Compra de Ração',
-                        }
                     ]
                 },
                 {
@@ -97,15 +91,11 @@ Ext.define('Rebanho.view.layout.Header', {
                             },
                         },
                         {
-                            text: 'Manejos',
+                            text: 'Manejo',
                             iconCls: 'icon-application_form',
                         },
                         {
                             text: 'Remarcar',
-                            iconCls: 'icon-application_form',
-                        },
-                        {
-                            text: 'Dados do Abate',
                             iconCls: 'icon-application_form',
                         },
                     ]
@@ -255,12 +245,12 @@ Ext.define('Rebanho.view.layout.Header', {
 //                 var tabs = Ext.getCmp('mainTabpanel').novaAba('pesagensgrid');
 //             },
 //         },
-        {
-            text: 'TESTE2',
-            handler: function(){
-                Ext.create('Rebanho.view.animais.AnimaisWindow',{});
-            },
-        },
+//         {
+//             text: 'TESTE2',
+//             handler: function(){
+//                 Ext.create('Rebanho.view.animais.AnimaisWindow',{});
+//             },
+//         },
 
 
     ]

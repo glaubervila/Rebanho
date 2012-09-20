@@ -118,7 +118,7 @@ Ext.define('Rebanho.view.animais.AnimaisForm' ,{
                                     value : 'Regular',
                                     items : ['Pessima', 'Ruim', 'Regular', 'Boa', 'Otima'],
                                     margins: '0 0 0 5',
-                                    width: 130,
+                                    width: 125,
                                 },{
                                     fieldLabel : 'Escore',
                                     xtype : 'ratingfield',
@@ -297,42 +297,3 @@ Ext.define('Rebanho.view.animais.AnimaisForm' ,{
         this.callParent(arguments);
     }
  });
-
-
-// {
-//                         title: 'Informações do Animal',
-//                         region: 'center',
-//                         xtype: 'panel',
-//                         layout: 'fit',
-//                         margins: '5 5 0 0',
-//                         items: [,]
-//                         // Final do Formulario // Final do Painel Central
-//                         }]
-//                     // Final do Panel Border
-//                     }
-
-
-            //}]
-                // Final da Tab de Informacoes do Animal
-//                 },{
-//                     title    : 'Pesagens',
-//                     border :false,
-//                     items:[{
-//                         xtype:'textfield',
-//                         fieldLabel:'Confinamento',
-//                         name: 'confinamento_id',
-//                     }]
-//                 // Final da Tab de Pesagens
-//                 }]
-            // Barra e Menus
-//             bbar:{
-//                 items:[
-//                 '->',
-//                 {
-//                     xtype: 'button',
-//                     text: 'Cancelar',
-//                     action: 'action_cancelar',
-//                     iconCls: 'icon-cancel',
-//                     tooltip: 'Click para <font color="red"><b>Abandonar</b></font> a Janela de Cadastro<br>Nenhuma informação será Gravada e o Cadastro será Fechado.'
-//                 }]
-//             }

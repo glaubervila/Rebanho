@@ -265,8 +265,9 @@ class Pesagens extends Base {
      * cria uma nova pesagem para cada animal com o tipo '3 - compra'
      * peso de compra = peso de entrada + diferenca_media
      * @param:$compra_id - Chave de Compra que se quer criar as pesagens de compra
+     * @param:$data_entrada - Data que fez a pesagem
      */
-    public function criarPesagemCompra($compra_id){
+    public function criarPesagemCompra($compra_id, $data_entrada){
 
         $db = $this->getDb();
 
@@ -308,7 +309,7 @@ class Pesagens extends Base {
             // Crio a Ocorrencia de Peso de Compra
             $descricao = "Peso de Compra - {$peso_compra} Kg";
 
-            $query_ocorrencia = "INSERT INTO rebanho.ocorrencias (confinamento_id, quadra_id, animal_id, ocorrencia, descricao, data) VALUES (:confinamento_id, :quadra_id, :animal_id, :ocorrencia, :descricao, :data);";
+            $query_ocorrencia = "INSERT INTO ocorrencias (confinamento_id, quadra_id, animal_id, ocorrencia, descricao, data) VALUES (:confinamento_id, :quadra_id, :animal_id, :ocorrencia, :descricao, :data);";
 
             $stm = $db->prepare($query_ocorrencia);
 

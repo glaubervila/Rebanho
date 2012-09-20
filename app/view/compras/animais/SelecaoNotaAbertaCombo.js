@@ -25,6 +25,7 @@ Ext.define('Rebanho.view.compras.animais.SelecaoNotaAbertaCombo', {
 
             fields: [
                 {name:'id', type: 'int'},
+                {name:'confinamento_id', type: 'int'},
                 {name:'data_compra', type: 'date', dateFormat: 'Y-m-d' },
                 {name:'numero_nota', type: 'int'},
                 {name:'fornecedor_nome', type: 'string'},

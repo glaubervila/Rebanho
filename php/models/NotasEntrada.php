@@ -37,7 +37,6 @@ class NotasEntrada extends Base {
 
             foreach ($rows as $row){
                 $record = $row;
-
                 // Para Cada Registro Recuperar o Nome do Fornecedor e a Fazenda
                 $fornecedor = $this->find($record->fornecedor_id, 'fornecedores');
                 $record->fornecedor_nome    = $fornecedor->nome;
@@ -288,15 +287,15 @@ class NotasEntrada extends Base {
         // Recuperar o Peso Total
         $cnt = NotasEntrada::getContadores($data, false);
 
-        $result = CompraAnimais::finalizaCompra($data[nota_aberta], $cnt->peso_total);
+        $result = CompraAnimais::finalizaCompra($data, $cnt->peso_total);
 
         // Se tiver incluido a compra sem erros
         if ($result->success == true){
             // Executar o Metodo Pessagem::criarPesagemCompra
-            $result = Pesagens::criarPesagemCompra($data[nota_aberta]);
+            $result = Pesagens::criarPesagemCompra($data["nota_aberta"],$data["data_pesagem"]);
             if ($result->success == true){
                 // Executar Metodo para trocar o Status da Compra para Fechado
-                $result = CompraAnimais::updateStatus($data[nota_aberta], 2);
+                $result = CompraAnimais::updateStatus($data["nota_aberta"], 2);
             }
         }
 

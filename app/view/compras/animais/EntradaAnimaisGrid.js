@@ -2,8 +2,8 @@ Ext.define('Rebanho.view.compras.animais.EntradaAnimaisGrid' ,{
     extend: 'Ext.grid.Panel',
 
     requires: [
-        'Ext.ux.grid.column.ActionButtonColumn',
-        'Ext.grid.plugin.RowEditing',
+        //'Ext.ux.grid.column.ActionButtonColumn',
+        //'Ext.grid.plugin.RowEditing',
     ],
 
     alias : 'widget.entradaanimaisgrid',
@@ -35,12 +35,18 @@ Ext.define('Rebanho.view.compras.animais.EntradaAnimaisGrid' ,{
                 text: "Identificação",
                 dataIndex: 'codigo',
                 width: 200,
+                field: {
+                    xtype: 'textfield',
+                },
             },
             {
                 text: "Peso Entrada",
                 dataIndex: 'peso_entrada',
-                sortable: true,
                 width: 200,
+                field: {
+                    xtype: 'textfield',
+                },
+
             },
             {
                 text: "Sexo",
@@ -81,15 +87,6 @@ Ext.define('Rebanho.view.compras.animais.EntradaAnimaisGrid' ,{
                     enableToggle: true,
                     tooltip: 'Click para Digitar o Código do Animal antes do Peso. a Janela de Codigo será exibida<br>Digite o Codigo e após digite o Peso.<br>Se estiver desativada está opção aparecerá a janela de peso seguindo a ordem dos códigos dos animais'
                 },
-//                 {
-//                     xtype: 'datefield',
-//                     itemId: 'dtfDataEntrada',
-//                     fieldLabel:'Data de Entrada',
-//                     name: 'data_entrada',
-//                     allowBlank: false,
-//                     format: 'd/m/y',
-//                     submitFormat: 'Y-m-d',
-//                 },
                 '-',
                 {
                     xtype: 'button',

@@ -1,3 +1,8 @@
+/** Fundo Transparent nos Forms **/
+.x-panel-body-default {
+    background: none repeat scroll 0 0 transparent;
+}
+
 
 /*BoxMSG*/
 .msg .x-box-mc {
@@ -63,7 +68,7 @@
 .icon-user_suit { background-image: url(user_suit.gif) !important; background-repeat: no-repeat; }
 .icon-scale-32 { background-image: url(scale.png) !important; background-repeat: no-repeat; }
 .icon-scale-16 { background-image: url(scale_16.png) !important; background-repeat: no-repeat; }
-
+.icon-zoom { background-image: url(zoom.png) !important; background-repeat: no-repeat; }
 
 /*Field Star Rating*/
 .x-form-rating-field {

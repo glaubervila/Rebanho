@@ -15,9 +15,9 @@ Ext.define('Rebanho.view.compras.animais.EntradaAnimaisWindow' ,{
 
     resizable:false,
 
-    width: 400,
+    width: 420,
 
-    height: 340,
+    height: 400,
 
     modal: true,
 
@@ -41,6 +41,10 @@ Ext.define('Rebanho.view.compras.animais.EntradaAnimaisWindow' ,{
                     {
                         xtype: 'hidden',
                         name: 'status',
+                    },
+                    {
+                        xtype: 'hidden',
+                        name: 'confinamento_id',
                     },
                     {
                         xtype: 'fieldset',
@@ -87,6 +91,7 @@ Ext.define('Rebanho.view.compras.animais.EntradaAnimaisWindow' ,{
                                 fieldDefaults: {
                                     labelAlign: 'top',
                                     readOnly: true,
+                                    anchor: '-5',
                                 },
                                 items:[
                                     {
@@ -120,6 +125,9 @@ Ext.define('Rebanho.view.compras.animais.EntradaAnimaisWindow' ,{
                                 defaultType:'textfield',
                                 fieldDefaults: {
                                     labelAlign: 'top',
+                                },
+                                defaults: {
+                                    anchor: '-5',
                                 },
                                 items:[
                                     {
