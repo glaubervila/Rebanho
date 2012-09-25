@@ -23,6 +23,7 @@ Ext.define('Rebanho.model.EntradaAnimal', {
         {name:'escore', type: 'string'},
         {name:'status', type: 'string'},
         {name:'codigo', type: 'string'},
+        {name:'data_entrada', type: 'date', dateFormat: 'Y-m-d'},
         {name:'peso_entrada', type: 'float'},
         {name:'peso_compra', type: 'float'},
         {name:'quadra', type: 'string'},

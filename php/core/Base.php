@@ -54,13 +54,27 @@ abstract class Base {
 
     public function save($data) {
 
-        $data = $this->decode_utf8($data);
-
-        if ($data->id > 0){
-            $this->update($data);
+        if (is_array($data)){
+            foreach ($data as $registro){
+                $registro = $this->decode_utf8($registro);
+                if ($registro->id > 0){
+                    $this->update($registro);
+                }
+                else {
+                    $this->insert($registro);
+                }
+            }
         }
         else {
-            $this->insert($data);
+            $data = $this->decode_utf8($data);
+
+            // Se for update ou insercao em um unico registro
+            if ($data->id > 0){
+                $this->update($data);
+            }
+            else {
+                $this->insert($data);
+            }
         }
     }
 

@@ -73,12 +73,8 @@ Ext.define('Rebanho.controller.EntradaAnimais', {
             },
 
             // Ao Clicar no Pesar
-            'entradaanimaisgrid button[action=action_pesar]': {
-                click: this.inicioPesagem,
-            },
-            // Ao Clicar no Botao Digitar Codigo
-            'entradaanimaisgrid button[action=action_codigo]': {
-                toggle: this.onToggleCodigo
+            'entradaanimaisgrid button[action=action_salvar]': {
+                click: this.gravarPesagem,
             },
 
             // Ao Clicar em Finalizar
@@ -123,7 +119,6 @@ Ext.define('Rebanho.controller.EntradaAnimais', {
             edit: this.onEditRowCell,
             canceledit: this.onEditRowCell,
         });
-
 
         // Limpando a Store
         // Recuperar a Store
@@ -231,6 +226,19 @@ Ext.define('Rebanho.controller.EntradaAnimais', {
      */
     inicioEntradaAnimais: function(idNotaAberta, identificacao){
         console.log('EntradaAnimais - inicioEntradaAnimais');
+
+        // Recuperando a Store
+        store = this.getStore('EntradaAnimais');
+
+        // Setando a Action para o Load
+        //store.proxy.setExtraParam('action','getAnimaisNota');
+
+        // Limpando o Filtro
+        store.removeAll();
+        store.clearFilter(true);
+        // Adicionando novo Filtro pra Pegar todos os animais dessa nota
+        store.filter("compra_id", this.idNotaAberta);
+
         Ext.Ajax.request({
             url : 'php/main.php',
             method : 'POST',
@@ -246,8 +254,7 @@ Ext.define('Rebanho.controller.EntradaAnimais', {
                 var retorno = Ext.decode(result.responseText);
                 if (retorno.success){
 
-                    // Inicio de Pesagem
-                    this.inicioPesagem();
+
                 }
                 else {
                     // Mostrando Mensagem de Erro
@@ -275,20 +282,6 @@ Ext.define('Rebanho.controller.EntradaAnimais', {
      */
     inicioPesagem: function(){
         console.log('EntradaAnimais - inicioPesagem');
-
-        // Recuperando a Store
-        store = this.getStore('EntradaAnimais');
-
-        // Setando a Action para o Load
-        store.proxy.setExtraParam('action','getAnimaisNota');
-
-        // Limpando o Filtro
-        store.removeAll();
-        store.clearFilter(true);
-        // Adicionando novo Filtro pra Pegar todos os animais dessa nota
-        store.filter("compra_id", this.idNotaAberta);
-
-
         Ext.Ajax.request({
             url : 'php/main.php',
             method : 'GET',
@@ -354,27 +347,8 @@ Ext.define('Rebanho.controller.EntradaAnimais', {
                 }
             },
         })
-
     },
 
-    /** Funcao: sequenciaCodigo()
-     * Executada quando a opcao de digitar codigo esta desligada
-     * pega o registro na store pela ordem(index)
-     * e executa a funcao de digitarPeso()
-     */
-    sequenciaCodigo: function(){
-
-        var store = this.getEntradaAnimaisGrid().getStore();
-        animal = store.getAt(this.quantidade_pesada);
-
-        if (animal){
-            // Se encontrar um Animal Passa para o Prompt de Peso
-            this.digitarPeso(animal, 0);
-        }
-        else {
-            this.inicioPesagem();
-        }
-    },
 
     /** Funcao: digitarCodigo
      * Executada quando se digita um codigo na Janela Prompt de Codigo
@@ -457,50 +431,16 @@ Ext.define('Rebanho.controller.EntradaAnimais', {
     },
 
     /** Funcao: gravarPesagem
-     * Grava o Peso de um animal, cria um record com o model pesagem, depois adiciona pela
-     * store depois volta para a funcao inicioPesagem
-     * @param:{object} animal = record animal recuperado da store
-     * @param:{string} codigo = codigo digitado no prompt codigo
-     * @param:{float}  peso   = peso digitado no prompt peso
-     * @param:{bool} looping = se looping for true repete a digitacao do peso
+     * Grava todas as alteraçoes na Grid de entrada de animais
+     * executa o metodo sync da store EntradaAnimais
      */
-    gravarPesagem: function(animal, codigo, peso, looping){
+    gravarPesagem: function(){
         console.log('EntradaAnimais - gravarPesagem');
-        // Criando o Registro
-        var pesagem = Ext.create('Rebanho.model.Pesagem', {
-            confinamento_id : animal.data.confinamento_id,
-            quadra_id  : animal.data.quadra_id,
-            animal_id  : animal.data.id,
-            data : this.data_pesagem,
-            peso: peso,
-            tipo: 1,
-        });
 
         // Recuperar a Store
         var store = this.getStore('EntradaAnimais');
+        store.sync();
 
-        errors = pesagem.validate();
-
-        if (errors.isValid()){
-            // Salvando Usando o Model
-            if (pesagem.save()){
-                console.log('load da store EntradaAnimais');
-                // Dando Load Na Grid e usando o callback para Voltar ao Inicio
-                store.load({
-                    callback:function(){
-                        Ext.BoxMsg.msg('Sucesso!', 'Registro Gravado com <font color=green><b>Sucesso</b></font>!');
-                        if (looping !=false) {
-                            this.inicioPesagem();
-                        }
-                    },
-                    scope: this,
-                });
-            }
-        }
-        else {
-            console.log(errors.items);
-            Ext.MessageBox.show({ title:'Desculpe!', msg: 'Houve um Erro na Gravação do Registro', buttons: Ext. MessageBox.OK, icon:  Ext.MessageBox.ERROR });
-        }
     },
 
     /** Funcao: setContadores
@@ -592,7 +532,7 @@ Ext.define('Rebanho.controller.EntradaAnimais', {
         console.log('EntradaAnimais - onRowDblClick');
         var records = this.getEntradaAnimaisGrid().getSelectionModel().getSelection();
         var animal = records[0];
-        this.digitarPeso(animal, animal.data.codigo, false);
+        //this.digitarPeso(animal, animal.data.codigo, false);
     },
 
     onBeforeEditCell: function(editor, e, object){
@@ -600,29 +540,35 @@ Ext.define('Rebanho.controller.EntradaAnimais', {
 
         // Recupera a Store para alterar o Action
         store = e.grid.getStore('EntradaAnimais');
+        console.log(editor);
+        console.log(e);
+        console.log(object);
+        e.record.set('data_entrada','2012-09-24');
 
-        // Setando a Action para o Update
-        if (col == 'sexo') {
-            store.proxy.setExtraParam('action','updateSexo');
-        }
-        else if (col == 'quadra_id'){
-            store.proxy.setExtraParam('action','updateQuadra');
-        }
+//         // Setando a Action para o Update
+//         if (col == 'sexo') {
+//             store.proxy.setExtraParam('action','updateSexo');
+//         }
+//         else if (col == 'quadra_id'){
+//             store.proxy.setExtraParam('action','updateQuadra');
+//         }
 
     },
 
     onEditRowCell: function(editor, e, object){
         // Recupera a Store para alterar o Action
         store = e.grid.getStore('EntradaAnimais');
+
+        console.log(e);
         // Limpando os ExtraParam
-        store.proxy.setExtraParam('action','');
+        //store.proxy.setExtraParam('action','');
     },
 
     onCancelEditCell: function(editor, e, object){
         // Recupera a Store para alterar o Action
         store = e.grid.getStore('EntradaAnimais');
         // Limpando os ExtraParam
-        store.proxy.setExtraParam('action','');
+        //store.proxy.setExtraParam('action','');
     },
 });
 

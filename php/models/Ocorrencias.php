@@ -19,7 +19,6 @@ class Ocorrencias extends Base {
 
     public function insert($data, $json = true){
 
-
         // Verificar se o Registro e UNICO
         // Chave UNIQUE = confinamento_id + animal_id + tipo + data
         $unique = $this->findBy(array('confinamento_id','animal_id','tipo', 'data'), array($data->confinamento_id, $data->animal_id, $data->tipo, $data->data), 'ocorrencias');

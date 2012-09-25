@@ -1,5 +1,13 @@
 <?php
 
+/**
+Tipos de Pesagens
+1 - Pesagem de Entrada
+2 - Pesagem de Rotina
+3 - Pesagem de Compra
+4 - Pesagem de Saida
+**/
+
 header('Content-Type: text/javascript; charset=UTF-8');
 
 class Pesagens extends Base {
@@ -11,13 +19,26 @@ class Pesagens extends Base {
 
     public function insert($data, $json = true){
 
+        // Criado o Atributo descricao_ocorrencia
+        $data->descricao_ocorrencia = "Pesagem - {$data->peso} Kg";
+
         // Verificar se o Registro e UNICO
         // Chave UNIQUE = confinamento_id + animal_id + tipo
-        $unique = $this->findBy(array('confinamento_id','animal_id','tipo'), array($data->confinamento_id, $data->animal_id, $data->tipo), 'pesagens');
+        $unique = $this->findBy(array('confinamento_id','animal_id','data','tipo'), array($data->confinamento_id, $data->animal_id, $data->data, $data->tipo), 'pesagens');
 
         if ($unique){
+
             $data->id = $unique->id;
-            Pesagens::update($data, $json);
+            $update = Pesagens::update($data, $json);
+            $result = new StdClass();
+            if ($update) {
+                $result->success = true;
+            }
+            else {
+                $result->success = false;
+            }
+
+            return $result;
         }
         else {
             $db = $this->getDb();
@@ -40,21 +61,33 @@ class Pesagens extends Base {
             $insert = $db->lastInsertId($query);
 
             // Criando uma Ocorrencia de Pesagem
-            $descricao = "Pesagem - {$data->peso} Kg";
+            $ocorrencia = Pesagens::criarOcorrenciaPesagem($data, false);
 
-            $query_ocorrencia = "INSERT INTO rebanho.ocorrencias (confinamento_id, quadra_id, animal_id, ocorrencia, descricao, data) VALUES (:confinamento_id, :quadra_id, :animal_id, :ocorrencia, :descricao, :data);";
+            if (!$ocorrencia->success){
+                // Se nao Criou a Ocorrencia Para Tudo
+                $db->rollback();
+                if ($json){
+                    die(json_encode($ocorrencia));
+                }
+                else {
+                    return $ocorrencia;
+                }
+            }
 
-            $stm = $db->prepare($query_ocorrencia);
-
-            $stm->bindValue(':confinamento_id', $data->confinamento_id);
-            $stm->bindValue(':quadra_id', $data->quadra_id);
-            $stm->bindValue(':animal_id', $data->animal_id);
-            $stm->bindValue(':ocorrencia', 'Pesagem');
-            $stm->bindValue(':descricao', $descricao);
-            $stm->bindValue(':data', $data->data);
-
-            $stm->execute();
-
+//             $descricao = "Pesagem - {$data->peso} Kg";
+// 
+//             $query_ocorrencia = "INSERT INTO ocorrencias (confinamento_id, quadra_id, animal_id, ocorrencia, descricao, data) VALUES (:confinamento_id, :quadra_id, :animal_id, :ocorrencia, :descricao, :data);";
+// 
+//             $stm = $db->prepare($query_ocorrencia);
+// 
+//             $stm->bindValue(':confinamento_id', $data->confinamento_id);
+//             $stm->bindValue(':quadra_id', $data->quadra_id);
+//             $stm->bindValue(':animal_id', $data->animal_id);
+//             $stm->bindValue(':ocorrencia', 'Pesagem');
+//             $stm->bindValue(':descricao', $descricao);
+//             $stm->bindValue(':data', $data->data);
+// 
+//             $stm->execute();
 
             if ($insert) {
 
@@ -62,13 +95,26 @@ class Pesagens extends Base {
                 $newData = $data;
                 $newData->id = $insert;
 
-                $this->ReturnJsonSuccess($msg,$data);
+                if ($json) {
+                    $this->ReturnJsonSuccess($msg,$data);
+                }
+                else {
+                    $return->success = true;
+                }
             }
             else {
                 $db->rollback();
                 $error = $stm->errorInfo();
-                $this->ReturnJsonError($error);
+                if ($json) {
+                    $this->ReturnJsonError($error);
+                }
+                else {
+                    $return->failure = true;
+                    $return->msg = "Falha ao Inserir o Registro de Pesagem.";
+                    $return->error = $error[1];
+                }
             }
+            return $return;
         }
     }
 
@@ -92,7 +138,22 @@ class Pesagens extends Base {
 
         $update = $stm->execute();
 
+        // Criando uma Ocorrencia de Pesagem
+        $ocorrencia = Pesagens::criarOcorrenciaPesagem($data, false);
+
+        if (!$ocorrencia->success){
+            // Se nao Criou a Ocorrencia Para Tudo
+            $db->rollback();
+            if ($json){
+                die(json_encode($ocorrencia));
+            }
+            else {
+                return $ocorrencia;
+            }
+        }
+
         if ($update) {
+
             if ($json) {
                 $this->ReturnJsonSuccess($msg,$data);
             }
@@ -105,6 +166,50 @@ class Pesagens extends Base {
             $this->ReturnJsonError($error);
         }
     }
+
+    /** Metodo: criarOcorrenciaPesagem
+     * Cria um objeto de ocorrencia para a Pesagem
+     * usa o metodo insert da Classe Ocorrencia
+     * se for um update a classe vai identificar o registro e fazer a atualizacao.
+     */
+    public function criarOcorrenciaPesagem($data){
+
+        // Criando o Obj Ocorrencia
+        $objOcorrencia = new StdClass();
+        $objOcorrencia->confinamento_id = $data->confinamento_id;
+        $objOcorrencia->quadra_id = $data->quadra_id;
+        $objOcorrencia->animal_id = $data->animal_id;
+        $objOcorrencia->ocorrencia = 'Pesagem';
+        $objOcorrencia->descricao = $data->descricao_ocorrencia;
+        $objOcorrencia->data = $data->data;
+
+        // Classificando o Tipo de Ocorrencia
+        if ($data->tipo == 1) {
+            // Se a Pesagem for de Entrada(1) a ocorrencia e de Entrada(2)
+            $objOcorrencia->tipo = 2;
+        }
+        else if ($data->tipo == 2) {
+            // Se a Pesagem for de Rotina(2) a ocorrencia e de Pesagem(4)
+            $objOcorrencia->tipo = 4;
+        }
+        else if ($data->tipo == 3) {
+            // Se a Pesagem for de Compra(3) a ocorrencia e de Compra(3)
+            $objOcorrencia->tipo = 3;
+        }
+
+        $return = Ocorrencias::insert($objOcorrencia, false);
+
+        if ($return->success){
+            $return->success = true;
+        }
+        else {
+            $return->failure = true;
+            $return->msg = "Falha ao Criar a Ocorrencia de Pesagem";
+        }
+
+        return $return;
+    }
+
 
     /** Metodo: getPesagemEntrada
      * Retorna a pesagem que tiver o tipo = 1 para o confinamento que ta no objeto nota

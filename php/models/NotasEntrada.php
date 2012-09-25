@@ -310,7 +310,7 @@ class NotasEntrada extends Base {
      * Altera o Sexo do Animal executa o metodo resposavel pelo update
      * @param:$data - array com os parametros do request
      */
-    public function updateSexo($data){
+    public function updateSexo($data, $json = true){
 
         $animal_id = $data->id;
         $compra_id = $data->compra_id;
@@ -338,18 +338,76 @@ class NotasEntrada extends Base {
 
         }
 
-        echo json_encode($result);
+        if ($json) {
+            echo json_encode($result);
+        }
+        else {
+            return $result;
+        }
 
     }
 
-    public function updateQuadra($data){
+    public function updateQuadra($data, $json = true){
 
         $animal_id = $data->id;
         $quadra_id = $data->quadra_id;
 
         $result = Manejos::manejoQuadras($data, $animal_id, $quadra_id, false);
 
-        echo json_encode($result);
+        if ($json) {
+            echo json_encode($result);
+        }
+        else {
+            return $result;
+        }
+    }
+
+    public function criarPesagemEntrada($data, $json = true){
+
+        $objPesagem = new StdClass();
+        $objPesagem->confinamento_id = $data->confinamento_id;
+        $objPesagem->quadra_id = $data->quadra_id;
+        $objPesagem->animal_id = $data->id;
+        $objPesagem->data = $data->data_entrada;
+        $objPesagem->peso = $data->peso_entrada;
+        $objPesagem->tipo = 1; // Pesagem de Entrada
+
+        $result = Pesagens::insert($objPesagem, false);
+
+        if ($json) {
+            echo json_encode($result);
+        }
+        else {
+            return $result;
+        }
+    }
+
+    public function load($data){
+
+        $this->getAnimaisNota($data, true);
+    }
+
+    public function update($data) {
+
+        //Formantando a Data
+        $data->data_entrada = $this->DateToMysql($data->data_entrada);
+
+        // Criar a Pesagem de Entrada
+        $result_pesagem = $this->criarPesagemEntrada($data, false);
+
+        if (!$result_pesagem->success) {
+            // Se houver Falha na Criacao da Pesagem de Entrada
+            // OBS: MELHORAR O TRATAMENTO DE ERROS
+            die ("success:'false', message:'falha na Criacao do Peso de Entrada'");
+        }
+
+        // Criar o Manejo
+        $result_manejo = $this->updateQuadra($data, false);
+        if (!$result_manejo->success) {
+            // Se houver Falha na Criacao da Pesagem de Entrada
+            // OBS: MELHORAR O TRATAMENTO DE ERROS
+            die ("success:'false', message:'falha na Criacao do Peso de Entrada'");
+        }
 
     }
 }
