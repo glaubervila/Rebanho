@@ -31,8 +31,11 @@ Ext.define('Rebanho.view.animais.LocalizarAnimalWindow' ,{
                     bodyStyle:'padding:4px',
                     items:[
                     {
-                        xtype: 'textfield',
+                        xtype: 'numberfield',
                         name: 'codigo',
+                        itemId: 'txtCodigoAnimal',
+                        allowBlank: false,
+                        minValue: 0,
                     },
                     ]
                     , buttons: [{

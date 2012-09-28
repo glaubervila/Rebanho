@@ -178,12 +178,17 @@ class Animais extends Base {
      * Recebe um codigo de animal e retorna o id do animal,
      * @return:$id = chave interna do animal
      */
-    public function getIdByCodigo($data){
+    public function getIdByCodigo($data, $json = true){
 
         $codigo       = $data["codigo"];
         $confinamento = $data["confinamento"];
 
-        $sql = "SELECT animal_id FROM animais_codigos WHERE codigo = {$codigo} AND confinamento_id = {$confinamento};";
+        if ($confinamento) {
+            $sql = "SELECT animal_id FROM animais_codigos WHERE codigo = {$codigo} AND confinamento_id = {$confinamento};";
+        }
+        else {
+            $sql = "SELECT animal_id FROM animais_codigos WHERE codigo = {$codigo};";
+        }
 
         $db = $this->getDb();
         $stm = $db->prepare($sql);
@@ -203,7 +208,7 @@ class Animais extends Base {
             $result->message = "Desculpe, mais <font color='red'>Nenhum</font> Animal foi encontrado.<br> Verifique se este código abaixo está correto<br> Código: <font color='red'>{$codigo}</font>";
         }
 
-        if ($data["returnJson"]){
+        if ($data["returnJson"] or $json){
             echo json_encode($result);
         }
         else {
@@ -352,4 +357,38 @@ class Animais extends Base {
 
         return $result;
     }
+
+
+    /**Metodo: localizarAnimal
+     * faz uma busca usando um filtro e retorna um objAnimal
+     */
+    public function localizarAnimal($data, $json = true){
+
+        // Cria o Obj de Retorno
+        $return = new StdClass();
+
+        // Recupera o Id do Animal
+        $animal_id = Animais::getIdByCodigo($data, false);
+
+
+       // var_dump($animal_id);
+        // Se Encontrou
+        if ($animal_id->success){
+
+
+        }
+        else {
+            // Se nao Encontrou retorna erro
+            $return = $animal_id;
+        }
+
+
+        if ($json){
+            echo json_encode($return);
+        }
+        else {
+            return $return;
+        }
+    }
+
 }

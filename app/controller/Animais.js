@@ -37,6 +37,11 @@ Ext.define('Rebanho.controller.Animais', {
             ref: 'animaisWindow',
             selector: 'animaiswindow'
         },
+        {
+            ref: 'localizarAnimalWindow',
+            selector: 'localizaranimalwindow'
+        },
+
     ],
 
     // Atributos
@@ -70,6 +75,11 @@ Ext.define('Rebanho.controller.Animais', {
             // ----------< Actions do Form >----------
             'animaisform': {
                 afterrender: this.onFormAfterRender,
+            },
+
+            // ----------< Actions da Window Pesquisar >----------
+            'localizaranimalwindow [action=action_pesquisar]': {
+                click: this.onClickBtnPesquisar
             },
 
         });
@@ -220,5 +230,47 @@ Ext.define('Rebanho.controller.Animais', {
     },
 
 
+    // ----------< Funcoes da Window Pesquisar>----------
+    onClickBtnPesquisar: function(){
+        console.log('clicou em Pesquisar');
+
+        var txtCodigoAnimal = this.getLocalizarAnimalWindow().down('#txtCodigoAnimal');
+        console.log(txtCodigoAnimal);
+        var codigo = txtCodigoAnimal.getValue();
+        if (codigo > 0){
+            console.log('codigo valido');
+            animal = this.getAnimal(codigo);
+            console.log(animal);
+        }
+        else {
+            txtCodigoAnimal.setValue('');
+            console.log('codigo invalido');
+        }
+    },
+
+    getAnimal: function(codigo){
+
+        this.animalCodigo = codigo;
+
+        Ext.Ajax.request({
+            url : 'php/main.php',
+            method : 'POST',
+            params: {
+                classe: 'Animais',
+                action: 'localizarAnimal',
+                codigo: this.animalCodigo,
+            },
+            scope:this,
+            success: function ( result, request ) {
+                var retorno = Ext.decode(result.responseText);
+                if (retorno.success){
+                }
+                else {
+                    // Mostrando Mensagem de Erro
+                    Ext.MessageBox.show({ title:'Desculpe!', msg: retorno.message, buttons: Ext. MessageBox.OK, icon:  Ext.MessageBox.WARNING })
+                }
+            },
+        });
+    },
 });
 

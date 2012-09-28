@@ -409,6 +409,16 @@ class NotasEntrada extends Base {
             die ("success:'false', message:'falha na Criacao do Peso de Entrada'");
         }
 
+        // Alterar o Sexo do animal
+        $result_manejo = $this->updateSexo($data, false);
+        if (!$result_manejo->success) {
+            // Se houver Falha na Criacao da Pesagem de Entrada
+            // OBS: MELHORAR O TRATAMENTO DE ERROS
+            die ("success:'false', message:'falha na Alteração do Cadastro de Animal'");
+        }
+
+
+
     }
 }
 

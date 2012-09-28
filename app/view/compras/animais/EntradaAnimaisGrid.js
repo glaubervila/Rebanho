@@ -2,8 +2,7 @@ Ext.define('Rebanho.view.compras.animais.EntradaAnimaisGrid' ,{
     extend: 'Ext.grid.Panel',
 
     requires: [
-        //'Ext.ux.grid.column.ActionButtonColumn',
-        //'Ext.grid.plugin.RowEditing',
+        'Ext.grid.plugin.RowEditing',
     ],
 
     alias : 'widget.entradaanimaisgrid',
@@ -45,6 +44,7 @@ Ext.define('Rebanho.view.compras.animais.EntradaAnimaisGrid' ,{
                 width: 200,
                 field: {
                     xtype: 'textfield',
+                    allowBlank: false,
                 },
 
             },
@@ -68,7 +68,7 @@ Ext.define('Rebanho.view.compras.animais.EntradaAnimaisGrid' ,{
                 dataIndex: 'quadra_id',
                 width: 150,
                 renderer: this.rendererQuadra,
-                field: {
+                editor:{
                     xtype: 'cmbquadras',
                 },
             },
@@ -86,6 +86,7 @@ Ext.define('Rebanho.view.compras.animais.EntradaAnimaisGrid' ,{
                     iconCls: 'icon-disk',
                     tooltip: 'Click para Salvar a Pesagem.<br>',
                 },
+                '-',
                 {
                     xtype: 'button',
                     text: 'Finalizar Pesagem',
@@ -104,7 +105,9 @@ Ext.define('Rebanho.view.compras.animais.EntradaAnimaisGrid' ,{
                 {xtype: 'tbtext', itemId: 'tbpesototal',text: '<b>Peso Total</b>'},
                 {xtype: 'tbtext', itemId: 'tbpesomedio',text: '<b>Peso Médio</b>'},
                 '-',
-            ]
+                {xtype: 'tbtext', itemId: 'tbautosave',text: ''},
+                '-',
+            ],
         }]
 
 
