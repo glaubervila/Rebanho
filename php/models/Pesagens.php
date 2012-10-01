@@ -110,6 +110,7 @@ class Pesagens extends Base {
                 }
                 else {
                     $return->failure = true;
+                    $result->id  = $data->id;
                     $return->msg = "Falha ao Inserir o Registro de Pesagem.";
                     $return->error = $error[1];
                 }
@@ -457,6 +458,28 @@ class Pesagens extends Base {
 
         }
         return $result;
+    }
+
+    public function criarPesagemEntrada($data, $json = true){
+
+        $animal = $this->find($data->id, 'animais');
+
+        $objPesagem = new StdClass();
+        $objPesagem->confinamento_id = $animal->confinamento_id;
+        $objPesagem->quadra_id = $animal->quadra_id;
+        $objPesagem->animal_id = $data->id;
+        $objPesagem->data = $data->data_entrada;
+        $objPesagem->peso = $data->peso_entrada;
+        $objPesagem->tipo = 1; // Pesagem de Entrada
+
+        $result = Pesagens::insert($objPesagem, false);
+
+        if ($json) {
+            echo json_encode($result);
+        }
+        else {
+            return $result;
+        }
     }
 
 }

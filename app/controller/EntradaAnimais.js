@@ -291,6 +291,7 @@ Ext.define('Rebanho.controller.EntradaAnimais', {
                 Ext.MessageBox.show({ title:'Desculpe!', msg: 'Falha ao Criar os Registros', buttons: Ext. MessageBox.OK, icon:  Ext.MessageBox.ERROR })
             }
         });
+
     },
 
     /** Funcao: digitarCodigo
@@ -451,11 +452,15 @@ Ext.define('Rebanho.controller.EntradaAnimais', {
         store = e.grid.getStore('EntradaAnimais');
         // Adiciona a Data de Entrada ao Registro
         e.record.set('data_entrada', this.data_pesagem);
+
     },
 
     onEditRowCell: function(editor, e, object){
         // Recupera a Store para alterar o Action
         store = e.grid.getStore('EntradaAnimais');
+        // Zera o BaseParans
+        store.proxy.setExtraParam('action','');
+
         this.getContadores();
     },
 

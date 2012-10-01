@@ -36,6 +36,9 @@ Ext.define('Rebanho.view.animais.LocalizarAnimalWindow' ,{
                         itemId: 'txtCodigoAnimal',
                         allowBlank: false,
                         minValue: 0,
+                        hideTrigger: true,
+                        keyNavEnabled: false,
+                        mouseWheelEnabled: false
                     },
                     ]
                     , buttons: [{

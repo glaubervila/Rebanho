@@ -5,7 +5,7 @@ Ext.define('Rebanho.store.EntradaAnimais', {
 
     remoteFilter: true,
 
-    remoteSort: true,
+    remoteSort: false,
 
     autoSync:false,
 
@@ -28,7 +28,7 @@ Ext.define('Rebanho.store.EntradaAnimais', {
         writer: {
             type: 'json',
             root: 'data',
-            writeAllFields: true,
+            writeAllFields: false,
             encode: true,
             allowSingle: false,
         },
@@ -36,21 +36,28 @@ Ext.define('Rebanho.store.EntradaAnimais', {
     },
 
     listeners: {
-//         write: function(store, operation){
-//             var obj = Ext.decode(operation.response.responseText);
-//             if (operation.action == 'update'){
-//                 if (obj.failure){
-//                     Ext.MessageBox.show({ title:'Desculpe!', msg: obj.msg, buttons: Ext. MessageBox.OK, icon:  Ext.MessageBox.ERROR })
-//                 }
-//                 else {
-//                     Ext.BoxMsg.msg('Sucesso!', obj.msg);
-//                     store.proxy.setExtraParam('action','getAnimaisNota');
-//                     store.load();
-//                 }
-// 
-//             }
-//         },
+        write: function(store, operation){
+            var obj = Ext.decode(operation.response.responseText);
+            if (operation.action == 'update'){
+
+                if (obj.success){
+                    Ext.BoxMsg.msg('Sucesso!', obj.msg);
+                }
+                else {
+
+                    console.log(obj.erros);
+
+                    Ext.Array.each(obj.erros, function(value) {
+                        animal_id = value.id;
+                        record = store.getById(animal_id);
+                        record.set('error',true);
+                        record.set('icone','');
+                    });
+
+                    Ext.MessageBox.show({ title:'Atenção!', msg:"Um ou mais registros podem conter erros.<br>"+obj.msg+"<br> Os demais registros foram salvos.", buttons: Ext. MessageBox.OK, icon:  Ext.MessageBox.WARNING });
+
+                }
+            }
+        },
     }
-
-
 });

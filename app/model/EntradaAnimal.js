@@ -29,9 +29,16 @@ Ext.define('Rebanho.model.EntradaAnimal', {
         {name:'quadra', type: 'string'},
         // Icone da Grid
         {name:'icone', convert:function(value,record){
-            // Se tiver Peso Coloca o Icone de Tick
-            if (record.get('peso_entrada') > 0){
-                return '<img src="resources/tick.png">';
+
+            if (record.get('error')){
+                // Se tiver flag de Erro
+                return '<img src="resources/error.png">';
+            }
+            else {
+                // Se tiver Peso Coloca o Icone de Tick
+                if (record.get('peso_entrada') > 0){
+                    return '<img src="resources/tick.png">';
+                }
             }
         }},
     ],

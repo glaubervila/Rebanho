@@ -57,11 +57,13 @@ class Manejos extends Base {
             }
             else {
                 $return->failure = true;
+                $result->id  = $data->id;
                 $return->msg = "Falha ao Criar o Ocorrencia de Manejo";
             }
         }
         else {
             $return->failure = true;
+            $result->id  = $data->id;
             $return->msg = "Falha ao Criar o Registro de Manejo";
         }
 

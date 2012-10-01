@@ -35,7 +35,12 @@ Ext.define('Rebanho.view.compras.animais.EntradaAnimaisGrid' ,{
                 dataIndex: 'codigo',
                 width: 200,
                 field: {
-                    xtype: 'textfield',
+                    xtype: 'numberfield',
+                    minValue: 0,
+                    allowBlank: false,
+                    hideTrigger: true,
+                    keyNavEnabled: false,
+                    mouseWheelEnabled: false
                 },
             },
             {
@@ -43,10 +48,13 @@ Ext.define('Rebanho.view.compras.animais.EntradaAnimaisGrid' ,{
                 dataIndex: 'peso_entrada',
                 width: 200,
                 field: {
-                    xtype: 'textfield',
+                    xtype: 'numberfield',
                     allowBlank: false,
+                    minValue: 0,
+                    hideTrigger: true,
+                    keyNavEnabled: false,
+                    mouseWheelEnabled: false
                 },
-
             },
             {
                 text: "Sexo",

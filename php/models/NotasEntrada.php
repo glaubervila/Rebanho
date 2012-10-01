@@ -312,8 +312,11 @@ class NotasEntrada extends Base {
      */
     public function updateSexo($data, $json = true){
 
+        $animal = $this->find($data->id, 'animais');
+
         $animal_id = $data->id;
-        $compra_id = $data->compra_id;
+
+        $compra_id = $animal->compra_id;
 
         $sexo = $data->sexo;
 
@@ -362,17 +365,9 @@ class NotasEntrada extends Base {
         }
     }
 
-    public function criarPesagemEntrada($data, $json = true){
+    public function pesagemEntrada($data, $json = true){
 
-        $objPesagem = new StdClass();
-        $objPesagem->confinamento_id = $data->confinamento_id;
-        $objPesagem->quadra_id = $data->quadra_id;
-        $objPesagem->animal_id = $data->id;
-        $objPesagem->data = $data->data_entrada;
-        $objPesagem->peso = $data->peso_entrada;
-        $objPesagem->tipo = 1; // Pesagem de Entrada
-
-        $result = Pesagens::insert($objPesagem, false);
+        $result = Pesagens::criarPesagemEntrada($data, false);
 
         if ($json) {
             echo json_encode($result);
@@ -380,6 +375,14 @@ class NotasEntrada extends Base {
         else {
             return $result;
         }
+    }
+
+
+    public function updateCodigo($data, $json = true){
+
+        $codigo = Animais::alterarCodigo($data,false);
+
+        return $codigo;
     }
 
     public function load($data){
@@ -392,34 +395,74 @@ class NotasEntrada extends Base {
         //Formantando a Data
         $data->data_entrada = $this->DateToMysql($data->data_entrada);
 
-        // Criar a Pesagem de Entrada
-        $result_pesagem = $this->criarPesagemEntrada($data, false);
-
-        if (!$result_pesagem->success) {
-            // Se houver Falha na Criacao da Pesagem de Entrada
-            // OBS: MELHORAR O TRATAMENTO DE ERROS
-            die ("success:'false', message:'falha na Criacao do Peso de Entrada'");
+        // Alterar o Codigo do animal
+        if ($data->codigo){
+            $result_codigo = $this->updateCodigo($data, false);
+            if (!$result_codigo->success) {
+                $result = $result_codigo;
+            }
         }
 
-        // Criar o Manejo
-        $result_manejo = $this->updateQuadra($data, false);
-        if (!$result_manejo->success) {
-            // Se houver Falha na Criacao da Pesagem de Entrada
-            // OBS: MELHORAR O TRATAMENTO DE ERROS
-            die ("success:'false', message:'falha na Criacao do Peso de Entrada'");
+        // Se for Alteracao de Peso
+        if ($data->peso_entrada){
+            // Criar a Pesagem de Entrada
+            $result_pesagem = $this->pesagemEntrada($data, false);
+            if (!$result_pesagem->success) {
+                $result = $result_pesagem;
+            }
         }
 
         // Alterar o Sexo do animal
-        $result_manejo = $this->updateSexo($data, false);
-        if (!$result_manejo->success) {
-            // Se houver Falha na Criacao da Pesagem de Entrada
-            // OBS: MELHORAR O TRATAMENTO DE ERROS
-            die ("success:'false', message:'falha na Alteração do Cadastro de Animal'");
+        if ($data->sexo){
+            $result_sexo = $this->updateSexo($data, false);
+            if (!$result_sexo->success) {
+                $result = $result_sexo;
+            }
         }
 
+        // Criar o Manejo
+        if ($data->quadra_id) {
+            $result_manejo = $this->updateQuadra($data, false);
+            if (!$result_manejo->success) {
+                $result = $result_manejo;
+            }
+        }
 
-
+        if ($result){
+            return $result;
+        }
     }
+
+
+    public function save($data) {
+
+        $results = new StdClass();
+        if (is_array($data)){
+            foreach ($data as $registro){
+                $registro = $this->decode_utf8($registro);
+                if ($registro->id > 0){
+                    $erros = $this->update($registro);
+                    if ($erros){
+                        $results->erros[] = $erros;
+                        $msgs[] = $erros->msg;
+                    }
+                }
+            }
+        }
+
+        if ($results->erros){
+            $results->failure = true;
+            $results->msg = implode('<br>',$msgs);
+        }
+        else {
+            $results->success = true;
+            $results->msg = "Todos os registros foram salvos.";
+        }
+
+        echo json_encode($results);
+    }
+
+
 }
 
 

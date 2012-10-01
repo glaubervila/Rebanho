@@ -351,6 +351,7 @@ class Animais extends Base {
         }
         else {
             $result->success = false;
+            $result->id  = $data->id;
             $result->msg = "Falha ao Alterar o Campo {$campo} Valor {$value}";
             $result->error = $stm->errorInfo();
         }
@@ -388,6 +389,55 @@ class Animais extends Base {
         }
         else {
             return $return;
+        }
+    }
+
+
+    public function alterarCodigo($data, $json = true){
+
+        $result = new StdClass();
+
+        $db = $this->getDb();
+
+        $unique = $this->findBy(array('codigo'), array($data->codigo), 'animais_codigos');
+
+        if ($unique){
+            // Se o Codigo ja existir
+            $result->failure = true;
+            $result->id  = $data->id;
+            $result->msg = "Esse Código <b>{$unique->codigo}</b> já está em uso! ";
+        }
+        else {
+
+            $animal = $this->find($data->id, 'animais');
+
+            $sql = "UPDATE animais_codigos SET codigo = :codigo WHERE animal_id = :animal_id AND confinamento_id = :confinamento_id";
+
+            $stm = $db->prepare($sql);
+
+            $stm->bindValue(':animal_id', $data->id);
+            $stm->bindValue(':codigo', $data->codigo);
+            $stm->bindValue(':confinamento_id', $animal->confinamento_id);
+
+            $update = $stm->execute();
+
+            if ($update) {
+                $result->success = true;
+                $result->msg = "Operação Realizada com Sucesso!";
+            }
+            else {
+                $result->failure = true;
+                $result->id  = $data->id;
+                $result->msg = "Falha ao Alterar o Codigo {$data->codigo} do Animal";
+                $result->error = $stm->errorInfo();
+            }
+        }
+
+        if ($json){
+            echo json_encode($result);
+        }
+        else {
+            return $result;
         }
     }
 
