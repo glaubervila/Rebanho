@@ -18,7 +18,7 @@ Ext.define('Rebanho.view.authentication.Login', {
   title       : 'Autentica&#231;&#227;o',
   id          : 'authentication-login',
   autoShow    : true,
-  labelAlign  : 'left',
+  labelAlign  : 'top',
   closable    : false,
   draggable   : false,
   constrain   : true,
@@ -32,7 +32,7 @@ Ext.define('Rebanho.view.authentication.Login', {
         border         : false,
         bodyStyle      : "padding: 10px;",
         waitMsgTarget  : true,
-        labelAlign     : "left",
+        labelAlign     : "top",
         items: [
           {
             xtype            : 'textfield',

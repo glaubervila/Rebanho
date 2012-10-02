@@ -129,20 +129,27 @@ Ext.define('Rebanho.view.layout.Header', {
                     iconCls: 'icon-cow',
                     menu: [
                         {
-                            text: 'Animais por Confinamentos',
+                            text: 'Lista de Animais',
                             iconCls: 'icon-report',
                             handler: function(){
                                 var tabs = Ext.getCmp('mainTabpanel').novaAba('animaisgrid');
                             },
                         },
                         {
-                            text: 'Localizar Animal',
-                            iconCls: 'icon-find',
+                            text: 'Resumo por Confinamento',
+                            iconCls: 'icon-report',
                             handler: function(){
-                                Ext.create('Rebanho.view.animais.LocalizarAnimalWindow',{});
+                                var tabs = Ext.getCmp('mainTabpanel').novaAba('animaisresumogrid');
                             },
                         },
                     ]
+                },
+                {
+                    text: 'Localizar Animal',
+                    iconCls: 'icon-find',
+                    handler: function(){
+                        Ext.create('Rebanho.view.animais.LocalizarAnimalWindow',{});
+                    },
                 },
             ]
         },

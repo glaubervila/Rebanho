@@ -201,7 +201,7 @@ class Animais extends Base {
         if ($animal_codigo) {
             $result->success = true;
             $result->animal_id = $animal_codigo->animal_id;
-            $result->animal = $this->find($animal_codigo->animal_id, 'animais'); 
+            $result->animal = $this->getAnimal($animal_codigo->animal_id);
         }
         else {
             $result->failure = true;
@@ -216,6 +216,49 @@ class Animais extends Base {
         }
 
     }
+
+    public function getAnimal($animal_id){
+
+        $animal = $this->find($animal_id, 'animais');
+
+        // Informacoes do Codigo
+        $codigos = $this->getCodigosById($animal->id, $animal->confinamento_id);
+        $animal->codigo = $codigos[0]->codigo;
+
+        // Informacoes da Compra
+        $compra = $this->findBy('id', $animal->compra_id, 'compras');
+        $animal->fornecedor_id = $compra->fornecedor_id;
+        $animal->idade_entrada = $compra->idade;
+        $animal->valor_arroba = $compra->valor_arroba;
+        $animal->numero_nota = $compra->numero_nota;
+        $animal->serie_nota = $compra->serie_nota;
+
+
+        // Informacoes do Fornecedor
+        $fornecedor = $this->findBy('id', $animal->fornecedor_id, 'fornecedores');
+        $animal->fornecedor = $fornecedor->nome;
+
+        // Informacoes da Quadra
+        $quadra = $this->find($animal->quadra_id, 'quadras', 'quadra');
+        $animal->quadra = $quadra->quadra;
+
+        // Estatisticas do Animal
+        $estatistica = $this->getEstatiscaPorAnimal($animal->id);
+        $animal->peso_entrada        = $estatistica->peso_entrada;
+        $animal->data_entrada        = $estatistica->data_entrada;
+        $animal->peso_atual          = $estatistica->peso_atual;
+        $animal->data_ultima_pesagem = $estatistica->data_ultima_pesagem;
+        $animal->dias_confinamento   = $estatistica->dias_confinamento;
+        $animal->peso_ganho          = $estatistica->peso_ganho;
+        $animal->ganho_diario        = $estatistica->ganho_diario;
+
+        // Calcular Idade Atual
+        $animal->idade = $this->calcularIdade($compra->idade, $animal->dias_confinamento);
+
+
+        return $animal;
+    }
+
 
     public function getAnimaisAtivos($data){
 
@@ -360,39 +403,6 @@ class Animais extends Base {
     }
 
 
-    /**Metodo: localizarAnimal
-     * faz uma busca usando um filtro e retorna um objAnimal
-     */
-    public function localizarAnimal($data, $json = true){
-
-        // Cria o Obj de Retorno
-        $return = new StdClass();
-
-        // Recupera o Id do Animal
-        $animal_id = Animais::getIdByCodigo($data, false);
-
-
-       // var_dump($animal_id);
-        // Se Encontrou
-        if ($animal_id->success){
-
-
-        }
-        else {
-            // Se nao Encontrou retorna erro
-            $return = $animal_id;
-        }
-
-
-        if ($json){
-            echo json_encode($return);
-        }
-        else {
-            return $return;
-        }
-    }
-
-
     public function alterarCodigo($data, $json = true){
 
         $result = new StdClass();
@@ -439,6 +449,49 @@ class Animais extends Base {
         else {
             return $result;
         }
+    }
+
+    /**Metodo: localizarAnimal
+     * faz uma busca usando um filtro e retorna um objAnimal
+     */
+    public function localizarAnimal($data, $json = true){
+
+        // Cria o Obj de Retorno
+        $return = new StdClass();
+
+        // Recupera o Id do Animal
+        $animal_id = Animais::getIdByCodigo($data, false);
+
+
+        // Se Encontrou
+        if ($animal_id->success){
+            $return->success = true;
+            $return->data = $animal_id->animal;
+        }
+        else {
+            // Se nao Encontrou retorna erro
+            $return = $animal_id;
+        }
+
+
+        if ($json){
+            echo json_encode($return);
+        }
+        else {
+            return $return;
+        }
+    }
+
+
+    public function calcularIdade($idade_entrada, $dias_confinamento) {
+
+        // A idade de Entrada está em meses
+        // transformar em dias
+        $idade_entrada_dias = ($idade_entrada * 30);
+        // total de dias que entrou + o total de dias confinado / 30 para virar mes de novo
+        $idade_mes = round(($idade_entrada_dias + $dias_confinamento)/30);
+
+        return $idade_mes;
     }
 
 }

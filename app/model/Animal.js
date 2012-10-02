@@ -29,6 +29,11 @@ Ext.define('Rebanho.model.Animal', {
         // Campos Estrangeiros
         {name:'quadra', type: 'string'},
         {name:'codigo', type: 'string'},
+        {name:'fornecedor', type: 'string'},
+        {name:'idade_entrada', type: 'string'},
+        {name:'numero_nota', type: 'string'},
+        {name:'serie_nota', type: 'string'},
+        {name:'valor_arroba', type: 'string'},
         {name:'data_entrada', type: 'date', dateFormat: 'Y-m-d'},
         {name:'peso_entrada', type: 'float'},
         {name:'data_ultima_pesagem', type: 'date', dateFormat: 'Y-m-d'},

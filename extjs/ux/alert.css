@@ -1,0 +1,63 @@
+.msg-box {
+	left: 32%;
+	position: absolute;
+	top: 2px;
+	width: 500px;
+	z-index: 20000;
+}
+
+.msg-box .msg h3 {
+	font-size: 11px;
+	font-weight: 700;
+	margin: 0 0 6px;
+}
+
+.msg-box .msg p {
+	font-size: 11px;
+	margin: 0;
+}
+
+.msg-box .msg-success {
+	background: none repeat scroll 0 0 #CDEAC8;
+	border: 1px solid #59B53A;
+	margin-top: 2px;
+	padding: 4px 6px;
+	border-radius: 8px;
+	-moz-border-radius: 8px;
+}
+
+.msg-box .msg-warning {
+	background: none repeat scroll 0 0 #FBFFAC;
+	border: 1px solid #C4B700;
+	margin-top: 2px;
+	padding: 4px 6px;
+	border-radius: 8px;
+	-moz-border-radius: 8px;
+}
+
+.msg-box .msg-error {
+	background: none repeat scroll 0 0 #FBB198;
+	border: 1px solid #DC4E3D;
+	margin-top: 2px;
+	padding: 4px 6px;
+	border-radius: 8px;
+	-moz-border-radius: 8px;
+}
+
+.msg-box .msg-information {
+	background: none repeat scroll 0 0 #DDEEFA;
+	border: 1px solid #8AAFC5;
+	margin-top: 2px;
+	padding: 4px 6px;
+	border-radius: 8px;
+	-moz-border-radius: 8px;
+}
+
+.msg-box .msg-notification {
+	background: none repeat scroll 0 0 #F6F7FA;
+	border: 1px solid #C2CBCF;
+	margin-top: 2px;
+	padding: 4px 6px;
+	border-radius: 8px;
+	-moz-border-radius: 8px;
+}

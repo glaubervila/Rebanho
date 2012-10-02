@@ -11,6 +11,7 @@ Ext.define('Rebanho.controller.Animais', {
         'Pesagens',
         'Ocorrencias',
         'Caracteristicas',
+        'Quadras',
     ],
 
     models: [
@@ -22,6 +23,8 @@ Ext.define('Rebanho.controller.Animais', {
         'Rebanho.view.animais.AnimaisForm',
         'Rebanho.view.animais.AnimaisWindow',
         'Rebanho.view.animais.LocalizarAnimalWindow',
+        // Relatorio Resumido de Animais
+        'Rebanho.view.animais.AnimaisResumidoGrid',
     ],
 
     refs: [
@@ -78,6 +81,13 @@ Ext.define('Rebanho.controller.Animais', {
             },
 
             // ----------< Actions da Window Pesquisar >----------
+            'localizaranimalwindow': {
+                show: this.onShowWindow,
+            },
+
+            'localizaranimalwindow [itemId=txtCodigoAnimal]': {
+                keyup: this.onKeyUpWindow,
+            },
             'localizaranimalwindow [action=action_pesquisar]': {
                 click: this.onClickBtnPesquisar
             },
@@ -231,20 +241,36 @@ Ext.define('Rebanho.controller.Animais', {
 
 
     // ----------< Funcoes da Window Pesquisar>----------
+    /**
+     * No Show da Janela colocar o Focus no campo Pesquisar
+     */
+    onShowWindow: function(window){
+        console.log(window);
+        form = window.down('#formPesquisarAnimal');
+        form.items.first().focus(true, true);
+        console.log(form);
+    },
+    
+    /**
+     * Quando apertar enter no campo codigo executa a funcao de click do botao pesquisar
+     */
+    onKeyUpWindow: function (field, e){
+        if(e.getKey() === e.ENTER){
+            this.onClickBtnPesquisar();
+        }
+    },
+
     onClickBtnPesquisar: function(){
-        console.log('clicou em Pesquisar');
 
         var txtCodigoAnimal = this.getLocalizarAnimalWindow().down('#txtCodigoAnimal');
-        console.log(txtCodigoAnimal);
+
         var codigo = txtCodigoAnimal.getValue();
         if (codigo > 0){
-            console.log('codigo valido');
-            animal = this.getAnimal(codigo);
-            console.log(animal);
+            this.getAnimal(codigo);
         }
         else {
             txtCodigoAnimal.setValue('');
-            console.log('codigo invalido');
+            txtCodigoAnimal.setFocus();
         }
     },
 
@@ -264,13 +290,35 @@ Ext.define('Rebanho.controller.Animais', {
             success: function ( result, request ) {
                 var retorno = Ext.decode(result.responseText);
                 if (retorno.success){
+                    this.loadAnimal(retorno.data);
                 }
                 else {
                     // Mostrando Mensagem de Erro
-                    Ext.MessageBox.show({ title:'Desculpe!', msg: retorno.message, buttons: Ext. MessageBox.OK, icon:  Ext.MessageBox.WARNING })
+                    //Ext.MessageBox.show({ title:'Desculpe!', msg: retorno.message, buttons: Ext. MessageBox.OK, icon:  Ext.MessageBox.WARNING })
+
+                    Ext.ux.Alert.alert('Atenção', retorno.message, 'warning');
                 }
             },
         });
     },
+
+    loadAnimal: function(animal){
+        // Setando os Atributos de animais
+        this.animal_id = animal.id;
+        var record = Ext.create('Rebanho.model.Animal',animal);
+        this.animal = record;
+
+        // Carregando a Store de Quadras e de Caracteristicas
+        this.getStore('Caracteristicas').load();
+        this.getStore('Quadras').load();
+
+        // Carrega a janela de Animais
+        this.criaWindowAnimais();
+        this.getAnimaisForm().getForm().loadRecord(this.animal);
+
+        // Fechando a Janela de Pesquisar
+        this.getLocalizarAnimalWindow().close();
+    },
+
 });
 

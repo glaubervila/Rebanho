@@ -9,9 +9,9 @@ Ext.define('Rebanho.view.animais.LocalizarAnimalWindow' ,{
 
     autoShow: true,
 
-    width: 400,
+    width: 250,
 
-    height: 200,
+    height: 150,
 
     iconCls: 'icon-find',
 
@@ -23,22 +23,26 @@ Ext.define('Rebanho.view.animais.LocalizarAnimalWindow' ,{
 
             items: [
                 Ext.create('Ext.form.Panel',{
+                    itemId:'formPesquisarAnimal',
                     fieldDefaults: {
                         labelAlign: 'top',
                         labelWidth: 100,
                     },
                     layout:'form',
-                    bodyStyle:'padding:4px',
+                    bodyStyle:'padding:10px',
                     items:[
                     {
                         xtype: 'numberfield',
+                        fieldLabel:'Digite o Código',
                         name: 'codigo',
                         itemId: 'txtCodigoAnimal',
                         allowBlank: false,
                         minValue: 0,
                         hideTrigger: true,
                         keyNavEnabled: false,
-                        mouseWheelEnabled: false
+                        mouseWheelEnabled: false,
+                        selectOnFocus    : true,
+                        enableKeyEvents  : true,
                     },
                     ]
                     , buttons: [{

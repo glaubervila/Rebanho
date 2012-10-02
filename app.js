@@ -24,6 +24,7 @@ Ext.application({
     requires           : [
         'Rebanho.Initialization',
         'Ext.ux.grid.Printer',
+        'Ext.ux.Alert',
     ],
     appFolder          : 'app',
     enableRouter       : true,
