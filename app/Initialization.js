@@ -38,6 +38,9 @@ Ext.define('Rebanho.Initialization', {requires: ['Ext.ux.Router']},
                 var retorno = Ext.decode(result.responseText);
                 if (retorno.success)
                 {
+                    // Iniciando o QuickTips
+                    Ext.tip.QuickTipManager.init();
+
                     var viewport_main = Ext.getCmp('viewport_default');
                     var viewport_layoutappview = Ext.getCmp('layoutappview');
                     if (!viewport_layoutappview){

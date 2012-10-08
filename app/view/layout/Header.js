@@ -35,6 +35,24 @@ Ext.define('Rebanho.view.layout.Header', {
                                 var tabs = Ext.getCmp('mainTabpanel').novaAba('entradaanimaispanel');
                             },
                         },
+                        {
+                            text: 'Relatorios',
+                            iconCls: 'icon-chart_bar',
+                            menu: [
+                                {
+                                    text: 'Compras Por Período',
+                                    iconCls: 'icon-report',
+                                },
+                                {
+                                    text: 'Compras Por Fornecedor',
+                                    iconCls: 'icon-report',
+                                },
+                                {
+                                    text: 'Lotes de Compras',
+                                    iconCls: 'icon-report',
+                                },
+                            ]
+                        },
                     ]
                 },
                 {
@@ -43,24 +61,6 @@ Ext.define('Rebanho.view.layout.Header', {
                     handler: function(){
                         var tabs = Ext.getCmp('mainTabpanel').novaAba('fornecedoresgrid');
                     },
-                },
-                {
-                    text: 'Relatorios',
-                    iconCls: 'icon-chart_bar',
-                    menu: [
-                        {
-                            text: 'Compras Por Período',
-                            iconCls: 'icon-report',
-                        },
-                        {
-                            text: 'Compras Por Fornecedor',
-                            iconCls: 'icon-report',
-                        },
-                        {
-                            text: 'Lotes de Compras',
-                            iconCls: 'icon-report',
-                        },
-                    ]
                 },
             ]
         },
@@ -98,19 +98,19 @@ Ext.define('Rebanho.view.layout.Header', {
                             text: 'Remarcar',
                             iconCls: 'icon-application_form',
                         },
-                    ]
-                },
-                {
-                    text: 'Relatorios',
-                    iconCls: 'icon-chart_curve',
-                    menu: [
                         {
-                            text: 'Pesagens por Data',
-                            iconCls: 'icon-report',
-                        },
-                        {
-                            text: 'Pesagens por Período',
-                            iconCls: 'icon-report',
+                            text: 'Relatorios',
+                            iconCls: 'icon-chart_curve',
+                            menu: [
+                                {
+                                    text: 'Pesagens por Data',
+                                    iconCls: 'icon-report',
+                                },
+                                {
+                                    text: 'Pesagens por Período',
+                                    iconCls: 'icon-report',
+                                },
+                            ]
                         },
                     ]
                 },
@@ -163,24 +163,52 @@ Ext.define('Rebanho.view.layout.Header', {
                 {
                     text: 'Vendas',
                     iconCls: 'icon-coins_add',
+                    menu: [{
+                        text: 'Relatorios',
+                        iconCls: 'icon-chart_pie',
+                        menu: [
+                            {
+                                text: 'Vendas Por Período',
+                                iconCls: 'icon-report',
+                            },
+                            {
+                                text: 'Vendas Por Clientes',
+                                iconCls: 'icon-report',
+                            },
+                        ]
+                    }]
                 },
                 {
                     text: 'Clientes',
                     iconCls: 'icon-group',
                 },
+            ]
+        },
+        {
+            xtype: 'buttongroup',
+            title: 'Transferências',
+            defaults: {
+                scale: 'small'
+            },
+            items: [
                 {
-                    text: 'Relatorios',
-                    iconCls: 'icon-chart_pie',
+                    text: 'Tranferência',
+                    iconCls: 'icon-arrow_refresh',
                     menu: [
-                        {
-                            text: 'Vendas Por Período',
-                            iconCls: 'icon-report',
-                        },
-                        {
-                            text: 'Vendas Por Clientes',
-                            iconCls: 'icon-report',
-                        },
-                    ]
+                    {
+                        text: 'Transferências',
+                        iconCls: 'icon-arrow_refresh',
+                    },
+                    {
+                        text: 'Relatorios',
+                        iconCls: 'icon-chart_pie',
+                        menu: [
+                            {
+                                text: 'Transferências Por Período',
+                                iconCls: 'icon-report',
+                            },
+                        ]
+                    }]
                 },
             ]
         },

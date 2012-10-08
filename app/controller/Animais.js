@@ -8,6 +8,7 @@ Ext.define('Rebanho.controller.Animais', {
 
     stores: [
         'Animais',
+        'AnimaisResumo',
         'Pesagens',
         'Ocorrencias',
         'Caracteristicas',
@@ -16,6 +17,7 @@ Ext.define('Rebanho.controller.Animais', {
 
     models: [
         'Rebanho.model.Animal',
+        'Rebanho.model.AnimalResumo',
     ],
 
     views: [
@@ -24,7 +26,7 @@ Ext.define('Rebanho.controller.Animais', {
         'Rebanho.view.animais.AnimaisWindow',
         'Rebanho.view.animais.LocalizarAnimalWindow',
         // Relatorio Resumido de Animais
-        'Rebanho.view.animais.AnimaisResumidoGrid',
+        'Rebanho.view.animais.AnimaisResumoGrid',
     ],
 
     refs: [
@@ -43,6 +45,10 @@ Ext.define('Rebanho.controller.Animais', {
         {
             ref: 'localizarAnimalWindow',
             selector: 'localizaranimalwindow'
+        },
+        {
+            ref: 'animaisResumoGrid',
+            selector: 'animaisresumogrid'
         },
 
     ],
@@ -91,6 +97,16 @@ Ext.define('Rebanho.controller.Animais', {
             'localizaranimalwindow [action=action_pesquisar]': {
                 click: this.onClickBtnPesquisar
             },
+
+            // ----------< Actions da Grid AnimaisResumo >----------
+            'animaisresumogrid': {
+                afterrender: this.onAfterRenderAnimaisResumoGrid,
+            },
+            // Select da Combo de Confinamento
+            'animaisresumogrid [itemId=cmbConfinamento]': {
+                select: this.onSelectConfinamentoResumoGrid
+            },
+
 
         });
     },
@@ -319,6 +335,68 @@ Ext.define('Rebanho.controller.Animais', {
         // Fechando a Janela de Pesquisar
         this.getLocalizarAnimalWindow().close();
     },
+
+
+    // ----------< Funcoes da Grid AnimaisResumo >----------
+    onAfterRenderAnimaisResumoGrid: function(){
+        console.log('AnimaisResumoGrid - onAfterRender');
+
+        // Setando o Atributo Confinamento
+        this.confinamento = Ext.getCmp('main_viewport').getConfinamentoId();
+
+        // Setando o Valor da Combo Confinamento
+        cmbConfinamento = this.getAnimaisResumoGrid().down('#cmbConfinamento');
+        cmbConfinamento.setValue(this.confinamento);
+
+        // Se Houver um Confinamento Setado
+        if (this.confinamento > 0) {
+            // Desabilito a Combo de Confinamento
+            cmbConfinamento.disable();
+
+            this.loadAnimalResumoGrid();
+
+        }
+        else {
+            // Habilito a Combo
+            cmbConfinamento.enable();
+            // Aviso para Selecionar um
+            Ext.ux.Alert.alert('Atenção!', 'Selecione um Confinamento!','warning');
+        }
+
+    },
+
+    /** Funcao: onSelectConfinamentoResumoGrid
+     * Executada no evendo select da Combo de Confinamento
+     * Faz o Tratamento dos Filtros da Grid pelo Confinamento
+     */
+    onSelectConfinamentoResumoGrid: function(combo, record){
+        console.log('AnimaisResumoGrid - onSelectConfinamento');
+
+        // Setando o Confinamento
+        this.confinamento = combo.getValue();
+
+        this.loadAnimalResumoGrid();
+
+    },
+
+    loadAnimalResumoGrid: function(){
+        console.log('AnimaisResumoGrid - loadAnimalResumoGrid');
+
+        var store = this.getStore('AnimaisResumo');
+
+        // Limpando o Filtro
+        store.clearFilter(true);
+
+        store.proxy.setExtraParam('confinamento_id',this.confinamento);
+
+        // Adicionando os Filtros a Store
+        store.filter([
+            {property: "confinamento_id", value: this.confinamento},
+        ]);
+
+    },
+
+
 
 });
 

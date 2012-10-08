@@ -25,6 +25,7 @@ Ext.application({
         'Rebanho.Initialization',
         'Ext.ux.grid.Printer',
         'Ext.ux.Alert',
+        'Ext.tip.QuickTipManager',
     ],
     appFolder          : 'app',
     enableRouter       : true,

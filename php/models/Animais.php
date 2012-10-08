@@ -276,6 +276,18 @@ class Animais extends Base {
             $codigos = $this->getCodigosById($row->id, $row->confinamento_id);
             $registro->codigo = $codigos[0]->codigo;
 
+            // Informacoes da Compra
+            $compra = $this->findBy('id', $registro->compra_id, 'compras');
+            $registro->fornecedor_id = $compra->fornecedor_id;
+            $registro->idade_entrada = $compra->idade;
+            $registro->valor_arroba = $compra->valor_arroba;
+            $registro->numero_nota = $compra->numero_nota;
+            $registro->serie_nota = $compra->serie_nota;
+
+            // Informacoes do Fornecedor
+            $fornecedor = $this->findBy('id', $registro->fornecedor_id, 'fornecedores');
+            $registro->fornecedor = $fornecedor->nome;
+
             // Informacoes da Quadra
             $quadra = $this->find($row->quadra_id, 'quadras', 'quadra');
             $registro->quadra = $quadra->quadra;
@@ -289,8 +301,13 @@ class Animais extends Base {
             $registro->peso_ganho          = $estatistica->peso_ganho;
             $registro->ganho_diario        = $estatistica->ganho_diario;
 
+            // Calcular Idade Atual
+            $registro->idade = $this->calcularIdade($compra->idade, $registro->dias_confinamento);
+
             $aRegistros[] = $registro;
         }
+
+
 
         $result = new StdClass();
         $result->success = true;

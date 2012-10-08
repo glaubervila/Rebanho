@@ -86,4 +86,28 @@ class Quadras extends Base {
         }
 
     }
+
+
+    public function getQuantidadeQuadra($confinamento_id, $quadra_id, $status = 1, $sexo){
+
+        if ($confinamento_id) {
+            $filter[] = "confinamento_id = {$confinamento_id}";
+        }
+        if ($quadra_id) {
+            $filter[] = "quadra_id = {$quadra_id}";
+        }
+        if ($status) {
+            $filter[] = "status = {$status}";
+        }
+        if ($status) {
+            $filter[] = "sexo = '{$sexo}'";
+        }
+
+
+        $strFilter = implode(' AND ', $filter);
+
+        $qtd_animais = $this->filter('COUNT(*) AS quantidade', 'animais', $strFilter, null, false);
+
+        return $qtd_animais[0]->quantidade;
+    }
 }

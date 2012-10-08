@@ -249,7 +249,7 @@ abstract class Base {
             $limit = $_GET['limit'];
             $sql .= " LIMIT ". $start . " , " . $limit;
         }
-
+//          echo $sql;
         $stm = $db->prepare($sql);
         $stm->execute();
         return $stm->fetchAll(\PDO::FETCH_OBJ);
@@ -728,5 +728,19 @@ abstract class Base {
         return $result;
     }
 
+    /**
+    * Get all values from specific key in a multidimensional array
+    *
+    * @param $key string
+    * @param $arr array
+    * @return null|string|array
+    */
+    public function array_value_recursive($key, array $arr){
+        $val = array();
+        array_walk_recursive($arr, function($v, $k) use($key, &$val){
+            if($k == $key) array_push($val, $v);
+        });
+        return count($val) > 1 ? $val : array_pop($val);
+    }
 
 }
