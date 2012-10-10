@@ -438,13 +438,37 @@ class Animais extends Base {
 
             $animal = $this->find($data->id, 'animais');
 
-            $sql = "UPDATE animais_codigos SET codigo = :codigo WHERE animal_id = :animal_id AND confinamento_id = :confinamento_id";
+            // Primeiro saber se existe algum codigo
+            $animal_codigo = $this->filter('id', 'animais_codigos', "animal_id = {$data->id} AND confinamento_id = {$animal->confinamento_id}", null, false);
 
-            $stm = $db->prepare($sql);
+            if ($animal_codigo){
+                //Fazer Update
+                $sql = "UPDATE animais_codigos SET codigo = :codigo WHERE animal_id = :animal_id AND confinamento_id = :confinamento_id";
 
-            $stm->bindValue(':animal_id', $data->id);
-            $stm->bindValue(':codigo', $data->codigo);
-            $stm->bindValue(':confinamento_id', $animal->confinamento_id);
+                $stm = $db->prepare($sql);
+
+                $stm->bindValue(':animal_id', $data->id);
+                $stm->bindValue(':codigo', $data->codigo);
+                $stm->bindValue(':confinamento_id', $animal->confinamento_id);
+            }
+            else {
+
+                $data_entrada = $this->DateToMysql($data->data_entrada);
+                // Fazer Insert
+                $query_codigos = "INSERT INTO animais_codigos (confinamento_id, animal_id, codigo, tipo, data) VALUES (:confinamento_id, :animal_id, :codigo, :tipo, :data);";
+
+                $stm = $db->prepare($query_codigos);
+
+                // Setando Valores Codigos
+                $stm->bindValue(':confinamento_id', $animal->confinamento_id);
+                $stm->bindValue(':animal_id', $data->id);
+                $stm->bindValue(':codigo', $data->codigo);
+                $stm->bindValue(':tipo', $data->tipo);
+                $stm->bindValue(':data', $data_entrada);
+
+            }
+
+            //var_dump($animal_codigo);
 
             $update = $stm->execute();
 

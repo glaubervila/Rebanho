@@ -61,7 +61,6 @@ Ext.application({
         'Ocorrencias',
         'Pesagens',
 
-
         // Animais
         'Animais',
 
@@ -71,6 +70,8 @@ Ext.application({
         'Confinamentos',
         'Cepeas',
         'Quadras',
+
+        // Transferencias
     ],
 
 });

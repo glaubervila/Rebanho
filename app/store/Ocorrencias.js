@@ -5,6 +5,8 @@ Ext.define('Rebanho.store.Ocorrencias', {
 
     model: 'Rebanho.model.Ocorrencia',
 
+    groupField: 'confinamento_id',
+
     proxy: {
 
         type: 'rest',

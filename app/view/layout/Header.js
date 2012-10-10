@@ -192,15 +192,23 @@ Ext.define('Rebanho.view.layout.Header', {
             },
             items: [
                 {
-                    text: 'Tranferência',
+                    text: 'Tranferências',
                     iconCls: 'icon-arrow_refresh',
                     menu: [
                     {
-                        text: 'Transferências',
-                        iconCls: 'icon-arrow_refresh',
+                        text: 'Entrada',
+                        iconCls: 'icon-control_rewind_blue',
                     },
                     {
-                        text: 'Relatorios',
+                        text: 'Saída',
+                        iconCls: 'icon-control_fastforward_blue',
+                        handler: function(){
+                            Ext.create('Rebanho.view.transferencias.TransferenciasWindow',{});
+                        },
+
+                    },
+                    {
+                        text: 'Relatórios',
                         iconCls: 'icon-chart_pie',
                         menu: [
                             {

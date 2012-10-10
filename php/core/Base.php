@@ -18,6 +18,13 @@ abstract class Base {
             $this->config['user']     = "root";
             $this->config['password'] = "";
 
+//             $this->config['adapter']  = "mysql";
+//             $this->config['hostname'] = "mysql01.mmagropec.com.br";
+//             $this->config['dbname']   = "mmagropec";
+//             $this->config['user']     = "mmagropec";
+//             $this->config['password'] = "q1w2e3r4";
+
+
             $connection = new Connection();
 
             $this->database = $connection->getConnection($this->config);
@@ -726,21 +733,6 @@ abstract class Base {
         }
 
         return $result;
-    }
-
-    /**
-    * Get all values from specific key in a multidimensional array
-    *
-    * @param $key string
-    * @param $arr array
-    * @return null|string|array
-    */
-    public function array_value_recursive($key, array $arr){
-        $val = array();
-        array_walk_recursive($arr, function($v, $k) use($key, &$val){
-            if($k == $key) array_push($val, $v);
-        });
-        return count($val) > 1 ? $val : array_pop($val);
     }
 
 }
