@@ -45,13 +45,14 @@
 .icon-barcode-32 { background-image: url(barcode.png) !important; background-repeat: no-repeat; }
 .icon-barcode-16 { background-image: url(barcode_16.png) !important; background-repeat: no-repeat; }
 .icon-tools_box { background-image: url(tools_box.png) !important; background-repeat: no-repeat; }
+.icon-cancel { background-image: url(cancel.png) !important; background-repeat: no-repeat; }
 .icon-cross { background-image: url(cross.png) !important; background-repeat: no-repeat; }
 .icon-cow { background-image: url(cow.png) !important; background-repeat: no-repeat; }
 .icon-control_fastforward_blue { background-image: url(control_fastforward_blue.png) !important; background-repeat: no-repeat; }
 .icon-control_rewind_blue { background-image: url(control_rewind_blue.png) !important; background-repeat: no-repeat; }
-.icon-disk { background-image: url(disk.png) !important; background-repeat: no-repeat; }
-.icon-cancel { background-image: url(cancel.png) !important; background-repeat: no-repeat; }
 .icon-coins_add { background-image: url(coins_add.png) !important; background-repeat: no-repeat; }
+.icon-delete { background-image: url(delete.gif) !important; background-repeat: no-repeat; }
+.icon-disk { background-image: url(disk.png) !important; background-repeat: no-repeat; }
 .icon-filter { background-image: url(filter.png) !important; background-repeat: no-repeat; }
 .icon-find { background-image: url(find.png) !important; background-repeat: no-repeat; }
 .icon-grid { background-image: url(grid.png) !important; background-repeat: no-repeat; }

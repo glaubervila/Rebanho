@@ -203,19 +203,16 @@ Ext.define('Rebanho.view.layout.Header', {
                         text: 'Saída',
                         iconCls: 'icon-control_fastforward_blue',
                         handler: function(){
-                            Ext.create('Rebanho.view.transferencias.TransferenciasWindow',{});
+                            Ext.create('Rebanho.view.transferencias.SaidaWindow',{});
                         },
 
                     },
                     {
-                        text: 'Relatórios',
-                        iconCls: 'icon-chart_pie',
-                        menu: [
-                            {
-                                text: 'Transferências Por Período',
-                                iconCls: 'icon-report',
-                            },
-                        ]
+                        text: 'Transferências Por Período',
+                        iconCls: 'icon-report',
+                        handler: function(){
+                            var tabs = Ext.getCmp('mainTabpanel').novaAba('transferenciasgrid');
+                        },
                     }]
                 },
             ]

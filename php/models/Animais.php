@@ -164,7 +164,7 @@ class Animais extends Base {
 
         }
         else {
-        // Retornar Todos os Codigos para o animal
+            // Retornar Todos os Codigos para o animal
         }
 
         $db = $this->getDb();
@@ -175,10 +175,11 @@ class Animais extends Base {
 
     /** Metodo:getIdByCodigo
      * @PARAM:$codigo - Codigo do Animal
+     * @PARAM:$returnAnimal(bool) - false para nao retornar o objAnimal retorna so o codigo
      * Recebe um codigo de animal e retorna o id do animal,
      * @return:$id = chave interna do animal
      */
-    public function getIdByCodigo($data, $json = true){
+    public function getIdByCodigo($data, $json = true, $returnAnimal = true){
 
         $codigo       = $data["codigo"];
         $confinamento = $data["confinamento"];
@@ -201,14 +202,17 @@ class Animais extends Base {
         if ($animal_codigo) {
             $result->success = true;
             $result->animal_id = $animal_codigo->animal_id;
-            $result->animal = $this->getAnimal($animal_codigo->animal_id);
+
+            if ($returnAnimal){
+                $result->animal = Animais::getAnimal($animal_codigo->animal_id);
+            }
         }
         else {
             $result->failure = true;
             $result->message = "Desculpe, mais <font color='red'>Nenhum</font> Animal foi encontrado.<br> Verifique se este código abaixo está correto<br> Código: <font color='red'>{$codigo}</font>";
         }
 
-        if ($data["returnJson"] or $json){
+        if ($json){
             echo json_encode($result);
         }
         else {
@@ -222,7 +226,7 @@ class Animais extends Base {
         $animal = $this->find($animal_id, 'animais');
 
         // Informacoes do Codigo
-        $codigos = $this->getCodigosById($animal->id, $animal->confinamento_id);
+        $codigos = Animais::getCodigosById($animal->id, $animal->confinamento_id);
         $animal->codigo = $codigos[0]->codigo;
 
         // Informacoes da Compra
@@ -243,7 +247,7 @@ class Animais extends Base {
         $animal->quadra = $quadra->quadra;
 
         // Estatisticas do Animal
-        $estatistica = $this->getEstatiscaPorAnimal($animal->id);
+        $estatistica = Animais::getEstatiscaPorAnimal($animal->id);
         $animal->peso_entrada        = $estatistica->peso_entrada;
         $animal->data_entrada        = $estatistica->data_entrada;
         $animal->peso_atual          = $estatistica->peso_atual;
@@ -253,7 +257,7 @@ class Animais extends Base {
         $animal->ganho_diario        = $estatistica->ganho_diario;
 
         // Calcular Idade Atual
-        $animal->idade = $this->calcularIdade($compra->idade, $animal->dias_confinamento);
+        $animal->idade = Animais::calcularIdade($compra->idade, $animal->dias_confinamento);
 
 
         return $animal;
@@ -468,8 +472,6 @@ class Animais extends Base {
 
             }
 
-            //var_dump($animal_codigo);
-
             $update = $stm->execute();
 
             if ($update) {
@@ -503,7 +505,6 @@ class Animais extends Base {
         // Recupera o Id do Animal
         $animal_id = Animais::getIdByCodigo($data, false);
 
-
         // Se Encontrou
         if ($animal_id->success){
             $return->success = true;
@@ -533,6 +534,77 @@ class Animais extends Base {
         $idade_mes = round(($idade_entrada_dias + $dias_confinamento)/30);
 
         return $idade_mes;
+    }
+
+    public function calcularDiasConfinamento($data_entrada, $animal){
+
+        if (!$data_entrada){
+            // Data de Entrada
+            $data_entrada = $this->filter('data_compra', 'compras', "id = {$animal->compra_id} AND confinamento_id = {$animal->confinamento_id}", null, false);
+            $data_entrada = $data_entrada[0]->data_compra;
+        }
+
+        // Calculando o Tempo no Confinamento
+        $data_entrada = strtotime($data_entrada);
+        $data_atual   = strtotime(date('Y-m-d'));
+        //transformação do timestamp em  dias
+        $dias_confinamento = ($data_atual-$data_entrada)/86400;
+
+        if ($dias_confinamento > 0){
+            return $dias_confinamento;
+        }
+        else {
+            return 0;
+        }
+    }
+
+    public function getAnimalResumido($animal_id, $codigo, $json = true){
+
+        $result = new StdClass();
+
+        if ((!$animal_id) OR ($codigo)){
+            $array['codigo'] = $codigo;
+            $animal_id = Animais::getIdByCodigo($array,false,false);
+            $animal_id = $animal_id->animal_id;
+        }
+
+        // Informacoes do Animal
+        $animal = $this->find($animal_id, 'animais');
+
+        if ($animal) {
+
+            // Dias no Confinamento
+            $animal->dias_confinamento = Animais::calcularDiasConfinamento(false,$animal);
+            // Concertando a Idade
+            $animal->idade = Animais::calcularIdade($animal->idade, $animal->dias_confinamento);
+
+            // Informacoes do Codigo
+            $codigos = Animais::getCodigosById($animal->id, $animal->confinamento_id);
+            $animal->codigo = $codigos[0]->codigo;
+
+            // Informacoes da Quadra
+            $quadra = $this->find($row->quadra_id, 'quadras', 'quadra');
+            $amimal->quadra = $quadra->quadra;
+
+            // peso
+            $animal->peso = 0;
+
+            // Retorno de Sucesso
+            $result->success = true;
+            $result->animal_id = $animal->id;
+            $result->animal = $animal;
+        }
+        else {
+            $result->failure = true;
+            $result->message = "Desculpe, mais <font color='red'>Nenhum</font> Animal foi encontrado.<br> Verifique se este código abaixo está correto<br> Código: <font color='red'>{$codigo}</font>";
+        }
+
+        if ($json){
+            echo json_encode($result);
+        }
+        else {
+            return $result;
+        }
     }
 
 }

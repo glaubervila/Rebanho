@@ -119,14 +119,6 @@ Ext.define('Rebanho.view.animais.AnimaisResumoGrid' ,{
                     itemId   :'cmbConfinamento',
                 },
                 '-',
-                {
-                    text: 'Filtrar',
-                    iconCls: 'icon-filter',
-                    action: 'action_filtrar',
-                    itemId: 'btnFiltrar',
-                    tooltip: 'Click para Filtrar os Registros por Confinamentos ou Por Quadras.',
-                },
-
             ]
         }]
 

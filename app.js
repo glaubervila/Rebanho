@@ -72,6 +72,7 @@ Ext.application({
         'Quadras',
 
         // Transferencias
+        'Transferencias',
     ],
 
 });

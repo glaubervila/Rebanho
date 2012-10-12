@@ -74,21 +74,6 @@ class Pesagens extends Base {
                 }
             }
 
-//             $descricao = "Pesagem - {$data->peso} Kg";
-// 
-//             $query_ocorrencia = "INSERT INTO ocorrencias (confinamento_id, quadra_id, animal_id, ocorrencia, descricao, data) VALUES (:confinamento_id, :quadra_id, :animal_id, :ocorrencia, :descricao, :data);";
-// 
-//             $stm = $db->prepare($query_ocorrencia);
-// 
-//             $stm->bindValue(':confinamento_id', $data->confinamento_id);
-//             $stm->bindValue(':quadra_id', $data->quadra_id);
-//             $stm->bindValue(':animal_id', $data->animal_id);
-//             $stm->bindValue(':ocorrencia', 'Pesagem');
-//             $stm->bindValue(':descricao', $descricao);
-//             $stm->bindValue(':data', $data->data);
-// 
-//             $stm->execute();
-
             if ($insert) {
 
                 $db->commit();
