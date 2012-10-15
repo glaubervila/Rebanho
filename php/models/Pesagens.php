@@ -29,7 +29,9 @@ class Pesagens extends Base {
         if ($unique){
 
             $data->id = $unique->id;
+
             $update = Pesagens::update($data, $json);
+
             $result = new StdClass();
             if ($update) {
                 $result->success = true;
@@ -166,22 +168,30 @@ class Pesagens extends Base {
         $objOcorrencia->quadra_id = $data->quadra_id;
         $objOcorrencia->animal_id = $data->animal_id;
         $objOcorrencia->ocorrencia = 'Pesagem';
-        $objOcorrencia->descricao = $data->descricao_ocorrencia;
         $objOcorrencia->data = $data->data;
 
         // Classificando o Tipo de Ocorrencia
         if ($data->tipo == 1) {
             // Se a Pesagem for de Entrada(1) a ocorrencia e de Entrada(2)
             $objOcorrencia->tipo = 2;
+            $objOcorrencia->descricao = "Pesagem de Entrada - {$data->peso}";
         }
         else if ($data->tipo == 2) {
             // Se a Pesagem for de Rotina(2) a ocorrencia e de Pesagem(4)
             $objOcorrencia->tipo = 4;
+            $objOcorrencia->descricao = "Pesagem - {$data->peso}";
         }
         else if ($data->tipo == 3) {
             // Se a Pesagem for de Compra(3) a ocorrencia e de Compra(3)
             $objOcorrencia->tipo = 3;
+            $objOcorrencia->descricao = "Pesagem de Compra - {$data->peso} Kg";
         }
+        else if ($data->tipo == 4) {
+            // Se a Pesagem for de Saida(4) a ocorrencia e de Pesagem de Saida(6)
+            $objOcorrencia->tipo = 6;
+            $objOcorrencia->descricao = "Pesagem de Saida - {$data->peso} Kg";
+        }
+
 
         $return = Ocorrencias::insert($objOcorrencia, false);
 
@@ -466,5 +476,30 @@ class Pesagens extends Base {
             return $result;
         }
     }
+
+    public function criarPesagemSaida($data, $json = true){
+
+        //$animal = $this->find($data->id, 'animais');
+
+        $objPesagem = new StdClass();
+        $objPesagem->confinamento_id = $data->confinamento_id;
+        $objPesagem->quadra_id = $data->quadra_id;
+        $objPesagem->animal_id = $data->id;
+        $objPesagem->data = $data->data_saida;
+        $objPesagem->peso = $data->peso;
+        $objPesagem->tipo = 4; // Pesagem de Saida
+
+
+        $result = Pesagens::insert($objPesagem, false);
+
+
+        if ($json) {
+            echo json_encode($result);
+        }
+        else {
+            return $result;
+        }
+    }
+
 
 }

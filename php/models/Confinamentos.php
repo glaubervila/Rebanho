@@ -69,5 +69,12 @@ class Confinamentos extends Base {
 
     }
 
+    public function getNome($id){
 
+        $confinamento = $this->filter('confinamento', 'confinamentos', "id = $id", false, false);
+
+        $nome = $confinamento[0]->confinamento;
+
+        return $nome;
+    }
 }

@@ -23,8 +23,13 @@ Ext.define('Rebanho.store.Ocorrencias', {
         },
 
     },
-    sorters: [{
-        property: 'data',
-        direction: 'DESC'
-    }],
+    sorters: [
+        {
+            property: 'data',
+            direction: 'DESC'
+        },{
+            property: 'id',
+            direction: 'DESC'
+        }
+    ],
 });

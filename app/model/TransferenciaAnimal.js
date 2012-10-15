@@ -10,23 +10,17 @@ Ext.define('Rebanho.model.TransferenciaAnimal', {
     fields: [
         {name:'id', type: 'int'},
         {name:'confinamento_id', type: 'int'},
-        {name:'quadra_id', type: 'string'},
+        {name:'quadra_id', type: 'int'},
         {name:'peso', type: 'float'},
         {name:'sexo', type: 'string'},
         {name:'quadra', type: 'string'},
         {name:'codigo', type: 'string'},
         {name:'idade', type: 'string'},
+        // Campos Estrangeiros
+        {name:'transferencia_id', type: 'int'},
+        {name:'origem', type: 'int'},
+        {name:'destino', type: 'int'},
+        {name:'data_saida', type: 'date', dateFormat: 'Y-m-d'},
     ],
-
-    validations: [
-        {type: 'presence',  field: 'confinamento_id'},
-        {type: 'presence',  field: 'quadra_id'},
-        {type: 'presence',  field: 'animal_id'},
-        {type: 'presence',  field: 'data'},
-        {type: 'presence',  field: 'peso'},
-        {type: 'presence',  field: 'tipo'},
-    ],
-
-
 
 });

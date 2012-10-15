@@ -14,6 +14,8 @@ class Ocorrencias extends Base {
  *     3 - Pesagem de Compra
  *     4 - Pesagem
  *     5 - Manejo de Quadra
+ *     6 - Pesagem de Saida
+ *     7 - Transferencia
  */
 
 
@@ -152,5 +154,36 @@ class Ocorrencias extends Base {
 
     }
 
+    /** Metodo: criarOcorrenciaTransferencia
+     * Cria um objeto de ocorrencia para a Transferencia entre Confinamentos
+     * usa o metodo insert da Classe Ocorrencia
+     * se for um update a classe vai identificar o registro e fazer a atualizacao.
+     */
+    public function criarOcorrenciaTransferencia($data, $json = true){
 
+        $descricao = "Transferencia: {$data->origem_nome} >> {$data->destino_nome}";
+
+        // Criando o Obj Ocorrencia
+        $objOcorrencia = new StdClass();
+        $objOcorrencia->confinamento_id = $data->confinamento_id;
+        $objOcorrencia->quadra_id = $data->quadra_id;
+        $objOcorrencia->animal_id = $data->animal_id;
+        $objOcorrencia->ocorrencia = 'Transferencia';
+        $objOcorrencia->descricao = $descricao;
+        $objOcorrencia->data = $data->data;
+        $objOcorrencia->tipo = 7;
+
+        $result = Ocorrencias::insert($objOcorrencia, false);
+
+        $return = new StdClass();
+        if ($result->success){
+            $return->success = true;
+        }
+        else {
+            $return->failure = true;
+            $return->msg = "Falha ao Criar a Ocorrencia de Transferencia";
+        }
+
+        return $return;
+    }
 }

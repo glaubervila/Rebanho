@@ -37,13 +37,18 @@ Ext.define('Rebanho.store.Transferencias', {
 
             // Verificando se Houve Falha
             if (obj.failure){
-                Ext.MessageBox.show({ title:'Desculpe!', msg: obj.message, buttons: Ext. MessageBox.OK, icon:  Ext.MessageBox.ERROR })
-                store.load();
+                Ext.MessageBox.show({ title:'Desculpe!', msg: obj.msg, buttons: Ext. MessageBox.OK, icon:  Ext.MessageBox.ERROR })
+                //store.load();
+                store.rejectChanges();
             }
             else {
-                Ext.BoxMsg.msg('Sucesso!', obj.message);
-                console.log(obj);
-                this.fireEvent('create', this, obj.data);
+                //Ext.BoxMsg.msg('Sucesso!', obj.msg);
+                if (obj.finalizar){
+                    this.fireEvent('finalizar', this, obj.data);
+                }
+                else {
+                    this.fireEvent('create', this, obj.data);
+                }
             }
         },
     }

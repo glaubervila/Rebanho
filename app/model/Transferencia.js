@@ -20,6 +20,12 @@ Ext.define('Rebanho.model.Transferencia', {
         {name:'peso_minimo', type: 'float'},
         {name:'peso_medio' , type: 'float'},
         {name:'peso_maximo', type: 'float'},
+        {name:'animais'    , type: 'string'},
+        // Facilitadores
+        {name:'origem_nome'     , type: 'string'},
+        {name:'destino_nome'    , type: 'string'},
+        {name:'status_nome'    , type: 'string'},
+
     ],
 
 });

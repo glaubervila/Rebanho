@@ -18,7 +18,8 @@ Ext.define('Rebanho.store.TransferenciaAnimais', {
             //action: '',
             returnJson: true,
         },
-
+        // BatchAction para enviar todas as linhas alteradas no mesmo request
+        batchActions: true,
         reader: {
             type: 'json',
             root: 'data',
@@ -30,12 +31,30 @@ Ext.define('Rebanho.store.TransferenciaAnimais', {
             root: 'data',
             writeAllFields: true,
             encode: true,
-            allowSingle: true,
+            allowSingle: false,
         },
 
     },
-//     sorters: [{
-//         property: 'data',
-//         direction: 'DESC'
-//     }],
+
+    listeners: {
+        write: function(store, operation){
+            var obj = Ext.decode(operation.response.responseText);
+
+            if (operation.action == 'delete'){
+
+            }
+            else {
+                // Verificando se Houve Falha
+                if (obj.failure){
+                    Ext.MessageBox.show({ title:'Desculpe!', msg: obj.msg, buttons: Ext. MessageBox.OK, icon:  Ext.MessageBox.ERROR });
+                    store.load();
+                }
+                else {
+                    //Ext.BoxMsg.msg('Sucesso!', obj.msg);
+                    this.fireEvent('createAnimais', this);
+                }
+            }
+        },
+    }
+    
 });

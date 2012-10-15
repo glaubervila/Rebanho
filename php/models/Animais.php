@@ -558,7 +558,7 @@ class Animais extends Base {
         }
     }
 
-    public function getAnimalResumido($animal_id, $codigo, $json = true){
+    public function getAnimalResumido($animal_id, $codigo, $confinamento_id, $json = true){
 
         $result = new StdClass();
 
@@ -569,12 +569,14 @@ class Animais extends Base {
         }
 
         // Informacoes do Animal
-        $animal = $this->find($animal_id, 'animais');
-
+        //$animal = $this->find($animal_id, 'animais');
+        $animal = $this->filter(null, 'animais', "id = {$animal_id} AND confinamento_id = {$confinamento_id} AND status = 1", null, false);
+        $animal = $animal[0];
         if ($animal) {
 
             // Dias no Confinamento
             $animal->dias_confinamento = Animais::calcularDiasConfinamento(false,$animal);
+
             // Concertando a Idade
             $animal->idade = Animais::calcularIdade($animal->idade, $animal->dias_confinamento);
 
@@ -595,8 +597,9 @@ class Animais extends Base {
             $result->animal = $animal;
         }
         else {
+            $confinamento_nome = Confinamentos::getNome($confinamento_id);
             $result->failure = true;
-            $result->message = "Desculpe, mais <font color='red'>Nenhum</font> Animal foi encontrado.<br> Verifique se este código abaixo está correto<br> Código: <font color='red'>{$codigo}</font>";
+            $result->message = "Desculpe, mais <font color='red'>Nenhum</font> Animal foi encontrado.<br> Verifique se este código abaixo está correto<br> Código: <font color='red'>{$codigo}</font><br>Ou se o Animal está neste Confinamento:<font color='red'>{$confinamento_nome}</font> ";
         }
 
         if ($json){
