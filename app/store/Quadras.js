@@ -5,7 +5,7 @@ Ext.define('Rebanho.store.Quadras', {
 
     autoSync: true,
 
-    //autoLoad:true,
+    autoLoad:true,
 
     remoteFilter: true,
 

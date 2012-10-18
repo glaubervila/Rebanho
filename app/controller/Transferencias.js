@@ -583,7 +583,6 @@ Ext.define('Rebanho.controller.Transferencias', {
             // Se estiver em Entrada dar Continuidade
             else if (transferencia.data.status == 2) {
                 this.onEntradaTransferencia(store, transferencia.data);
-
             }
         }
         else {
@@ -604,7 +603,7 @@ Ext.define('Rebanho.controller.Transferencias', {
 
         if(form.isValid()){
 
-            if (values.data_entrada >= values.data_saida) {
+            if ((values.data_entrada >= values.data_saida) && (values.quadra_id != 0)){
 
                 transferencia.set(values);
 
@@ -616,7 +615,7 @@ Ext.define('Rebanho.controller.Transferencias', {
                 store.sync();
             }
             else {
-                Ext.ux.Alert.alert('Atenção!', 'Data de Entrada Menor do que a Data de Saída!', 'warning');
+                Ext.ux.Alert.alert('Atenção!', 'Verfique se os campos de Data e Quadra estão, preenchidos corretamente.<br>Data de Entrada Menor do que a Data de Saída!<br>Campo Quadra Vazio ou com valor 0.', 'warning');
             }
         }
         else {

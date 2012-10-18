@@ -181,7 +181,11 @@ Ext.define('Rebanho.view.layout.Header', {
                 {
                     text: 'Clientes',
                     iconCls: 'icon-group',
+                    handler: function(){
+                        var tabs = Ext.getCmp('mainTabpanel').novaAba('clientesgrid');
+                    },
                 },
+
             ]
         },
         {
@@ -261,18 +265,6 @@ Ext.define('Rebanho.view.layout.Header', {
                                 var tabs = Ext.getCmp('mainTabpanel').novaAba('confinamentosgrid');
                             },
                         },
-                    ]
-                },
-                {
-                    text: 'Configurações',
-                    iconCls: 'icon-cog',
-                    menu: [
-                    ]
-                },
-                {
-                    text: 'Ferramentas',
-                    iconCls: 'icon-tools_box',
-                    menu: [
                     ]
                 },
             ]

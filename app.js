@@ -73,6 +73,9 @@ Ext.application({
 
         // Transferencias
         'Transferencias',
+
+        // Vendas
+        'Clientes'
     ],
 
 });

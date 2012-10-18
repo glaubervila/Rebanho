@@ -15,6 +15,14 @@ Ext.define('Rebanho.view.transferencias.EntradaGrid' ,{
 
         this.store = 'TransferenciaAnimais';
 
+        // RowEdit Plugin
+        this.plugins= [
+            Ext.create('Ext.grid.plugin.CellEditing',{
+                triggerEvent: 'cellclick',
+                clicksToEdit: 1,
+            }),
+        ],
+
         this.columns = [
             //Ext.create('Ext.grid.RowNumberer'),
             {
@@ -35,17 +43,16 @@ Ext.define('Rebanho.view.transferencias.EntradaGrid' ,{
                 width: 200,
             },
             {
+                text: "Peso",
+                dataIndex: 'peso',
+                width: 100,
+            },
+            {
                 text: "Sexo",
                 dataIndex: 'sexo',
                 sortable: false,
                 width: 50,
-            },
-            {
-                text: "Peso",
-                dataIndex: 'peso',
-                sortable: false,
-                width: 100,
-            },
+            }
         ];
 
         this.dockedItems= [{
