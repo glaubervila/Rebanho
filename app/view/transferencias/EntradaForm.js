@@ -1,10 +1,10 @@
-Ext.define('Rebanho.view.transferencias.SaidaForm' ,{
+Ext.define('Rebanho.view.transferencias.EntradaForm' ,{
     extend: 'Ext.form.Panel',
 
     requires:[
 
     ],
-    alias : 'widget.saidaform',
+    alias : 'widget.entradaform',
 
     iconCls: 'icon-application_form',
 
@@ -27,28 +27,39 @@ Ext.define('Rebanho.view.transferencias.SaidaForm' ,{
                     name: 'id',
                 },{
                     xtype:'hidden',
+                    name: 'destino',
+                },{
+                    xtype:'hidden',
                     name: 'animais',
                 },{
                     xtype:'datefield',
-                    fieldLabel:'Data da Transferência',
-                    name: 'data_saida',
+                    fieldLabel:'Data da Entrada',
+                    name: 'data_entrada',
                     format: 'd/m/y',
                     submitFormat: 'Y-m-d',
                     allowBlank: false,
                     flex: true,
                 },{
+                    xtype:'cmbquadras',
+                    fieldLabel:'Quadra Destino',
+                    name: 'quadra_id',
+                    allowBlank: false,
+                    flex: true,
+                },{
+                    xtype:'datefield',
+                    fieldLabel:'Data da Saída',
+                    name: 'data_saida',
+                    format: 'd/m/y',
+                    submitFormat: 'Y-m-d',
+                    flex: true,
+                    readOnly: true,
+                },{
                     xtype:'cmbconfinamento',
                     fieldLabel:'Confinamento de Origem',
                     name: 'origem',
                     itemId: 'cmbOrigem',
-                    allowBlank: false,
                     flex: true,
-                },{
-                    xtype:'cmbconfinamento',
-                    fieldLabel:'Confinamento de Destino',
-                    name: 'destino',
-                    allowBlank: false,
-                    flex: true,
+                    readOnly: true,
                 }]
             },{
                 xtype: 'fieldset',
@@ -88,17 +99,17 @@ Ext.define('Rebanho.view.transferencias.SaidaForm' ,{
             xtype: 'toolbar',
             items: [
                 {
-                    text: 'Criar Transferência',
+                    text: 'Iniciar Entrada',
                     iconCls: 'icon-add',
-                    action: 'action_criarTransferencia',
-                    itemId: 'btnCriarTransferencia',
-                    tooltip: 'Click para Cadastrar a Transferência e iniciar a pesagem dos animais.',
+                    action: 'action_iniciarEntrada',
+                    itemId: 'btnIniciarEntrada',
+                    tooltip: 'Click para Começar a Pesar os Animais da Transferência.',
                 },
                 {
                     text: 'Finalizar Transferência',
                     iconCls: 'icon-tick',
-                    action: 'action_finalizarTransferencia',
-                    itemId: 'btnFinalizarTransferencia',
+                    action: 'action_finalizarEntrada',
+                    itemId: 'btnFinalizarEntrada',
                     tooltip: 'Click para Finalizar a Transferência.',
                     disabled: true,
                 },

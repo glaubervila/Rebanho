@@ -196,23 +196,21 @@ Ext.define('Rebanho.view.layout.Header', {
                     iconCls: 'icon-arrow_refresh',
                     menu: [
                     {
-                        text: 'Entrada',
-                        iconCls: 'icon-control_rewind_blue',
-                    },
-                    {
                         text: 'Saída',
                         iconCls: 'icon-control_fastforward_blue',
                         handler: function(){
                             Ext.create('Rebanho.view.transferencias.SaidaWindow',{});
                         },
+                        tooltip: 'Click para Criar uma nova Transferencia, vai abrir a janela de transferencias de saida, para inclusão dos animais a serem transferidos.',
 
                     },
                     {
                         text: 'Transferências Por Período',
-                        iconCls: 'icon-report',
+                        iconCls: 'icon-lorry',
                         handler: function(){
                             var tabs = Ext.getCmp('mainTabpanel').novaAba('transferenciasgrid');
                         },
+                        tooltip: 'Abra uma Lista com todas as Tranferências.',
                     }]
                 },
             ]

@@ -24,12 +24,22 @@ Ext.define('Rebanho.store.Transferencias', {
         writer: {
             type: 'json',
             root: 'data',
-            writeAllFields: false,
+            writeAllFields: true,
             encode: true,
             allowSingle: false,
         },
 
     },
+
+    sorters: [
+        {
+            property: 'data_saida',
+            direction: 'DESC'
+        },{
+            property: 'id',
+            direction: 'DESC'
+        }
+    ],
 
     listeners: {
         write: function(store, operation){
@@ -38,17 +48,37 @@ Ext.define('Rebanho.store.Transferencias', {
             // Verificando se Houve Falha
             if (obj.failure){
                 Ext.MessageBox.show({ title:'Desculpe!', msg: obj.msg, buttons: Ext. MessageBox.OK, icon:  Ext.MessageBox.ERROR })
-                //store.load();
-                store.rejectChanges();
+
+                //store.rejectChanges();
+                store.load();
             }
             else {
                 //Ext.BoxMsg.msg('Sucesso!', obj.msg);
-                if (obj.finalizar){
-                    this.fireEvent('finalizar', this, obj.data);
+                if (!obj.data){
+                    Ext.ux.Alert.alert('Sucesso!', obj.message, 'success');
                 }
                 else {
-                    this.fireEvent('create', this, obj.data);
+                    // Tratando o Evento Pelo Status
+                    if (obj.data.status == 0) {
+                        // 0 - Saida - logo apos o isert da transferencia
+                        this.fireEvent('saida', this, obj.data);
+                    }
+                    else if (obj.data.status == 1){
+                        // 1 - Transito - update finalizando a entrada
+                        this.fireEvent('transito', this, obj.data);
+                    }
+                    else if (obj.data.status == 2){
+                        // 2 - Entrada - update iniciando a pesagem
+                        this.fireEvent('entrada', this, obj.data);
+                    }
+                    else if (obj.data.status == 3){
+                        // 3 - Concluido - update finalizando totalmente a transferencia
+                        this.fireEvent('concluido', this, obj.data);
+                    }
                 }
+
+                store.sync();
+                store.load();
             }
         },
     }

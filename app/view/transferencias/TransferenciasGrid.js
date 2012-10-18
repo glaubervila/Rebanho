@@ -74,29 +74,28 @@ Ext.define('Rebanho.view.transferencias.TransferenciasGrid' ,{
                 //width: 50,
                 flex: true,
             },
-            {
-                text: "Peso Min",
-                dataIndex: 'peso_minimo',
-                sortable: false,
-                //width: 80,
-                flex: true,
-            },
-            {
-                text: "Peso Médio",
-                dataIndex: 'peso_medio',
-                sortable: false,
-                //width: 80,
-                flex: true,
-            },
-            {
-                text: "Peso Maximo",
-                dataIndex: 'peso_maximo',
-                sortable: false,
-                //width: 80,
-                flex: true,
-            },
-
         ];
+
+        this.dockedItems= [{
+            xtype: 'toolbar',
+            items: [
+                {
+                    text: 'Nova Transferencia',
+                    iconCls: 'icon-add',
+                    action: 'action_novaTransferencia',
+                    itemId: 'btnNova',
+                    tooltip: 'Click para Criar uma nova Transferencia, vai abrir a janela de transferencias de saida, para inclusão dos animais a serem transferidos.',
+                },
+                {
+                    text: 'Excluir',
+                    iconCls: 'icon-delete',
+                    action: 'action_excluirTransferencia',
+                    itemId: 'btnExcluir',
+                    tooltip: 'Click para Excluir uma Transferencia, Atenção so Podem ser excluidas as Transferencias que estiverem com status "Saída".',
+                    disabled: true,
+                },
+            ]
+        }]
 
         // Barra de Paginacao
         this.bbar = Ext.create('Ext.PagingToolbar', {

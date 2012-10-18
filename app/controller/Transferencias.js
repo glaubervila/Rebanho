@@ -5,6 +5,7 @@ Ext.define('Rebanho.controller.Transferencias', {
         'Animais',
         'TransferenciaAnimais',
         'Transferencias',
+        'Quadras',
     ],
 
     models: [
@@ -16,7 +17,10 @@ Ext.define('Rebanho.controller.Transferencias', {
         'transferencias.SaidaForm',
         'transferencias.SaidaGrid',
         'transferencias.SaidaWindow',
-        'transferencias.TransferenciasGrid'
+        'transferencias.TransferenciasGrid',
+        'transferencias.EntradaWindow',
+        'transferencias.EntradaForm',
+        'transferencias.EntradaGrid',
     ],
 
     refs: [
@@ -32,6 +36,22 @@ Ext.define('Rebanho.controller.Transferencias', {
             ref: 'saidaWindow',
             selector: 'saidawindow'
         },
+        {
+            ref: 'transferenciasGrid',
+            selector: 'transferenciasgrid'
+        },
+        {
+            ref: 'entradaWindow',
+            selector: 'entradawindow'
+        },
+        {
+            ref: 'entradaForm',
+            selector: 'entradaform'
+        },
+        {
+            ref: 'entradaGrid',
+            selector: 'entradagrid'
+        },
 
     ],
 
@@ -41,10 +61,19 @@ Ext.define('Rebanho.controller.Transferencias', {
     init: function() {
 
         // ----------< Actions no Store >----------
-        this.getStore('Transferencias').addListener('create', this.onCreateTransferencia, this);
-        this.getStore('Transferencias').addListener('finalizar', this.onFinalizarTransferencia, this);
+        this.getStore('Transferencias').on({
+            scope:this,
+            'saida': this.onCreateTransferencia,
+            'transito': this.onFinalizarTransferencia,
+            'entrada' : this.onEntradaTransferencia,
+            'concluido': this.onConcluidoTransferencia,
+        });
 
-        this.getStore('TransferenciaAnimais').addListener('createAnimais', this.onCreateTransferenciaAnimais, this);
+        this.getStore('TransferenciaAnimais').on({
+            scope: this,
+            'createAnimais': this.onCreateTransferenciaAnimais,
+            'entradaAnimais': this.finalizarTransferencia,
+        });
 
         this.control({
 
@@ -81,6 +110,38 @@ Ext.define('Rebanho.controller.Transferencias', {
                 keyup: this.onKeyUpSaidaTxtCodigo,
             },
 
+            // ----------< Actions da Grid Transferencias>----------
+            'transferenciasgrid': {
+                afterrender: this.onAfterRenderGridTrasferencia,
+                // DoubleClick em uma linha da Grid
+                itemdblclick: this.onItemDblClickGridTransferencia,
+                 // Ao Selecionar um Registro na Grid
+                selectionchange: this.onSelectChangeTransferencia,
+            },
+            'transferenciasgrid [action=action_novaTransferencia]': {
+                click: this.onClickBtnNovaTransferencia
+            },
+            'transferenciasgrid [action=action_excluirTransferencia]': {
+                click: this.onClickBtnExcluirTransferencia
+            },
+            // ----------< Actions da Window Transferencias - Entrada >----------
+            'entradawindow': {
+                show: this.onShowEntradaWindow,
+                afterrender: this.onAfterRenderEntradaWindow,
+            },
+            // ----------< Actions do Form Transferencias - Entrada >----------
+            'entradaform [action=action_iniciarEntrada]': {
+                click: this.onClickBtnEntradaFormIniciarEntrada
+            },
+
+            'entradaform [action=action_finalizarEntrada]': {
+                click: this.onClickBtnEntradaFormFinalizarEntrada
+            },
+            // ----------< Actions da Grid Transferencias - Entrada >----------
+            'entradagrid [itemId=txtEntradaCodigo]': {
+                keyup: this.onKeyUpEntradaTxtCodigo,
+            },
+
         });
 
     },
@@ -95,6 +156,38 @@ Ext.define('Rebanho.controller.Transferencias', {
         store.sync();
     },
 
+
+    onLoadSaidaWindow: function(record){
+        this.win = Ext.create('Rebanho.view.transferencias.SaidaWindow',{});
+
+        if (this.transferencia){
+
+            var transferencia = this.transferencia;
+            var form = this.getSaidaForm().getForm();
+            var grid = this.getSaidaGrid();
+            var store = this.getStore('TransferenciaAnimais');
+
+            // Setando a Transferencia no Form
+            form.loadRecord(this.transferencia);
+
+            // Carregando a Store de AnimaisTransferidos
+            store.removeAll();
+
+            if (transferencia.data.animais) {
+                grid.setDisabled(true);
+                this.getSaidaForm().down('#btnCriarTransferencia').setDisabled(true);
+                this.getSaidaForm().down('#btnFinalizarTransferencia').setDisabled(true);
+            }
+            else {
+                grid.setDisabled(false);
+                this.getSaidaForm().down('#btnCriarTransferencia').setDisabled(true);
+            }
+        }
+        else {
+            console.log('nenhuma transferencia carregada');
+        }
+
+    },
 
     // ----------< Metodos do Form de Saida >----------
 
@@ -114,6 +207,7 @@ Ext.define('Rebanho.controller.Transferencias', {
         if (this.confinamento != 0){
             // se tiver um confinamento
             cmbOrigem.setValue(this.confinamento);
+            cmbOrigem.setReadOnly(true);
         }
     },
 
@@ -141,23 +235,38 @@ Ext.define('Rebanho.controller.Transferencias', {
         transferencia.set(values);
 
         //console.log(values);
+        // Verificar se a Origem e o destino sao diferentes
+        if (transferencia.data.origem == transferencia.data.destino){
+            Ext.ux.Alert.alert('Atenção!', 'Verifique o cadastro, a Origem e o Destino devem ser diferentes', 'warning');
+        }
+        else {
+            // Setando o Status para 0 - Iniciando
+            transferencia.set('status', 0);
 
-        // Setando o Status para 0 - Iniciando
-        transferencia.set('status', 0);
+            store.add(transferencia);
 
-        store.add(transferencia);
-
-        store.sync();
- 
+            store.sync();
+        }
     },
-
 
     onClickBtnSaidaFormFinalizarTransferencia: function(){
         //console.log('Transferencias - onClickBtnSaidaFormFinalizarTransferencia');
 
-        // Salva os animais que esta na grid
-        this.finalizar_inclusaoAnimais();
+        // Confirmar se quer mesmo finalizar
+        Ext.Msg.show({
+            title:'Finalizar Transferência?',
+            msg: 'Confira Todos os Dados antes de Finalizar a Transferência, depois de finalizada não poderá mais alterar os registros!<br> Deseja mesmo Finalizar?',
+            buttons: Ext.Msg.YESNO,
+            icon: Ext.Msg.QUESTION,
+            scope: this,
+            callback: function(btn){
+                if (btn == 'yes'){
+                    // Salva os animais que esta na grid
+                    this.finalizar_inclusaoAnimais();
 
+                }
+            }
+        });
     },
 
     // ----------< Metodos da Grid de Saida >----------
@@ -213,7 +322,7 @@ Ext.define('Rebanho.controller.Transferencias', {
     },
 
     inserirAnimalnaGrid: function(animal){
-        //console.log('Transferencias - inserirAnimalnaGrid');
+        console.log('Transferencias - inserirAnimalnaGrid');
         // Recuperar a Grid
         var grid = this.getSaidaGrid();
         // Recuperar a Store
@@ -303,6 +412,7 @@ Ext.define('Rebanho.controller.Transferencias', {
                 // Incrementa a flag erro
                 flag_erro++;
             }
+            record.set(origem);
         },this);
 
         if (flag_erro == 0){
@@ -357,7 +467,269 @@ Ext.define('Rebanho.controller.Transferencias', {
 
     },
 
-    // ----------< Metodos da Genericos >----------
+    // ----------< Metodos da Grig de Transferencias >----------
+
+    onAfterRenderGridTrasferencia: function(){
+        console.log('Transferencia - onAfterRenderGridTrasferencia');
+
+        // Setando o Atributo Confinamento
+        this.confinamento = Ext.getCmp('main_viewport').getConfinamentoId();
+        // Carregando a Store de Quadras
+        this.getStore('Quadras').filter("confinamento_id", this.confinamento);
+
+        // Carregando Store
+        this.getStore('Transferencias').load();
+
+    },
+
+    onItemDblClickGridTransferencia: function(grid, record, element, index){
+        console.log('Transferencia - onItemDblClickGridTransferencia');
+        // Guardando o Registro da transferencia selecionada
+        this.transferencia = record;
+
+        // Saber pelo confinamento se o usuario ta vendo a Saida ou Entrada
+        if (record.data.origem == this.confinamento){
+            // Se o confinamento do usuario for o de origem abre a janela de SAIDA.
+            console.log('origem e igual ao usuario, abra SAIDA');
+            this.onLoadSaidaWindow(record);
+        }
+        else if (record.data.destino == this.confinamento) {
+            // Se o confinamento do usuario for o de destino abre a janela de ENTRADA.
+            console.log('destino e igual ao usuario, abra Entrada');
+
+            if ((record.data.status == 1)||(record.data.status == 2)){
+                console.log('Entrada Iniciada dar Continuidade');
+                // Setando o Atributo Confinamento
+                this.confinamento = Ext.getCmp('main_viewport').getConfinamentoId();
+                // Carregando a Store de Quadras
+                this.getStore('Quadras').filter("confinamento_id", this.confinamento);
+
+                // Abrindo Janela de Entrada
+                this.win = Ext.create('Rebanho.view.transferencias.EntradaWindow',{});
+            }
+            else if (record.data.status == 3) {
+                console.log('Abrir Janela de Concluida');
+            }
+        }
+    },
+
+    onSelectChangeTransferencia: function (selModel, selections){
+        record = selections[0];
+        btn = this.getTransferenciasGrid().down('#btnExcluir');
+        btn.setDisabled(true);
+        if (record) {
+            if (record.data.status == 0) {
+                btn.setDisabled(selections.length === 0);
+            }
+        }
+    },
+
+    onClickBtnNovaTransferencia: function(){
+        console.log('Transferencias - onClickBtnNovaTransferencia');
+
+        // Abrir a janela de Cadastro transferencia de saida
+        Ext.create('Rebanho.view.transferencias.SaidaWindow',{});
+    },
+
+    onClickBtnExcluirTransferencia: function(){
+        console.log('Transferencias - onClickBtnExcluirTransferencia');
+
+        var grid = this.getTransferenciasGrid();
+        var store = this.getStore('Transferencias');
+        var records = grid.getSelectionModel().getSelection();
+
+        store.remove(records);
+        store.sync();
+    },
+
+    // ----------< Metodos da Window de Entrada >----------
+    onAfterRenderEntradaWindow: function(){
+        // Setando o Atributo Confinamento
+        this.confinamento = Ext.getCmp('main_viewport').getConfinamentoId();
+
+        // Carregando a Store de Quadras
+        this.getStore('Quadras').filter("confinamento_id", this.confinamento);
+    },
+
+    onShowEntradaWindow: function(){
+        console.log('Transferencias - onShowEntradaWindow');
+
+        if (this.transferencia){
+
+            var transferencia = this.transferencia;
+            var form = this.getEntradaForm().getForm();
+            var store = this.getStore('TransferenciaAnimais');
+
+            // Setando a Transferencia no Form
+            form.loadRecord(this.transferencia);
+
+            // Carregando a Store de AnimaisTransferidos
+            store.removeAll();
+
+            //altera o action da store
+            store.proxy.setExtraParam('action','getAnimaisTransferencia');
+            store.proxy.setExtraParam('transferencia_id',transferencia.data.id);
+            // Carrega os animais na grid, usa o campo animais na tabela transferencia
+            store.load();
+            //volta o action da store
+            store.proxy.setExtraParam('action','');
+            store.proxy.setExtraParam('transferencia_id', 0);
+
+            // Se estiver em transito
+            if (transferencia.data.status == 1) {
+                // Desabilitando a Grid
+                this.getEntradaGrid().disable();
+            }
+            // Se estiver em Entrada dar Continuidade
+            else if (transferencia.data.status == 2) {
+                this.onEntradaTransferencia(store, transferencia.data);
+
+            }
+        }
+        else {
+            console.log('nenhuma transferencia carregada');
+        }
+
+
+    },
+
+    // ----------< Metodos do Form de Entrada >----------
+    onClickBtnEntradaFormIniciarEntrada: function(){
+        console.log('Transferencias - onClickBtnEntradaFormIniciarEntrada');
+
+        var form = this.getEntradaForm().getForm();
+        var store = this.getStore('Transferencias');
+        var values = form.getValues();
+        var transferencia = Ext.create('Rebanho.model.Transferencia');
+
+        if(form.isValid()){
+
+            if (values.data_entrada >= values.data_saida) {
+
+                transferencia.set(values);
+
+                // Setando o Status para 2 - Entrada
+                transferencia.set('status', 2);
+
+                store.add(transferencia);
+
+                store.sync();
+            }
+            else {
+                Ext.ux.Alert.alert('Atenção!', 'Data de Entrada Menor do que a Data de Saída!', 'warning');
+            }
+        }
+        else {
+            Ext.ux.Alert.alert('Atenção!', 'Preencha todos os campos...', 'warning');
+        }
+
+    },
+
+    onKeyUpEntradaTxtCodigo: function(field, e){
+        //console.log('Transferencias - onKeyUpEntradaTxtCodigo');
+        // Verifica se foi um enter
+        if(e.getKey() === e.ENTER){
+            // Se for enter executa o metodo do click adicionar
+            this.onClickBtnGridEntradaAnimal();
+        }
+    },
+
+    onClickBtnEntradaFormFinalizarEntrada: function(){
+        console.log('Transferencias - onClickBtnEntradaFormFinalizarEntrada');
+        var me = this;
+        var store = me.getStore('TransferenciaAnimais');
+
+        var form = me.getEntradaForm().getForm();
+        var origem     = form.findField('origem').getValue();
+        var destino    = form.findField('destino').getValue();
+        var data_saida = form.findField('data_saida').getValue();
+        var transferencia_id = form.findField('id').getValue();
+        var data_entrada = form.findField('data_entrada').getValue();
+        var quadra_id = form.findField('quadra_id').getValue();
+
+        var flag_erro = 0 ;
+
+        // Verificar se todos os registros da store estao completos
+        store.each(function(record){
+
+            console.log(record);
+            if (record.data.sisbov){
+                if (!record.data.peso){
+                    Ext.ux.Alert.alert('Atenção!', 'É necessário que todos os registros tenham Peso, verifique o animal com o código: '+record.data.codigo_antigo, 'warning');
+                    flag_erro++;
+                }
+            }
+            else {
+                Ext.ux.Alert.alert('Atenção!', 'É necessário que todos os registros tenham codigo do sisbov, verifique o animal com o código: '+record.data.codigo_antigo, 'warning');
+                flag_erro++;
+            }
+
+            record.set('transferencia_id', transferencia_id);
+            record.set('origem', origem);
+            record.set('destino', destino);
+            record.set('data_saida', data_saida);
+            record.set('data_entrada', data_entrada);
+            record.set('quadra_id', quadra_id);
+
+        }, this);
+
+        if (flag_erro == 0){
+
+            // Confirmar se quer mesmo finalizar
+            Ext.Msg.show({
+                title:'Finalizar Transferência?',
+                msg: 'Confira Todos os Dados antes de Finalizar a Transferência, depois de finalizada não poderá mais alterar os registros!<br> Deseja mesmo Finalizar?',
+                buttons: Ext.Msg.YESNO,
+                icon: Ext.Msg.QUESTION,
+                scope: this,
+                callback: function(btn){
+                    if (btn == 'yes'){
+                        // Salva os animais que esta na grid
+                        this.finalizarEntrada();
+                    }
+                }
+            });
+        }
+    },
+
+    // ----------< Metodos da Grid de Entrada >----------
+    onClickBtnGridEntradaAnimal: function(){
+        console.log('Transferencias - onClickBtnGridEntradaAnimal');
+
+        // Recuperar a Grid
+        var grid = this.getEntradaGrid();
+        var store = this.getStore('TransferenciaAnimais');
+
+        // Recuperar o Campo Codigo
+        var txtCodigo = grid.down('#txtEntradaCodigo');
+
+        // Verificar se tem valor
+        if (txtCodigo.getValue() > 0){
+            // Se tiver adiciona
+            var codigo = txtCodigo.getValue();
+
+            // Localizar Animal na Store
+            var animal = store.findRecord('codigo_antigo', codigo);
+
+            if (animal){
+                // Chamar a Funcao de Digitar Codigo Novo
+                this.digitarCodigoSisbov(animal);
+            }
+            else {
+                Ext.ux.Alert.alert('Atenção!', "Nenhum Animal encontrado como o Codigo: <font color=red> "+codigo+"</font>",'warning');
+            }
+
+            // Chamar a Funcao de Digitar Peso
+            //this.localizarAnimal(codigo);
+        }
+        else {
+            // Se Nao Tiver Mostra mensagem e seta o campo
+            txtCodigo.focus();
+        }
+    },
+
+
+    // ----------< Metodos da Auxiliares >----------
 
     localizarAnimal: function(codigo){
         //console.log('Transferencias - localizarAnimal('+codigo+')');
@@ -416,12 +788,58 @@ Ext.define('Rebanho.controller.Transferencias', {
                         if (peso > 0) {
                             animal.set('peso', peso);
 
-                            this.inserirAnimalnaGrid(animal);
+                            // Se o Animal tiver o campo sisbov, e porque e uma entrada nao usar esse metodo.
+                            if (animal.data.sisbov) {
+                                // Se tiver codigo sisbov nao faz nada
+                                this.getEntradaGrid().down('#txtEntradaCodigo').setValue('');
+                                this.getEntradaGrid().down('#txtEntradaCodigo').focus();
+                            }
+                            else {
+                                // Se nao Tiver insere na grid
+                                this.inserirAnimalnaGrid(animal);
+                            }
+
                         }
                         else {
                             // Peso Negativo Digitar de Novo
                             Ext.BoxMsg.msg('<font color=#D5D500>Atenção!</font>', 'Peso Deve ser Valor Positivo!');
                             this.digitarPeso();
+                        }
+                    }
+                }
+            }
+        });
+    },
+
+    digitarCodigoSisbov: function(animal){
+
+        // Setando a Mensagem
+        msg = 'Entre com o Código SisBov.<br> Para o Animal:  <font color=blue>' + animal.data.codigo +'</font>';
+
+        Ext.Msg.show({
+            title:'Código SisBov do Animal',
+            msg: msg,
+            buttons: Ext.Msg.OKCANCEL,
+            icon: 'icon-barcode-32',
+            minWidth: 250,
+            width: 300,
+            scope: this,
+            prompt: true,
+            callback: function(btn, sisbov){
+                if (btn == 'ok'){
+                    // Verifica se tem PESO
+                    if (sisbov != ''){
+
+                        if (sisbov > 0) {
+                            animal.set('sisbov', sisbov);
+                            animal.set('codigo', sisbov);
+
+                            this.digitarPeso(animal);
+                        }
+                        else {
+                            // Peso Negativo Digitar de Novo
+                            Ext.BoxMsg.msg('<font color=#D5D500>Atenção!</font>', 'Codigo Deve ser Valor Positivo!');
+                            this.digitarCodigoSisbov();
                         }
                     }
                 }
@@ -451,23 +869,10 @@ Ext.define('Rebanho.controller.Transferencias', {
             }
         }, this);
 
-        // Menor Peso
-        var peso_minimo = store.min('peso');
-        // Maior Peso
-        var peso_maximo = store.max('peso');
-        // Peso Medio
-        var media = store.sum('peso') / quantidade;
-        var peso_medio = Ext.util.Format.round((media), 3);
-
-
         // Setando os Fields
         form.findField('quantidade').setValue(quantidade);
         form.findField('machos').setValue(machos);
         form.findField('femeas').setValue(femeas);
-
-        form.findField('peso_minimo').setValue(peso_minimo);
-        form.findField('peso_medio').setValue(peso_medio);
-        form.findField('peso_maximo').setValue(peso_maximo);
 
         // Se a Quantidade for Maior que um Habilito o Botao de Finalizar no Form
         this.getSaidaForm().down('#btnFinalizarTransferencia').setDisabled(false);
@@ -498,6 +903,62 @@ Ext.define('Rebanho.controller.Transferencias', {
 
         // Mostrar Mesagem de Sucesso
         Ext.ux.Alert.alert('Success', 'Transferencia Realizada com Sucesso!', 'success');
-    }
+    },
+
+    onEntradaTransferencia: function(store, data){
+        console.log('Transferencias - onEntradaTransferencia');
+
+        var record = Ext.create('Rebanho.model.Transferencia', data);
+        // Setando o Retorno da Create no Form
+        this.getEntradaForm().getForm().loadRecord(record);
+
+        this.transferencia = record;
+
+        // Habilito a Grid para a Pesagem de Animais
+        this.getEntradaGrid().setDisabled(false);
+        // Desabilito o botao de Criar no Form
+        this.getEntradaForm().down('#btnIniciarEntrada').setDisabled(true);
+        // Habilito o Botao de Finalizar no Form
+        this.getEntradaForm().down('#btnFinalizarEntrada').setDisabled(false);
+
+        this.getEntradaGrid().down('#txtEntradaCodigo').focus();
+
+    },
+
+    finalizarEntrada: function (){
+        console.log('Transferencias - finalizarEntrada');
+
+        var me = this;
+        var store = me.getStore('TransferenciaAnimais');
+
+        store.proxy.setExtraParam('action','entradaAnimais');
+        // Envia todos
+        store.sync();
+        //volta o action da store
+        store.proxy.setExtraParam('action','');
+    },
+
+    finalizarTransferencia: function (){
+        console.log('Transferencias - finalizarTransferencia');
+
+        var form = this.getEntradaForm().getForm();
+        var store = this.getStore('Transferencias');
+
+        transferencia = form.getRecord();
+        console.log(transferencia);
+        transferencia.set('status', 3);
+
+        store.add(transferencia);
+        store.sync();
+
+    },
+
+    onConcluidoTransferencia: function(store, data){
+        console.log('Transferencias - onConcluidoTransferencia');
+
+        Ext.ux.Alert.alert('Sucesso!', 'A Transferência foi Realizada com Sucesso!', 'success');
+
+        this.getEntradaForm().down('#btnFinalizarEntrada').setDisabled(true);
+    },
 });
 

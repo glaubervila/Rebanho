@@ -34,7 +34,7 @@ Ext.define('Rebanho.view.ocorrencias.OcorrenciasPorAnimalGrid' ,{
 
         
         this.columns = [
-            Ext.create('Ext.grid.RowNumberer'),
+            //Ext.create('Ext.grid.RowNumberer'),
             {
                 text: "Data",
                 dataIndex: 'data',

@@ -5,9 +5,10 @@ header('Content-Type: text/javascript; charset=UTF-8');
  */
 
 /** Status da Transferencias
- * 0 - inicio
- * 1 - transito
- * 2 - concluida
+ * 0 - Saida
+ * 1 - Transito
+ * 2 - Entrada
+ * 3 - Concluida
  */
 
 class Transferencias extends Base {
@@ -25,7 +26,7 @@ class Transferencias extends Base {
 
         $db->beginTransaction();
 
-        $query = 'INSERT INTO transferencias (status, origem, destino, quantidade, machos, femeas, data_saida, data_entrada, animais, peso_minimo, peso_medio, peso_maximo) VALUES (:status, :origem, :destino, :quantidade, :machos, :femeas, :data_saida, :data_entrada, :animais, :peso_minimo, :peso_medio, :peso_maximo )';
+        $query = 'INSERT INTO transferencias (status, origem, destino, quantidade, machos, femeas, data_saida, data_entrada, animais) VALUES (:status, :origem, :destino, :quantidade, :machos, :femeas, :data_saida, :data_entrada, :animais)';
 
         $stm = $db->prepare($query);
 
@@ -42,9 +43,6 @@ class Transferencias extends Base {
         $stm->bindValue(':data_saida', $data_saida);
         $stm->bindValue(':data_entrada', $data_entrada);
         $stm->bindValue(':animais', $data->animais);
-        $stm->bindValue(':peso_minimo', $data->peso_minimo);
-        $stm->bindValue(':peso_medio', $data->peso_medio);
-        $stm->bindValue(':peso_maximo', $data->peso_maximo);
 
 
         $stm->execute();
@@ -88,7 +86,7 @@ class Transferencias extends Base {
 
         $db->beginTransaction();
 
-        $query = 'UPDATE `transferencias` SET `status` = :status, `origem` = :origem, `destino` = :destino, `quantidade` = :quantidade, `machos` = :machos, `femeas` = :femeas, `data_saida` = :data_saida, `data_entrada` = :data_entrada, `animais` = :animais, `peso_minimo` = :peso_minimo, `peso_medio` = :peso_medio, `peso_maximo` = :peso_maximo WHERE id = :id;';
+        $query = 'UPDATE `transferencias` SET `status` = :status, `origem` = :origem, `destino` = :destino, `quantidade` = :quantidade, `machos` = :machos, `femeas` = :femeas, `data_saida` = :data_saida, `data_entrada` = :data_entrada, `animais` = :animais, `quadra_id` = :quadra_id WHERE id = :id;';
 
         $stm = $db->prepare($query);
 
@@ -107,9 +105,7 @@ class Transferencias extends Base {
         $stm->bindValue(':data_saida', $data_saida);
         $stm->bindValue(':data_entrada', $data_entrada);
         $stm->bindValue(':animais', $data->animais);
-        $stm->bindValue(':peso_minimo', $data->peso_minimo);
-        $stm->bindValue(':peso_medio', $data->peso_medio);
-        $stm->bindValue(':peso_maximo', $data->peso_maximo);
+        $stm->bindValue(':quadra_id', $data->quadra_id);
 
         $update = $stm->execute();
 
@@ -119,7 +115,7 @@ class Transferencias extends Base {
 
         foreach ($aAnimais as $animal_id ){
 
-            $query = "UPDATE animais SET confinamento_id = {$data->destino} WHERE id = {$animal_id};";
+            $query = "UPDATE animais SET confinamento_id = {$data->destino}, quadra_id = {$data->quadra_id} WHERE id = {$animal_id};";
 
             $stm = $db->prepare($query);
 
@@ -148,7 +144,6 @@ class Transferencias extends Base {
             $result->success = true;
             $result->data = $data;
             $result->msg = "Registro Alterado com Sucesso!";
-            $result->finalizar = true;
 
         }
 
@@ -286,10 +281,187 @@ class Transferencias extends Base {
 
         $status = array();
 
-        $status[0] = "Iniciada";
+        $status[0] = "Saida";
         $status[1] = "Transito";
-        $status[2] = "Concluida";
+        $status[2] = "Entrada";
+        $status[3] = "Concluida";
 
         return $status[$id];
+    }
+
+    public function getAnimaisTransferencia($data, $json = true){
+
+        $result = new StdClass();
+
+
+        $transferencia_id = $data['transferencia_id'];
+
+        // Recuperar a transferencia
+        $transferencia = $this->filter(null, 'transferencias', "id = {$transferencia_id}", null, false);
+
+        $transferencia = $transferencia[0];
+
+        if ($transferencia) {
+
+            // Transformar o campo animais em um array
+            $animais_id = explode(';', $transferencia->animais);
+
+            // Para Cada Animal retornar o animalResumido
+            $animais = array();
+            foreach ($animais_id as $id) {
+                $animal = Animais::getAnimalResumido($id, false, false, false);
+                $animal = $animal->animal;
+
+                // Recuperando o Codigo do animal na Origem
+                $codigos = Animais::getCodigosById($animal->id, $transferencia->origem);
+                $animal->codigo_antigo = $codigos[0]->codigo;
+
+                // Se a transferencia for estiver com status de entrada recuperar o peso
+                if ($transferencia->status > 1) {
+                    $peso_entrada = Pesagens::getPesagemEntrada($animal->id, $animal->confinamento_id);
+                    $animal->peso = $peso_entrada->peso;
+                }
+
+                //var_dump($animal);
+                $animais[] = $animal;
+            }
+
+            if($animais[0]){
+                // Se tiver Animais Retorno de Sucesso
+                $result->success = true;
+                $result->transferencia_id = $transferencia_id;
+                $result->data = $animais;
+            }
+
+        }
+        else {
+            // Retornar erro pq na encontrou a transferencia
+        }
+
+
+        if ($json){
+            echo json_encode($result);
+        }
+        else {
+            return $result;
+        }
+    }
+
+
+    public function entradaAnimais($data,$json = true){
+
+        //var_dump($data);
+
+        $result = new StdClass();
+
+        //converter a data de entrada
+        $data_entrada = $this->DateToMysql($data[0]->data_entrada);
+
+        $origem  = $data[0]->origem;
+        $destino = $data[0]->destino;
+        $transferencia_id = $data[0]->transferencia_id;
+        $origem_nome  = Confinamentos::getNome($origem);
+        $destino_nome = Confinamentos::getNome($destino);
+
+
+        foreach ($data as $animal){
+
+            // Controle de Erro
+            $erro = new StdClass();
+
+            $animal->data_entrada = $data_entrada;
+            $animal->peso_entrada = $animal->peso;
+
+            // Criar a Pesagem de Entrada
+
+            $pesagem = Pesagens::criarPesagemEntrada($animal, false);
+
+            if ($pesagem->success){
+
+                // Criar Ocorrencia de Entrada no Confinamento
+                $descricao = "Entrada - {$destino_nome}";
+
+                $objOcorrencia->confinamento_id = $animal->confinamento_id;
+                $objOcorrencia->animal_id = $animal->id;
+                $objOcorrencia->tipo = 1;
+                $objOcorrencia->ocorrencia = 'Entrada';
+                $objOcorrencia->quadra_id = $animal->quadra_id;
+                $objOcorrencia->descricao = $descricao;
+                $objOcorrencia->data = $data_entrada;
+
+                $ocorrencia = Ocorrencias::insert($objOcorrencia, false);
+
+                if (!$ocorrencia->success){
+                    // Se der erro na Ocorrencia
+                    $erro->animal_id = $animal->id;
+                    $erro->msg = $ocorrencia->msg;
+                }
+                else {
+                    // Cadastrar o Codigo
+
+                    $codigo = Animais::criarCodigoSisbov($animal, $animal->codigo, false);
+
+                    if (!$codigo->success){
+                        // Se der erro na Ocorrencia
+                        $erro->animal_id = $animal->id;
+                        $erro->msg = $codigo->msg;
+                    }
+                }
+            }
+            else {
+                // Se der erro na Pesagem
+                $erro->animal_id = $animal_id;
+                $erro->msg = $pesagem->msg;
+            }
+
+            // Se tiver erro adiciona no array de erro para tratamento
+            if ($erro->animal_id) {
+                $erros[] = $erro;
+            }
+        }
+        // Se tiver tido algum erro tratar aki
+        if (count($erros) > 0){
+            foreach ($erros as $erro) {
+                $msgs[] = $erro->msg;
+            }
+            $result->failure = true;
+            $result->msg = implode('<br>',$msgs);
+            $result->data = $data;
+            $result->transferencia_id = $transferencia_id;
+
+        }
+        else {
+            $result->success = true;
+            $result->msg = "Todos os animais foram salvos com Sucesso";
+            $result->evento = 'entrada';
+            $result->data = $data;
+        }
+
+        if ($json){
+            echo json_encode($result);
+        }
+        else {
+            return $result;
+        }
+
+    }
+
+
+    public function destroy($data){
+
+        if ($data){
+
+            // Se tiver animais na Transferencia Desfazer as Ocorrencias, Pesagens e a troca de confinamento
+            if ($data->animais) {
+                echo "{failure:'true'}";
+            }
+            else{
+                // Se nao tiver animas somente excluir o registro
+                $result = $this->delete($data);
+            }
+
+            $this->ReturnJson($result);
+        }
+
     }
 }

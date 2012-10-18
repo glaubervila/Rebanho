@@ -47,11 +47,28 @@ Ext.define('Rebanho.store.TransferenciaAnimais', {
                 // Verificando se Houve Falha
                 if (obj.failure){
                     Ext.MessageBox.show({ title:'Desculpe!', msg: obj.msg, buttons: Ext. MessageBox.OK, icon:  Ext.MessageBox.ERROR });
+
+                    // Carregando a Store de AnimaisTransferidos
+                    store.removeAll();
+                    console.log(obj);
+                    //altera o action da store
+                    store.proxy.setExtraParam('action','getAnimaisTransferencia');
+                    store.proxy.setExtraParam('transferencia_id',obj.transferencia_id);
+                    // Carrega os animais na grid, usa o campo animais na tabela transferencia
                     store.load();
+                    //volta o action da store
+                    store.proxy.setExtraParam('action','');
+                    store.proxy.setExtraParam('transferencia_id', 0);
+
                 }
                 else {
                     //Ext.BoxMsg.msg('Sucesso!', obj.msg);
-                    this.fireEvent('createAnimais', this);
+                    if (obj.evento == 'entrada'){
+                        this.fireEvent('entradaAnimais', this);
+                    }
+                    else {
+                        this.fireEvent('createAnimais', this);
+                    }
                 }
             }
         },

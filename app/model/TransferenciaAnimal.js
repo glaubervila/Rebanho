@@ -16,11 +16,14 @@ Ext.define('Rebanho.model.TransferenciaAnimal', {
         {name:'quadra', type: 'string'},
         {name:'codigo', type: 'string'},
         {name:'idade', type: 'string'},
+        {name:'sisbov', type: 'string'},
         // Campos Estrangeiros
         {name:'transferencia_id', type: 'int'},
         {name:'origem', type: 'int'},
         {name:'destino', type: 'int'},
         {name:'data_saida', type: 'date', dateFormat: 'Y-m-d'},
+        {name:'data_entrada', type: 'date', dateFormat: 'Y-m-d'},
+        {name:'codigo_antigo', type: 'string'},
     ],
 
 });

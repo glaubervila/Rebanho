@@ -31,5 +31,9 @@ Ext.define('Rebanho.store.Ocorrencias', {
             property: 'id',
             direction: 'DESC'
         }
+        ,{
+            property: 'confinamento_id',
+            direction: 'DESC'
+        }
     ],
 });

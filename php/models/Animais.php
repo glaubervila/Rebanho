@@ -336,6 +336,7 @@ class Animais extends Base {
      * Recupera o Peso Atual e a ultima pesagem
      * Calcula o Tempo que o Animal ta nesse Confinamento
      * Calcula o Ganho Diario desse Animal
+     * Calcula o Intervalo entre a Pesagem em dias
      * @param:$animal = chave da tabela animais
      * @return:
      *     $obj->data_entrada
@@ -363,10 +364,8 @@ class Animais extends Base {
         $obj->data_ultima_pesagem = $peso_recente->data;
 
         // Calculando o Tempo no Confinamento
-        $data_entrada = strtotime($obj->data_entrada);
-        $data_atual   = strtotime(date('Y-m-d'));
-        //transformação do timestamp em  dias
-        $obj->dias_confinamento = ($data_atual-$data_entrada)/86400;
+        $obj->dias_confinamento = $this->diferencaEntreDatas($obj->data_entrada, date('Y-m-d'));
+
 
         // So Calcular se houver pesagem atual
         if ($obj->peso_atual > 0){
@@ -375,7 +374,6 @@ class Animais extends Base {
             $obj->peso_ganho = number_format($peso_ganho, 3, '.',',');
 
             // Calculando a Media Diaria de Peso Ganho
-
             $ganho_diario = ($obj->peso_ganho / $obj->dias_confinamento);
             $obj->ganho_diario = number_format($ganho_diario, 3, '.',',');
         }
@@ -538,10 +536,18 @@ class Animais extends Base {
 
     public function calcularDiasConfinamento($data_entrada, $animal){
 
+
         if (!$data_entrada){
             // Data de Entrada
-            $data_entrada = $this->filter('data_compra', 'compras', "id = {$animal->compra_id} AND confinamento_id = {$animal->confinamento_id}", null, false);
+            $data_entrada = $this->filter('data_compra', 'compras', "id = {$animal->compra_id}", null, false);
             $data_entrada = $data_entrada[0]->data_compra;
+
+            if (!$data_entrada){
+                // Se a Entrada nao for uma compra
+                $data_entrada = $this->filter('data', 'ocorrencias', "animal_id = {$animal->id} AND confinamento_id =   {$animal->confinamento_id} AND tipo = 1", null, false);
+
+                $data_entrada = $data_entrada[0]->data;
+            }
         }
 
         // Calculando o Tempo no Confinamento
@@ -568,10 +574,19 @@ class Animais extends Base {
             $animal_id = $animal_id->animal_id;
         }
 
+        if ($confinamento_id) {
+            $filter = "id = {$animal_id} AND confinamento_id = {$confinamento_id} AND status = 1";
+        }
+        else {
+            $filter = "id = {$animal_id} AND status = 1";
+        }
+
+
         // Informacoes do Animal
-        //$animal = $this->find($animal_id, 'animais');
-        $animal = $this->filter(null, 'animais', "id = {$animal_id} AND confinamento_id = {$confinamento_id} AND status = 1", null, false);
+        $animal = $this->filter(null, 'animais', $filter, null, false);
         $animal = $animal[0];
+
+
         if ($animal) {
 
             // Dias no Confinamento
@@ -610,4 +625,103 @@ class Animais extends Base {
         }
     }
 
+
+/** criarCodigoSisbov
+ * Recebe um objeto animal com id do animal e confinamento_id no minimo
+ * recebe o codigo sisbov
+ * cria um registro na tabela animais_codigos e altera o campo sisbov na tabela animais
+ */
+    public function criarCodigoSisbov($animal, $sisbov, $json = true ){
+
+        $result = new StdClass();
+
+        $db = $this->getDb();
+
+        // Usar Transacao
+        $db->beginTransaction();
+
+        if (($animal->id) AND ($animal->confinamento_id) AND $sisbov) {
+
+            $animal_id = $animal->id;
+            $confinamento_id = $animal->confinamento_id;
+            $data = $this->DateToMysql($animal->data_entrada);
+
+
+
+            $unique = $this->filter('id', 'animais_codigos', "animal_id = {$animal_id} AND tipo = 1", null, false);
+
+            if ($unique[0]->id) {
+                // Já Existe Codigo SisBov para este animal substituir pelo codigo novo
+
+                $query_codigos = "UPDATE animais_codigos set codigo = :codigo WHERE id = :id;";
+
+                $stm = $db->prepare($query_codigos);
+
+                // Setando Valores Codigos
+                $stm->bindValue(':codigo', $sisbov);
+                $stm->bindValue(':id', $unique[0]->id);
+
+            }
+            else{
+                // Query de Insert dos Codigos
+                $query_codigos = "INSERT INTO animais_codigos (confinamento_id, animal_id, codigo, tipo, data) VALUES (:confinamento_id, :animal_id, :codigo, :tipo, :data);";
+
+                $stm = $db->prepare($query_codigos);
+
+                // Setando Valores Codigos
+                $stm->bindValue(':confinamento_id', $confinamento_id);
+                $stm->bindValue(':animal_id', $animal_id);
+                $stm->bindValue(':codigo', $sisbov);
+                $stm->bindValue(':tipo', 1);
+                $stm->bindValue(':data', $data);
+            }
+
+
+            $stm->execute();
+
+            $error = $stm->errorInfo();
+
+            // Se tiver Erro Para Tudo
+            if ($error[0] != 0 ){
+
+                $db->rollback();
+
+                $result->failure = true;
+                $result->animal_id  = $animal_id;
+                $result->msg = "Falha ao Inserir o Codigo {$sisbov} do Animal";
+                $result->error = $stm->errorInfo();
+            }
+            else {
+
+                $update = Animais::updateCampoAnimal($animal_id, 'sisbov', $sisbov);
+
+                if ($update->success) {
+
+                    $db->commit();
+
+                    $result->success = true;
+                    $result->animal_id = $animal_id;
+                }
+                else {
+                    $db->rollback();
+                    // Falhou ao alterar o campo sisbov na cadastro de animal
+                    $result->failure = true;
+                    $result->animal_id  = $animal_id;
+                    $result->msg = "Falha ao Alterar o Codigo {$sisbov} do Animal no Cadastro do Animal";
+                    $result->error = $stm->errorInfo();
+                }
+            }
+        }
+        else {
+            // Nao tem todos os campos necessarios para a operacao
+            return FALSE;
+        }
+
+        if ($json){
+            echo json_encode(result);
+        }
+        else {
+            return $result;
+        }
+    }
 }

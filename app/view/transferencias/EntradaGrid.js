@@ -1,11 +1,11 @@
-Ext.define('Rebanho.view.transferencias.SaidaGrid' ,{
+Ext.define('Rebanho.view.transferencias.EntradaGrid' ,{
     extend: 'Ext.grid.Panel',
 
     requires: [ ],
 
-    alias : 'widget.saidagrid',
+    alias : 'widget.entradagrid',
 
-    title: 'Lista de Animais a Serem Transferidos',
+    title: 'Lista de Animais Transferidos',
 
     loadMask: true,
 
@@ -23,7 +23,13 @@ Ext.define('Rebanho.view.transferencias.SaidaGrid' ,{
                 hidden: true,
             },
             {
-                text: "Identificação",
+                text: "Cod Antigo",
+                dataIndex: 'codigo_antigo',
+                sortable: false,
+                width: 100,
+            },
+            {
+                text: "SisBov",
                 dataIndex: 'codigo',
                 sortable: false,
                 width: 200,
@@ -50,7 +56,7 @@ Ext.define('Rebanho.view.transferencias.SaidaGrid' ,{
                     fieldLabel:'Código',
                     labelWidth: 50,
                     name: 'codigo',
-                    itemId: 'txtCodigoAnimal',
+                    itemId: 'txtEntradaCodigo',
                     minValue: 0,
                     hideTrigger: true,
                     keyNavEnabled: false,
@@ -58,20 +64,20 @@ Ext.define('Rebanho.view.transferencias.SaidaGrid' ,{
                     selectOnFocus    : true,
                     enableKeyEvents  : true,
                 },
-                {
-                    text: 'Adicionar',
-                    iconCls: 'icon-add',
-                    action: 'action_adicionar',
-                    itemId: 'btnAdicinar',
-                    tooltip: 'Click para Adicionar um Animal a lista de animais a serem transferidos.',
-                },
-                {
-                    text: 'Remover',
-                    iconCls: 'icon-delete',
-                    action: 'action_remover',
-                    itemId: 'btnRemover',
-                    tooltip: 'Click para Remover um Animal da lista de animais a serem transferidos',
-                },
+//                 {
+//                     text: 'Adicionar',
+//                     iconCls: 'icon-add',
+//                     action: 'action_adicionar',
+//                     itemId: 'btnAdicinar',
+//                     tooltip: 'Click para Adicionar um Animal a lista de animais a serem transferidos.',
+//                 },
+//                 {
+//                     text: 'Remover',
+//                     iconCls: 'icon-delete',
+//                     action: 'action_remover',
+//                     itemId: 'btnRemover',
+//                     tooltip: 'Click para Remover um Animal da lista de animais a serem transferidos',
+//                 },
 
             ]
         }]
