@@ -53,7 +53,6 @@ Ext.define('Rebanho.store.Transferencias', {
                 store.load();
             }
             else {
-                //Ext.BoxMsg.msg('Sucesso!', obj.msg);
                 if (!obj.data){
                     Ext.ux.Alert.alert('Sucesso!', obj.message, 'success');
                 }

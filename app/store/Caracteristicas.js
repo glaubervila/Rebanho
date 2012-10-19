@@ -49,7 +49,7 @@ Ext.define('Rebanho.store.Caracteristicas', {
                     store.load();
                 }
                 else {
-                    Ext.BoxMsg.msg('Sucesso!', obj.message);
+                    Ext.ux.Alert.alert('Sucesso!', obj.message, 'success');
                     store.sync();
                     store.load();
                 }

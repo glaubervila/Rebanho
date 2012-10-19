@@ -128,7 +128,7 @@ Ext.define('Rebanho.controller.Pesagens', {
         confinamento = this.getPesagensGrid().down('#confinamento').getValue();
 
         if (confinamento == 0){
-            Ext.BoxMsg.msg('Atenção!', 'Selecione um Confinamento!');
+            Ext.ux.Alert.alert('Atenção!', 'Selecione um Confinamento!','warning');
         }
         else {
             // Setando o Confinamento
@@ -247,7 +247,7 @@ Ext.define('Rebanho.controller.Pesagens', {
                         }
                         else {
                             // Peso Negativo Digitar de Novo
-                            Ext.BoxMsg.msg('<font color=#D5D500>Atenção!</font>', 'Peso Deve ser Valor Positivo!');
+                            Ext.ux.Alert.alert('Atenção!', 'Peso Deve ser Valor Positivo!','warning');
                             this.digitarPeso();
                         }
                     }
@@ -325,7 +325,7 @@ Ext.define('Rebanho.controller.Pesagens', {
         if (errors.isValid()){
             if (pesagem.save()){
                 // Mostrando Mensagem de Sucesso
-                Ext.BoxMsg.msg('Sucesso!', 'Registro Gravado com <font color=green><b>Sucesso</b></font>!');
+                Ext.ux.Alert.alert('Sucesso!', 'Registro Gravado com Sucesso!', 'warning');
 
                 this.loadStore();
             }

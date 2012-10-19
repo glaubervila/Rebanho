@@ -41,11 +41,9 @@ Ext.define('Rebanho.store.EntradaAnimais', {
             if (operation.action == 'update'){
 
                 if (obj.success){
-                    Ext.BoxMsg.msg('Sucesso!', obj.msg);
+                    Ext.ux.Alert.alert('Sucesso!', obj.msg, 'success');
                 }
                 else {
-
-                    console.log(obj.erros);
 
                     Ext.Array.each(obj.erros, function(value) {
                         animal_id = value.id;

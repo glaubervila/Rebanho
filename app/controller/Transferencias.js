@@ -801,7 +801,7 @@ Ext.define('Rebanho.controller.Transferencias', {
                         }
                         else {
                             // Peso Negativo Digitar de Novo
-                            Ext.BoxMsg.msg('<font color=#D5D500>Atenção!</font>', 'Peso Deve ser Valor Positivo!');
+                            Ext.ux.Alert.alert('Atenção!', 'Peso Deve ser Valor Positivo!','warning');
                             this.digitarPeso();
                         }
                     }
@@ -837,7 +837,7 @@ Ext.define('Rebanho.controller.Transferencias', {
                         }
                         else {
                             // Peso Negativo Digitar de Novo
-                            Ext.BoxMsg.msg('<font color=#D5D500>Atenção!</font>', 'Codigo Deve ser Valor Positivo!');
+                            Ext.ux.Alert.alert('Atenção!', 'Codigo Deve ser Valor Positivo!', 'warning');
                             this.digitarCodigoSisbov();
                         }
                     }

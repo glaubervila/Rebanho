@@ -36,6 +36,7 @@ Ext.define('Rebanho.Initialization', {requires: ['Ext.ux.Router']},
             scope:this,
             success: function ( result, request ) {
                 var retorno = Ext.decode(result.responseText);
+                console.log(retorno);
                 if (retorno.success)
                 {
                     // Iniciando o QuickTips

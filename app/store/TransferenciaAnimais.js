@@ -62,7 +62,6 @@ Ext.define('Rebanho.store.TransferenciaAnimais', {
 
                 }
                 else {
-                    //Ext.BoxMsg.msg('Sucesso!', obj.msg);
                     if (obj.evento == 'entrada'){
                         this.fireEvent('entradaAnimais', this);
                     }

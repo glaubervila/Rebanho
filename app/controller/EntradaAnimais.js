@@ -327,7 +327,7 @@ Ext.define('Rebanho.controller.EntradaAnimais', {
                         }
                         else {
                             // Se nao Encontrar um Animal Mostra Alerta e Volta a Exibir o Prompt
-                            Ext.BoxMsg.msg('Atenção!', 'Nenhum Animal Encontrado!');
+                            Ext.ux.Alert.alert('Atenção!', 'Nenhum Animal Encontrado!', 'warning');
                             this.digitarCodigo();
                         }
                     }
@@ -365,7 +365,7 @@ Ext.define('Rebanho.controller.EntradaAnimais', {
                         }
                         else {
                             // Peso Negativo Digitar de Novo
-                            Ext.BoxMsg.msg('<font color=#D5D500>Atenção!</font>', 'Peso Deve ser Valor Positivo!');
+                            Ext.ux.Alert.alert('Atenção!', 'Peso Deve ser Valor Positivo!','warning');
                             this.digitarPeso(animal,codigo);
                         }
                     }
@@ -423,7 +423,7 @@ Ext.define('Rebanho.controller.EntradaAnimais', {
                 var retorno = Ext.decode(result.responseText);
                 if (retorno.success){
 
-                    Ext.BoxMsg.msg('Sucesso!', 'Compra de Animais Finalizada Com sucesso!');
+                    Ext.ux.Alert.alert('Sucesso!', 'Compra de Animais Finalizada Com sucesso!','success');
 
                     // Recarregando a Store de Compras
                     this.getStore('CompraAnimais').load();

@@ -57,7 +57,7 @@ Ext.define('Rebanho.store.Cepeas', {
                     store.load();
                 }
                 else {
-                    Ext.BoxMsg.msg('Sucesso!', obj.message);
+                    Ext.ux.Alert.alert.msg('Sucesso!', obj.message, 'success');
                     store.sync();
                     store.load();
                 }

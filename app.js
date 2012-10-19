@@ -19,7 +19,7 @@ Ext.application({
 //   paths              : {'Ext.ux': 'app/ux'},
     paths: {
         'Ext' : 'extjs/src',
-        'Ext.ux' : 'extjs/ux',
+        'Ext.ux' : 'ux',
     },
     requires           : [
         'Rebanho.Initialization',

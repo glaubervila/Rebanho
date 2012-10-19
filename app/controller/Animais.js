@@ -146,7 +146,7 @@ Ext.define('Rebanho.controller.Animais', {
             // Habilito a Combo
             cmbConfinamento.enable();
             // Aviso para Selecionar um
-            Ext.BoxMsg.msg('<font color=#D5D500>Atenção!</font>', 'Selecione um Confinamento!');
+            Ext.ux.Alert.alert('Atenção!', 'Selecione um Confinamento!','warning');
 
             // Desabilitar o Combo de Quadras para só ser habilitado apos escolher o confinamento
             this.getAnimaisGrid().down('#cmbConfinamento').enable();

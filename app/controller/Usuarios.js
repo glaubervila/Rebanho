@@ -187,7 +187,7 @@ Ext.define('Rebanho.controller.Usuarios', {
 
                     if (obj.success == true){
                         // Retorna Sucesso
-                        Ext.BoxMsg.msg('Sucesso!', 'Registro Incluido Com Sucesso');
+                        Ext.ux.Alert.alert('Sucesso!', 'Registro Incluido Com Sucesso','success');
 
                         // Da Reload na Store
                         this.getStore('Usuarios').load();
@@ -246,7 +246,7 @@ Ext.define('Rebanho.controller.Usuarios', {
 
                             if (obj.success == true){
                                 // Retorna Sucesso
-                                Ext.BoxMsg.msg('Sucesso!', 'Registro Excluido Com Sucesso');
+                                Ext.ux.Alert.alert('Sucesso!', 'Registro Excluido Com Sucesso','success');
 
                                 // Da Reload na Store
                                 this.getStore('Usuarios').load();
