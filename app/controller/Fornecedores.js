@@ -29,7 +29,7 @@ Ext.define('Rebanho.controller.Fornecedores', {
     init: function() {
 
         // Load da Store
-        this.getFornecedoresStore().addListener('load',this.onStoreLoad, this);
+        //this.getFornecedoresStore().addListener('load',this.onStoreLoad, this);
 
         this.control({
 
@@ -48,9 +48,7 @@ Ext.define('Rebanho.controller.Fornecedores', {
             'fornecedoresgrid': {
                 // Ao Selecionar um Registro na Grid
                 selectionchange: this.onSelectChange,
-                render:function(){
-                    this.getFornecedoresStore().load();
-                },
+                afterrender: this.onAfterRenderGrid,
                 // DoubleClick em uma linha da Grid
                 itemdblclick: this.onBtnEditarClick,
 
@@ -80,7 +78,23 @@ Ext.define('Rebanho.controller.Fornecedores', {
 
     },
 
+    onAfterRenderGrid: function(){
+        console.log('Fornecedores - onAfterRenderGrid');
 
+        store = this.getFornecedoresStore();
+        // Limpando o Filtro
+        store.clearFilter(true);
+
+        // Setando o Atributo Confinamento
+        this.confinamento = Ext.getCmp('main_viewport').getConfinamentoId();
+
+        if (this.confinamento > 0) {
+            store.filter([
+                {property: "confinamento_id", value: this.confinamento},
+            ]);
+        }
+        store.load();
+    },
 
     onStoreLoad: function(){
         grid = this.getFornecedoresGrid();

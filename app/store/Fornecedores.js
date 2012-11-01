@@ -5,6 +5,8 @@ Ext.define('Rebanho.store.Fornecedores', {
 
     pageSize: 20,
 
+    remoteSort: true,
+
     proxy: {
 
         type: 'rest',
@@ -26,5 +28,8 @@ Ext.define('Rebanho.store.Fornecedores', {
             allowSingle: true,
         },
     },
-
+    sorters: [{
+        property: 'nome',
+        direction: 'ASC'
+    }],
 });

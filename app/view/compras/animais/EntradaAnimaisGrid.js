@@ -113,8 +113,8 @@ Ext.define('Rebanho.view.compras.animais.EntradaAnimaisGrid' ,{
                 {xtype: 'tbtext', itemId: 'tbpesototal',text: '<b>Peso Total</b>'},
                 {xtype: 'tbtext', itemId: 'tbpesomedio',text: '<b>Peso Médio</b>'},
                 '-',
-                {xtype: 'tbtext', itemId: 'tbautosave',text: ''},
-                '-',
+/*                {xtype: 'tbtext', itemId: 'tbautosave',text: ''},
+                '-',*/
             ],
         }]
 

@@ -280,7 +280,7 @@ Ext.define('Rebanho.controller.EntradaAnimais', {
                     // Inicia os Contadores
                     this.getContadores();
                     // Inicia Funcao de Auto Save
-                    this.autoSave();
+                    //this.autoSave();
                 }
                 else {
                     // Mostrando Mensagem de Erro
@@ -385,6 +385,7 @@ Ext.define('Rebanho.controller.EntradaAnimais', {
         var store = this.getStore('EntradaAnimais');
         store.sync();
         store.load();
+
         this.getContadores();
         this.second_to_save = this.time_to_autosave;
     },
@@ -462,6 +463,8 @@ Ext.define('Rebanho.controller.EntradaAnimais', {
         store.proxy.setExtraParam('action','');
 
         this.getContadores();
+        console.log('Chegou aki');
+        console.log(object);
     },
 
     onCancelEditCell: function(editor, e, object){
@@ -532,5 +535,9 @@ Ext.define('Rebanho.controller.EntradaAnimais', {
 
     },
 
+
+    nextFocus: function(){
+        
+    },
 });
 

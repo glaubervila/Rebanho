@@ -93,24 +93,54 @@ class Fornecedores extends Base {
 
 
     public function load(){
-
         // Query para recuperar todos os fornecedores e o nome do confinamento
-        $query = new StdClass();
-        $query->sql = "SELECT fornecedores.*, confinamentos.confinamento as confinamento FROM fornecedores INNER JOIN confinamentos ON fornecedores.confinamento_id = confinamentos.id ";
-        $query->limit = true;
-        $query->order = true;
+//         $query = new StdClass();
+//         $query->sql = "SELECT fornecedores.*, confinamentos.confinamento as confinamento FROM fornecedores INNER JOIN confinamentos ON fornecedores.confinamento_id = confinamentos.id ";
+//         $query->limit = true;
+//         $query->order = true;
 
-        $data = $this->fetchAll($query);
+//        $data = $this->fetchAll($query);
+//         $result = $data;
+// 
+//         echo json_encode($result);
 
-        $result = $data;
+        $data = $this->fetchAll();
 
-        echo json_encode($result);
+        foreach ($data->data as $row){
+            $record = $row;
+
+            // Para Cada Registro Recuperar o Nome do Confinamento
+            $confinamento = $this->find($record->confinamento_id, 'confinamentos');
+            $record->confinamento  = $confinamento->confinamento;
+
+            $records[] = $record;
+        }
+
+
+        $data->data = $records;
+
+        echo json_encode($data);
+
     }
 
     public function getAt($data){
         $result = new StdClass();
 
-        $data = $this->findAllBy($data['field'], $data['value'], $this->getTable());
+//         $data = $this->findAllBy($data['field'], $data['value'], $this->getTable());
+
+
+
+        // Recuperar todos os Fornecedores pelo confinamento
+        if (!$data['filter']){
+            $filter = $this->setWhere(array($data['field']), array($data['value']),'=', false);
+        }
+        else {
+            $filter = $this->parseFilter($data['filter']);
+        }
+        $sorter = $this->parseSorter($data['sort']);
+
+        //var_dump($sorter);
+        $data = $this->filter(null, 'fornecedores', $filter, $sorter);
 
         if ($data){
             $result->success = true;

@@ -629,7 +629,7 @@ abstract class Base {
                     $string .= " $field $comparacao :$field ";
                 }
                 else {
-                    $string .= " $field $comparacao :$values[$k] ";
+                    $string .= " $field $comparacao $values[$k] ";
                 }
             }
 
