@@ -11,6 +11,9 @@ Ext.define('Rebanho.view.animais.AnimaisForm' ,{
 
         // Grid de Ocorrencias por Animais
         'Rebanho.view.ocorrencias.OcorrenciasPorAnimalGrid',
+
+        // Estatisticas
+        'Rebanho.view.animais.AnimaisEstatisticasPanel',
     ],
     alias : 'widget.animaisform',
 
@@ -62,15 +65,17 @@ Ext.define('Rebanho.view.animais.AnimaisForm' ,{
                                     xtype:'textfield',
                                     fieldLabel:'Codigo Atual',
                                     name: 'codigo',
-                                    width: 200,
+                                    //width: 200,
                                     readOnly: true,
+                                    flex: 1,
                                 },{
                                     xtype:'textfield',
                                     fieldLabel:'SisBov',
                                     name: 'sisbov',
-                                    width: 200,
+                                    //width: 200,
                                     margins: '0 0 0 5',
                                     readOnly: true,
+                                    flex: 1,
                                 },{
                                     xtype:'combobox',
                                     fieldLabel:'Status',
@@ -87,6 +92,7 @@ Ext.define('Rebanho.view.animais.AnimaisForm' ,{
                                         ['1','Ativo'],
                                         ['2','Vendido'],
                                     ],
+                                    flex: 1,
                                 }]
                             },{
                                 xtype: 'fieldcontainer',
@@ -124,6 +130,7 @@ Ext.define('Rebanho.view.animais.AnimaisForm' ,{
                                         ['F','F'],
                                         ['M','M'],
                                     ],
+                                    flex: 1,
                                 }]
                             },{
                                 xtype: 'fieldcontainer',
@@ -160,14 +167,15 @@ Ext.define('Rebanho.view.animais.AnimaisForm' ,{
                                     xtype:'textfield',
                                     fieldLabel:'Idade',
                                     name: 'idade',
-                                    width: 50,
+                                    //width: 50,
+                                    flex: 1,
                                     readOnly: true,
                                 }]
                             }]
                         // FIM Fieldset Dados Animais
                         },
                         // INICIO fieldset Estatisticas
-                        {
+/*                        {
                             xtype: 'fieldset',
                             title: 'Estatísticas do Animal',
                             items: [{
@@ -180,41 +188,46 @@ Ext.define('Rebanho.view.animais.AnimaisForm' ,{
                                     xtype:'textfield',
                                     fieldLabel:'Neste Conf.',
                                     name: 'dias_confinamento',
-                                    width: 80,
+                                    //width: 80,
+                                    flex: 1,
                                     margins: '0 0 0 5',
                                     readOnly: true,
                                 },{
                                     xtype:'datefield',
-                                    fieldLabel:'Ultima Pesagem',
+                                    fieldLabel:'Pesagem',
                                     name: 'data_ultima_pesagem',
-                                    width: 100,
+                                    //width: 100,
+                                    flex: 1,
                                     margins: '0 0 0 5',
                                     readOnly: true,
                                 },{
                                     xtype:'textfield',
-                                    fieldLabel:'Peso Recente',
+                                    fieldLabel:'Peso',
                                     name: 'peso_atual',
-                                    width: 100,
+                                    //width: 100,
+                                    flex: 1,
                                     margins: '0 0 0 5',
                                     readOnly: true,
                                 },{
                                     xtype:'textfield',
                                     fieldLabel:'Peso Ganho',
                                     name: 'peso_ganho',
-                                    width: 100,
+                                    //width: 100,
+                                    flex: 1,
                                     margins: '0 0 0 5',
                                     readOnly: true,
                                 },{
                                     xtype:'textfield',
-                                    fieldLabel:'Ganho Diário',
+                                    fieldLabel:'Diário',
                                     name: 'ganho_diario',
-                                    width: 100,
+                                    //width: 100,
+                                    flex: 1,
                                     margins: '0 0 0 5',
                                     readOnly: true,
                                 }]
                             }]
                         // FIM fieldset Estatisticas
-                        },
+                        },*/
                         // FIM Itens do Painel Central
                         ]
                     },
@@ -330,7 +343,21 @@ Ext.define('Rebanho.view.animais.AnimaisForm' ,{
                     }
                     // FIM dos Itens da Aba de Ocorrencias
                     ]
+                },
+                // INICIO Aba de Estatisticas do Animal
+                {
+                    title: 'Estatísticas',
+                    layout: 'fit',
+                    // Itens da Aba de Ocorrencias
+                    items: [
+                    {
+                        xtype: 'animaisestatisticas',
+                        title: '',
+                    }
+                    // FIM dos Itens da Aba de Ocorrencias
+                    ]
                 }
+
                 // FIM da Aba de Ocorrencias
                 ]
                 // FIM do TabPanel

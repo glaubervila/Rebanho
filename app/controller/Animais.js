@@ -24,6 +24,7 @@ Ext.define('Rebanho.controller.Animais', {
         'Rebanho.view.animais.AnimaisGrid',
         'Rebanho.view.animais.AnimaisForm',
         'Rebanho.view.animais.AnimaisWindow',
+        'Rebanho.view.animais.AnimaisEstatisticasPanel',
         'Rebanho.view.animais.LocalizarAnimalWindow',
         // Relatorio Resumido de Animais
         'Rebanho.view.animais.AnimaisResumoGrid',
@@ -49,6 +50,10 @@ Ext.define('Rebanho.controller.Animais', {
         {
             ref: 'animaisResumoGrid',
             selector: 'animaisresumogrid'
+        },
+        {
+            ref: 'animaisEstatisticasPanel',
+            selector: 'animaisrestatisticas'
         },
 
     ],
@@ -106,7 +111,6 @@ Ext.define('Rebanho.controller.Animais', {
             'animaisresumogrid [itemId=cmbConfinamento]': {
                 select: this.onSelectConfinamentoResumoGrid
             },
-
 
         });
     },

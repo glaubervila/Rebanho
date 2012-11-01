@@ -68,6 +68,18 @@ Ext.define('Rebanho.view.ocorrencias.OcorrenciasPorAnimalGrid' ,{
         ];
 
         this.dockedItems= [{
+            xtype: 'toolbar',
+            items: [{
+                xtype: 'toolbar',
+                items: [{
+                    text: 'Morte',
+                    iconCls: 'icon-cross-green',
+                    action: 'action_morte',
+                    itemId: 'btnMorte',
+                    tooltip: 'Click para Lançar a Ocorrência de Morte do Animal.',
+                }]
+            }],
+
         }]
 
 

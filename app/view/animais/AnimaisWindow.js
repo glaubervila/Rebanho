@@ -13,6 +13,8 @@ Ext.define('Rebanho.view.animais.AnimaisWindow' ,{
 
     height: 400,
 
+    modal: true,
+
     iconCls: 'icon-user_suit',
 
     initComponent: function() {

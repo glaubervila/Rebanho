@@ -16,6 +16,7 @@ Ext.Loader.setConfig({
 Ext.application({
     name               : 'Rebanho',
     autoCreateViewport : true,
+    enableQuickTips    : true,
 //   paths              : {'Ext.ux': 'app/ux'},
     paths: {
         'Ext' : 'extjs/src',
@@ -25,7 +26,6 @@ Ext.application({
         'Rebanho.Initialization',
         'Ext.ux.grid.Printer',
         'Ext.ux.Alert',
-        'Ext.tip.QuickTipManager',
     ],
     appFolder          : 'app',
     enableRouter       : true,
@@ -37,7 +37,7 @@ Ext.application({
     },
     launch: function() {
         var hideMask = function () {
-        Ext.get('loading').remove();
+        //Ext.get('loading').remove();
         Ext.fly('loading-mask').animate({
             opacity : 0,
             remove  : true

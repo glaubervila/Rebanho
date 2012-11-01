@@ -37,13 +37,20 @@ Ext.define('Rebanho.controller.Ocorrencias', {
 
         this.control({
 
-            // ----------< Actions do Grid >----------
+            // ----------< Actions do Grid de Pesagens >----------
             'pesagensgrid': {
                 render: this.onGridRender,
                 afterrender: this.onGridAfterRender,
             },
 
+            // ----------< Actions do Grid Ocorrencias por Animal >----------
+            'ocorrenciasporanimalgrid': {
+                
+            },
 
+            'ocorrenciasporanimalgrid [action=action_morte]': {
+                click: this.onClickBtnMorte
+            },
         });
     },
 
@@ -67,5 +74,12 @@ Ext.define('Rebanho.controller.Ocorrencias', {
     setAnimalId:function(animal_id){
         this.animal_id = animal_id;
     },
+
+
+    // ----------< Metodos da Grid Ocorrencias por Animal >----------
+    onClickBtnMorte: function(button){
+        console.log('Clicou em Morte');
+    },
+    
 });
 
