@@ -31,40 +31,51 @@ class Manejos extends Base {
         $quadra = $this->find($quadra_id, 'quadras', 'quadra');
         $quadra_nova = $quadra->quadra;
 
-        $return = $this->updateCampo($animal_id, 'quadra_id' , $quadra_id, 'animais');
+        // Verificar se a quadra destino e diferente da quadra de origem
+        if ($quadra_antiga == $quadra_nova) {
+            $return->failure = true;
+            $return->msg = "Falha ao Criar o Ocorrencia de Manejo.<br>A quadra de destino é igual a quadra de origem.<br>Origem: $quadra_antiga >> Destino: $quadra_nova";
+        }
+        else {
 
+            $return = $this->updateCampo($animal_id, 'quadra_id' , $quadra_id, 'animais');
 
-        if ($return->success){
-
-            $descricao = "Manejo da Quadra {$quadra_antiga} Para {$quadra_nova}";
-
-            // Criar a Ocorrencia
-            $ocorrencia = new StdClass();
-            $ocorrencia->confinamento_id = $animal->confinamento_id;
-            $ocorrencia->quadra_id = $quadra_id;
-            $ocorrencia->animal_id = $animal->id;
-            $ocorrencia->data = date('Y-m-d');
-            // Tipo 5 manejo de quadra
-            $ocorrencia->tipo = 5;
-            $ocorrencia->ocorrencia = "Manejo";
-            $ocorrencia->descricao = $descricao;
-
-            //var_dump($ocorrencia);
-            $return = Ocorrencias::insert($ocorrencia, false);
+            if (!$data->data) {
+                $data->data = date('Y-m-d');
+            }
 
             if ($return->success){
-                $return->success = true;
+
+                $descricao = "Manejo da Quadra {$quadra_antiga} Para {$quadra_nova}";
+
+                // Criar a Ocorrencia
+                $ocorrencia = new StdClass();
+                $ocorrencia->confinamento_id = $animal->confinamento_id;
+                $ocorrencia->quadra_id = $quadra_id;
+                $ocorrencia->animal_id = $animal->id;
+                $ocorrencia->data = $data->data;
+                // Tipo 5 manejo de quadra
+                $ocorrencia->tipo = 5;
+                $ocorrencia->ocorrencia = "Manejo";
+                $ocorrencia->descricao = $descricao;
+
+                //var_dump($ocorrencia);
+                $return = Ocorrencias::insert($ocorrencia, false);
+
+                if ($return->success){
+                    $return->success = true;
+                }
+                else {
+                    $return->failure = true;
+                    $result->id  = $data->id;
+                    $return->msg = "Falha ao Criar o Ocorrencia de Manejo";
+                }
             }
             else {
                 $return->failure = true;
                 $result->id  = $data->id;
-                $return->msg = "Falha ao Criar o Ocorrencia de Manejo";
+                $return->msg = "Falha ao Criar o Registro de Manejo";
             }
-        }
-        else {
-            $return->failure = true;
-            $result->id  = $data->id;
-            $return->msg = "Falha ao Criar o Registro de Manejo";
         }
 
         if ($json){

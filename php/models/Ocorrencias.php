@@ -9,6 +9,7 @@ class Ocorrencias extends Base {
     protected   $table = "ocorrencias";
 
 /** Tipos de Ocorrencias
+ *     0 - Nascimento
  *     1 - Entrada no Confinamento
  *     2 - Pesagem de Entrada
  *     3 - Pesagem de Compra
@@ -16,6 +17,11 @@ class Ocorrencias extends Base {
  *     5 - Manejo de Quadra
  *     6 - Pesagem de Saida
  *     7 - Transferencia
+ *     8 - Desmama
+ *     9 - Castracao
+ *     V - Vacinacao
+ *     M - Morte
+ *     O - Outras
  */
 
 
@@ -33,6 +39,10 @@ class Ocorrencias extends Base {
         }
         else {
             $db = $this->getDb();
+
+            if (!$data->ocorrencia) {
+                $data->ocorrencia = Ocorrencias::getNomeOcorrencia($data->tipo);
+            }
 
             $query = 'INSERT INTO ocorrencias (confinamento_id, quadra_id, animal_id, data, tipo, ocorrencia, descricao) VALUES (:confinamento_id, :quadra_id, :animal_id, :data,  :tipo, :ocorrencia, :descricao);';
 
@@ -84,6 +94,10 @@ class Ocorrencias extends Base {
     public function update($data, $json = true){
 
         $db = $this->getDb();
+
+        if (!$data->ocorrencia) {
+            $data->ocorrencia = Ocorrencias::getNomeOcorrencia($data->tipo);
+        }
 
         $query = 'UPDATE ocorrencias SET confinamento_id = :confinamento_id, quadra_id = :quadra_id, animal_id = :animal_id, data = :data, tipo = :tipo, ocorrencia =:ocorrencia, descricao = :descricao WHERE id = :id';
 
@@ -185,5 +199,175 @@ class Ocorrencias extends Base {
         }
 
         return $return;
+    }
+
+
+    /** Metodo: OcorrenciaMorte
+     * Cria um objeto de ocorrencia para Morte de Animal
+     * usa o metodo insert da Classe Ocorrencia
+     * se for um update a classe vai identificar o registro e fazer a atualizacao.
+     */
+    public function OcorrenciaMorte($data, $json = true){
+
+        // Fazer update no registro do animal
+        $morte = Animais::MorteAnimal($data, false);
+
+        if ($morte->success == true){
+
+            $descricao = "Causa Morte: {$data->descricao}";
+
+            // Criando o Obj Ocorrencia
+            $objOcorrencia = new StdClass();
+            $objOcorrencia->confinamento_id = $data->confinamento_id;
+            $objOcorrencia->quadra_id = $data->quadra_id;
+            $objOcorrencia->animal_id = $data->animal_id;
+            $objOcorrencia->ocorrencia = 'Morte';
+            $objOcorrencia->descricao = $descricao;
+            $objOcorrencia->data = $data->data;
+            $objOcorrencia->tipo = 'M';
+
+            $result = Ocorrencias::insert($objOcorrencia, false);
+
+            $return = new StdClass();
+            if ($result->success){
+                $return->success = true;
+            }
+            else {
+                $return->failure = true;
+                $return->msg = "Falha ao Criar a Ocorrencia de Morte";
+            }
+        }
+        else {
+            $return  = $morte;
+        }
+        return $return;
+    }
+
+    /** Metodo: OcorrenciaVacinacao
+     * Cria um objeto de ocorrencia para Vacinacao de Animal
+     * usa o metodo insert da Classe Ocorrencia
+     * se for um update a classe vai identificar o registro e fazer a atualizacao.
+     */
+    public function OcorrenciaVacinacao($data, $json = true){
+
+
+        // Recuperar a Descricao da Vacina
+        $vacina = $this->find($data->vacina_id, 'vacinas');
+        $descricao = $vacina->vacina;
+
+        // Criando o Obj Ocorrencia
+        $objOcorrencia = new StdClass();
+        $objOcorrencia->confinamento_id = $data->confinamento_id;
+        $objOcorrencia->quadra_id = $data->quadra_id;
+        $objOcorrencia->animal_id = $data->animal_id;
+        $objOcorrencia->ocorrencia = 'Vacinacao';
+        $objOcorrencia->descricao = $descricao;
+        $objOcorrencia->data = $data->data;
+        $objOcorrencia->tipo = 'V';
+
+        $result = Ocorrencias::insert($objOcorrencia, false);
+
+        $return = new StdClass();
+        if ($result->success){
+            $return->success = true;
+        }
+        else {
+            $return->failure = true;
+            $return->msg = "Falha ao Criar a Ocorrencia de Vacinação";
+        }
+
+        return $return;
+    }
+
+    /** Esse Metodo e usado, para criar uma ocorrencia atravez da store ou do model
+     * @param: $data dados vindo do form de ocorrencia
+     * faz uma busca na tabela de animais, e recupera as informacoes do animal
+     * monta um objeto tipo ocorrencia e chama o metodo respectivo para criar cada uma pelo tipo
+     */
+    public function create($data, $json = true){
+
+        $return = new StdClass();
+
+        // recuperando a informacoes do animal
+        $animal_id = $data->animal_id;
+        $tipo = $data->tipo;
+        // Guardando a Quadra Destino no Manejo
+        $quadra_manejo = $data->quadra_id;
+
+
+        $animal = $this->find($animal_id, 'animais');
+
+        if ($animal->status == 1){
+
+            $data->confinamento_id = $animal->confinamento_id;
+            $data->quadra_id = $animal->quadra_id;
+            $data->data = $this->DateToMysql($data->data);
+
+            switch ($tipo){
+                // Pesagem
+                case 4:
+                    // Criar a Pesagem
+                    // Trocar o tipo para 2 - Pesagem de Rotina
+                    $data->tipo = 2;
+                    $result = Pesagens::insert($data, false);
+                break;
+                case 5:
+                    // Criar Manejo de Quadra
+                    $result = Manejos::manejoQuadras($data, $animal_id, $quadra_manejo, false);
+                break;
+                case 'M':
+                    // Criar Ocorrencia de Morte
+                    $data->data_morte = $data->data;
+                    $result = Ocorrencias::OcorrenciaMorte($data, false);
+                break;
+                case 'V':
+                    // Criar Ocorrencia de Vacinacao
+                    $result = Ocorrencias::OcorrenciaVacinacao($data, false);
+                break;
+
+                default:
+                    $result = Ocorrencias::insert($data, false);
+                break;
+            }
+
+            if ($result->success){
+                $return->success = true;
+                $return->msg = "Lançamento de Ocorrência realizado com sucesso!";
+            }
+            else {
+                $return = $result;
+            }
+        }
+        else {
+            $return->failure = true;
+            $return->msg = "Nenhuma Alteração foi feita, este animal, não está Ativo.";
+        }
+
+        if ($json){
+            echo json_encode($return);
+        }
+        else {
+            return $return;
+        }
+    }
+
+    public function getNomeOcorrencia($tipo){
+
+        $atipos = array() ;
+        $atipos['0'] = 'Nascimento';
+        $atipos['1'] = 'Entrada no Confinamento';
+        $atipos['2'] = 'Pesagem Entrada';
+        $atipos['3'] = 'Pesagem de Compra';
+        $atipos['4'] = 'Pesagem';
+        $atipos['5'] = 'Manejo de Quadra';
+        $atipos['6'] = 'Pesagem de Saida';
+        $atipos['7'] = 'Transferencia';
+        $atipos['8'] = 'Desmama';
+        $atipos['9'] = 'Castracao';
+        $atipos['V'] = 'Vacinacao';
+        $atipos['M'] = 'Morte';
+        $atipos['O'] = 'Outras';
+
+        return $atipos[$tipo];
     }
 }

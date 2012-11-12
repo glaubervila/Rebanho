@@ -12,13 +12,19 @@ Ext.define('Rebanho.store.MyStore', {
 
         var obj = Ext.decode(operation.response.responseText);
 
+            if (obj.message){
+                msg = obj.message;
+            }
+            else {
+                msg = obj.msg;
+            }
             // Verificando se Houve Falha
             if (obj.failure){
-                Ext.MessageBox.show({ title:'Desculpe!', msg: obj.message, buttons: Ext. MessageBox.OK, icon:  Ext.MessageBox.ERROR })
+                Ext.MessageBox.show({ title:'Desculpe!', msg: msg, buttons: Ext. MessageBox.OK, icon:  Ext.MessageBox.ERROR })
                 store.load();
             }
             else {
-                Ext.ux.Alert.alert('Sucesso!', obj.message, 'success');
+                Ext.ux.Alert.alert('Sucesso!', msg, 'success');
                 store.sync();
                 store.load();
             }

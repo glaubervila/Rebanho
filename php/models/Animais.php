@@ -2,6 +2,12 @@
 header('Content-Type: text/javascript; charset=UTF-8');
 /** @Class: Animais
  *  @date: 2012-07-01
+
+ * Animal Status
+ * 0 - Morto
+ * 1 - Ativo
+ * 2 - Vendido
+ * 
  */
 
 class Animais extends Base {
@@ -724,4 +730,42 @@ class Animais extends Base {
             return $result;
         }
     }
+
+
+    /**Metodo: MorteAnimal
+     * Usado para marcar um animal como morto,
+     * Recebe o id do animal, faz update do status, cria a ocorrencia de morte
+     */
+    public function MorteAnimal($data, $json = true){
+
+
+        // Verificar se tem id do animal e a descricao
+        if ($data->animal_id && $data->data_morte){
+
+        echo "Entrou aki";
+
+            $animal_id  = $data->animal_id;
+            $data_morte = $data->data_morte;
+
+            $morte = Animais::updateCampoAnimal($animal_id, 'status', 0);
+
+            var_dump($morte);
+            if ($morte->success == true){
+                $return->success = true;
+
+
+            }
+            else {
+                $return->failure = true;
+                $return->msg  = "Falha ao Alterar o status do animal";
+            }
+        }
+        else {
+            $return->failure = true;
+            $return->msg  = "É Necessário informar o animal, a Data e a Causa da morte.";
+        }
+
+        return $return;
+    }
+
 }

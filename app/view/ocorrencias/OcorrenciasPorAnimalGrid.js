@@ -42,11 +42,6 @@ Ext.define('Rebanho.view.ocorrencias.OcorrenciasPorAnimalGrid' ,{
                 width: 100,
                 renderer : Ext.util.Format.dateRenderer('d-m-Y'),
             },
-//             {
-//                 text: "Confinamento",
-//                 dataIndex: 'confinamento',
-//                 width: 100,
-//             },
             {
                 text: "Quadra",
                 dataIndex: 'quadra',
@@ -72,11 +67,11 @@ Ext.define('Rebanho.view.ocorrencias.OcorrenciasPorAnimalGrid' ,{
             items: [{
                 xtype: 'toolbar',
                 items: [{
-                    text: 'Morte',
-                    iconCls: 'icon-cross-green',
-                    action: 'action_morte',
-                    itemId: 'btnMorte',
-                    tooltip: 'Click para Lançar a Ocorrência de Morte do Animal.',
+                    text: 'Adicionar Ocorrência',
+                    iconCls: 'icon-add',
+                    action: 'action_adicionar',
+                    itemId: 'btnAdicionar',
+                    tooltip: 'Click para Lançar uma Ocorrência, Para este Animal.',
                 }]
             }],
 

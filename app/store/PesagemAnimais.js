@@ -1,18 +1,17 @@
-Ext.define('Rebanho.store.Ocorrencias', {
+Ext.define('Rebanho.store.PesagemAnimais', {
     extend: 'Rebanho.store.MyStore',
 
     remoteFilter: true,
 
-    model: 'Rebanho.model.Ocorrencia',
-
-    groupField: 'confinamento_id',
+    model: 'Rebanho.model.Pesagem',
 
     proxy: {
 
         type: 'rest',
         url: 'php/main.php',
         extraParams:{
-            classe: 'Ocorrencias',
+            classe: 'Pesagens',
+            action: '',
             returnJson: true,
         },
 
@@ -21,6 +20,7 @@ Ext.define('Rebanho.store.Ocorrencias', {
             root: 'data',
             totalProperty: 'total'
         },
+
         writer: {
             type: 'json',
             root: 'data',
@@ -28,18 +28,10 @@ Ext.define('Rebanho.store.Ocorrencias', {
             encode: true,
             allowSingle: true,
         },
+
     },
-    sorters: [
-        {
-            property: 'data',
-            direction: 'DESC'
-        },{
-            property: 'id',
-            direction: 'DESC'
-        }
-        ,{
-            property: 'confinamento_id',
-            direction: 'DESC'
-        }
-    ],
+    sorters: [{
+        property: 'data',
+        direction: 'DESC'
+    }],
 });

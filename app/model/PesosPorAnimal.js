@@ -1,10 +1,8 @@
-Ext.define('Rebanho.model.Pesagem', {
+Ext.define('Rebanho.model.PesosPorAnimal', {
 
     extend: 'Ext.data.Model',
 
-    requires : [],
-
-    alias: 'pesagem',
+    alias: 'pesosporanimal',
 
 
     fields: [
@@ -16,28 +14,16 @@ Ext.define('Rebanho.model.Pesagem', {
         {name:'data', type: 'date', dateFormat: 'Y-m-d' },
         {name:'peso', type: 'float'},
         {name:'tipo', type: 'string'},
-        {name:'sexo', type: 'string'},
         {name:'quadra', type: 'string'},
-        {name:'codigo', type: 'string'},
         {name:'idade', type: 'string'},
-        {name:'icone', convert:function(value,record){
-            // Se tiver Peso Coloca o Icone de Tick
-            if (record.get('peso') > 0){
-                return '<img src="resources/tick.png">';
-            }
-        }},
+        {name:'intervalo', type: 'float'},
+        {name:'peso_ganho', type: 'float'},
+        {name:'media_dia', type: 'float'},
+        {name:'sequencia', type: 'int'},
+
+        {name:'confinamento', type: 'string'},
 
     ],
-
-//     validations: [
-//         {type: 'presence',  field: 'confinamento_id'},
-//         {type: 'presence',  field: 'quadra_id'},
-//         {type: 'presence',  field: 'animal_id'},
-//         {type: 'presence',  field: 'data'},
-//         {type: 'presence',  field: 'peso'},
-//         {type: 'presence',  field: 'tipo'},
-//     ],
-
 
     proxy: {
 
@@ -56,7 +42,6 @@ Ext.define('Rebanho.model.Pesagem', {
             encode: true,
             allowSingle: true,
         },
-
     },
 
 });

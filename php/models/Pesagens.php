@@ -502,4 +502,158 @@ class Pesagens extends Base {
     }
 
 
+    public function getPesosPorAnimal($data){
+        $strFiltros = $this->parseFilter($data["filter"]);
+        $strSorters = $this->parseSorter($data["sort"]);
+
+
+        $animal_id = $data["animal_id"];
+
+        $seq = 0;
+
+        $records = array();
+
+        // Saber os Confinamentos que este animal ja passou
+        $aConfinamentos = $this->filter('DISTINCT(confinamento_id)', 'ocorrencias', "animal_id = $animal_id", false, false);
+
+        // Para cada Confinamento que o animal passou
+        foreach ($aConfinamentos as $confinamento){
+
+            $confinamento_id = $confinamento->confinamento_id;
+
+            // Para Cada Confinamento Recuperar o Nome do Confinamento
+            $objConfinamento = $this->find($confinamento_id, 'confinamentos');
+            $confinamentoNome  = $objConfinamento->confinamento;
+
+
+            // Saber o Peso de Compra
+            $objPesoCompra = $this->filter(null, 'pesagens', "tipo = 3 AND confinamento_id = $confinamento_id AND animal_id = $animal_id", false, false);
+
+            if ($objPesoCompra) {
+                $pesoCompra = $objPesoCompra[0];
+                $pesoCompra->confinamento = $confinamentoNome;
+                $pesoCompra->sequencia = $seq++;
+                //var_dump($pesoCompra);
+
+                $records[] = $pesoCompra;
+            }
+
+            // Saber o Peso de Entrada
+            $objPesoEntrada = $this->filter(null, 'pesagens', "tipo = 1 AND confinamento_id = $confinamento_id AND animal_id = $animal_id", false, false);
+
+            $pesoEntrada = $objPesoEntrada[0];
+            //var_dump($pesoEntrada);
+            $pesoEntrada->confinamento = $confinamentoNome;
+            $pesoEntrada->sequencia = $seq++;
+            $records[] = $pesoEntrada;
+
+            // Recuperar as Pesagens Rotina
+            $objPesosRotina = $this->filter(null, 'pesagens', "tipo = 2 AND confinamento_id = $confinamento_id AND animal_id = $animal_id", "data ASC", false);
+
+            // Inicia com o Peso de Compra
+            // Se tiver mudado de confinamento nao vai ter peso de compra usar o peso de entrada
+            if (!$pesoCompra) {
+                $peso_anterior = $pesoEntrada->peso;
+                $data_anterior = $pesoEntrada->data;
+            }
+            else {
+                $peso_anterior = $pesoCompra->peso;
+                $data_anterior = $pesoCompra->data;
+            }
+            //$aPesosRotina = array();
+
+            // Para Cada Pesagem calcular o intervalo e o peso ganho e a media
+            foreach ($objPesosRotina  as $pesosRotina) {
+
+                $record = $pesosRotina;
+
+                $record->confinamento = $confinamentoNome;
+
+                // calcular o peso ganho
+                $peso_ganho = ($record->peso - $peso_anterior);
+                $record->peso_ganho = number_format($peso_ganho, 2, '.','.');
+
+                $record->intervalo  = round($this->diferencaEntreDatas($data_anterior, $record->data));
+
+                $media_dia  = ($record->peso_ganho / $record->intervalo);
+                $record->media_dia = number_format($media_dia, 2, '.','.');
+
+                $record->sequencia = $seq++;
+
+                $peso_anterior = $record->peso;
+                $data_anterior = $record->data;
+
+                //$aPesosRotina[] = $record;
+                $records[] = $record;
+            }
+
+
+            // Saber o Peso de Saida
+            $objPesoSaida = $this->filter(null, 'pesagens', "tipo = 4 AND confinamento_id = $confinamento_id AND animal_id = $animal_id", false, false);
+
+            if ($objPesoSaida) {
+                $pesoSaida = $objPesoSaida[0];
+
+                $peso_ganho = ($pesoSaida->peso - $peso_anterior);
+                $pesoSaida->peso_ganho = number_format($peso_ganho, 2, '.','.');
+
+                $pesoSaida->intervalo  = round($this->diferencaEntreDatas($data_anterior, $pesoSaida->data));
+
+                $media_dia  = ($pesoSaida->peso_ganho / $pesoSaida->intervalo);
+                $pesoSaida->media_dia = number_format($media_dia, 2, '.','.');
+
+                $pesoSaida->confinamento = $confinamentoNome;
+
+                $pesoSaida->sequencia = $seq++;
+                $records[] = $pesoSaida;
+            }
+        }
+
+        $aRegistros = $records;
+        //var_dump($records);
+//         $aResult = $this->filter(null, 'pesagens', $strFiltros, $strSorters, false);
+// 
+//         // Recuperar as Informacoes de cada animal
+//         foreach ($aResult as $row){
+// 
+//             $registro = $row;
+// 
+//             // Informacoes do Animal
+//             $animal = $this->find($row->animal_id, 'animais');
+//             $registro->sexo = $animal->sexo;
+//             $registro->idade = $animal->idade;
+// 
+//             // Para Cada Registro Recuperar o Nome do Confinamento
+//             $confinamento = $this->find($registro->confinamento_id, 'confinamentos');
+//             $registro->confinamento  = $confinamento->confinamento;
+// 
+// 
+//             // Informacoes do Codigo
+//             $codigos = Animais::getCodigosById($row->animal_id, $animal->confinamento_id);
+//             $registro->codigo = $codigos[0]->codigo;
+// 
+//             // Informacoes da Quadra
+//             $quadra = $this->find($row->quadra_id, 'quadras', 'quadra');
+//             $registro->quadra = $quadra->quadra;
+// 
+//             $aRegistros[] = $registro;
+//         }
+
+
+
+        $result = new StdClass();
+        $result->success = true;
+        $result->data    = $aRegistros;
+        $result->total   = count($aRegistros);
+
+        if ($data["returnJson"]){
+
+            echo json_encode($result);
+        }
+        else {
+            return $result;
+        }
+    }
+
+
 }

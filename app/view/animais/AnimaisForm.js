@@ -32,6 +32,7 @@ Ext.define('Rebanho.view.animais.AnimaisForm' ,{
             // Items do FormPanel Principal
             items:[{
                 xtype:'tabpanel',
+                itemId: 'animalFormTabPanel',
                 activeTab: 0,
                 border: false,
                 // Itens do Tab Panel
@@ -69,14 +70,6 @@ Ext.define('Rebanho.view.animais.AnimaisForm' ,{
                                     readOnly: true,
                                     flex: 1,
                                 },{
-                                    xtype:'textfield',
-                                    fieldLabel:'SisBov',
-                                    name: 'sisbov',
-                                    //width: 200,
-                                    margins: '0 0 0 5',
-                                    readOnly: true,
-                                    flex: 1,
-                                },{
                                     xtype:'combobox',
                                     fieldLabel:'Status',
                                     name: 'status',
@@ -93,28 +86,6 @@ Ext.define('Rebanho.view.animais.AnimaisForm' ,{
                                         ['2','Vendido'],
                                     ],
                                     flex: 1,
-                                }]
-                            },{
-                                xtype: 'fieldcontainer',
-                                layout: 'hbox',
-                                fieldDefaults: {
-                                    labelAlign: 'top',
-                                },
-                                items:[{
-                                    xtype:'cmbconfinamento',
-                                    fieldLabel:'Confinamento',
-                                    name: 'confinamento_id',
-                                    width: 200,
-                                    readOnly: true,
-                                    hideTrigger: true,
-                                },{
-                                    xtype:'cmbcaracteristicas',
-                                    fieldLabel:'Caracteristica',
-                                    name: 'caracteristica_id',
-                                    margins: '0 0 0 5',
-                                    width: 250,
-                                    readOnly: true,
-                                    hideTrigger: true,
                                 },{
                                     xtype:'combobox',
                                     fieldLabel:'Sexo',
@@ -139,13 +110,49 @@ Ext.define('Rebanho.view.animais.AnimaisForm' ,{
                                     labelAlign: 'top',
                                 },
                                 items:[{
-                                    xtype:'cmbquadras',
-                                    fieldLabel:'Quadra',
-                                    name: 'quadra_id',
-                                    width: 190,
+                                    xtype:'cmbcaracteristicas',
+                                    fieldLabel:'Caracteristica',
+                                    name: 'caracteristica_id',
+                                    width: 250,
                                     readOnly: true,
                                     hideTrigger: true,
                                 },{
+                                    xtype:'textfield',
+                                    fieldLabel:'Idade',
+                                    name: 'idade',
+                                    flex: 1,
+                                    margins: '0 0 0 5',
+                                    readOnly: true,
+                                }]
+                            },{
+                                xtype: 'fieldcontainer',
+                                layout: 'hbox',
+                                fieldDefaults: {
+                                    labelAlign: 'top',
+                                },
+                                items:[{
+                                    xtype:'cmbconfinamento',
+                                    fieldLabel:'Confinamento',
+                                    name: 'confinamento_id',
+                                    width: 200,
+                                    readOnly: true,
+                                    hideTrigger: true,
+                                },{
+                                    xtype:'cmbquadras',
+                                    fieldLabel:'Quadra',
+                                    name: 'quadra_id',
+                                    flex:1,
+                                    readOnly: true,
+                                    hideTrigger: true,
+                                    margins: '0 0 0 5',
+                                }]
+                            },{
+                                xtype: 'fieldcontainer',
+                                layout: 'hbox',
+                                fieldDefaults: {
+                                    labelAlign: 'top',
+                                },
+                                items:[{
                                     fieldLabel : 'Classificação',
                                     xtype : 'ratingfield',
                                     name  : 'classificacao',
@@ -163,71 +170,10 @@ Ext.define('Rebanho.view.animais.AnimaisForm' ,{
                                     margins: '0 0 0 5',
                                     width: 130,
                                     readOnly: true,
-                                },{
-                                    xtype:'textfield',
-                                    fieldLabel:'Idade',
-                                    name: 'idade',
-                                    //width: 50,
-                                    flex: 1,
-                                    readOnly: true,
                                 }]
                             }]
                         // FIM Fieldset Dados Animais
                         },
-                        // INICIO fieldset Estatisticas
-/*                        {
-                            xtype: 'fieldset',
-                            title: 'Estatísticas do Animal',
-                            items: [{
-                                xtype: 'fieldcontainer',
-                                layout: 'hbox',
-                                fieldDefaults: {
-                                    labelAlign: 'top',
-                                },
-                                items:[{
-                                    xtype:'textfield',
-                                    fieldLabel:'Neste Conf.',
-                                    name: 'dias_confinamento',
-                                    //width: 80,
-                                    flex: 1,
-                                    margins: '0 0 0 5',
-                                    readOnly: true,
-                                },{
-                                    xtype:'datefield',
-                                    fieldLabel:'Pesagem',
-                                    name: 'data_ultima_pesagem',
-                                    //width: 100,
-                                    flex: 1,
-                                    margins: '0 0 0 5',
-                                    readOnly: true,
-                                },{
-                                    xtype:'textfield',
-                                    fieldLabel:'Peso',
-                                    name: 'peso_atual',
-                                    //width: 100,
-                                    flex: 1,
-                                    margins: '0 0 0 5',
-                                    readOnly: true,
-                                },{
-                                    xtype:'textfield',
-                                    fieldLabel:'Peso Ganho',
-                                    name: 'peso_ganho',
-                                    //width: 100,
-                                    flex: 1,
-                                    margins: '0 0 0 5',
-                                    readOnly: true,
-                                },{
-                                    xtype:'textfield',
-                                    fieldLabel:'Diário',
-                                    name: 'ganho_diario',
-                                    //width: 100,
-                                    flex: 1,
-                                    margins: '0 0 0 5',
-                                    readOnly: true,
-                                }]
-                            }]
-                        // FIM fieldset Estatisticas
-                        },*/
                         // FIM Itens do Painel Central
                         ]
                     },
@@ -238,7 +184,7 @@ Ext.define('Rebanho.view.animais.AnimaisForm' ,{
                         region:'east',
                         xtype: 'panel',
                         margins: '5',
-                        width: 250,
+                        width: 500,
                         layout: 'fit',
                         items:[{
                             xtype: 'pesagensporanimalgrid',

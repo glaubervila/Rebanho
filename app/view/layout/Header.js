@@ -265,6 +265,14 @@ Ext.define('Rebanho.view.layout.Header', {
                                 var tabs = Ext.getCmp('mainTabpanel').novaAba('confinamentosgrid');
                             },
                         },
+                        {
+                            text: 'Vacinas',
+                            iconCls:'icon-pill',
+                            handler: function(){
+                                var tabs = Ext.getCmp('mainTabpanel').novaAba('vacinasgrid');
+                            },
+                        },
+
                     ]
                 },
             ]

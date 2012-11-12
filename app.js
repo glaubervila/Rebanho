@@ -63,6 +63,7 @@ Ext.application({
 
         // Animais
         'Animais',
+        'PesosPorAnimal',
 
         // Cadastros
         'Usuarios',
@@ -70,7 +71,8 @@ Ext.application({
         'Confinamentos',
         'Cepeas',
         'Quadras',
-
+        'Vacinas',
+        
         // Transferencias
         'Transferencias',
 

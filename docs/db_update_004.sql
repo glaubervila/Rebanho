@@ -34,6 +34,23 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_general_ci;
 
+-- -----------------------------------------------------
+-- Table `vacinas`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `vacinas` (
+  `id` INT NOT NULL ,
+  `confinamento_id` INT NULL ,
+  `status` CHAR(1) NULL ,
+  `nome` VARCHAR(45) NULL ,
+  `laboratorio` VARCHAR(45) NULL ,
+  `lote` VARCHAR(45) NULL ,
+  `fabricacao` VARCHAR(10) NULL ,
+  `validade` VARCHAR(10) NULL ,
+  PRIMARY KEY (`id`) )
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8
+COLLATE = utf8_general_ci;
+
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;

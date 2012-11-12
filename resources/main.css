@@ -42,12 +42,14 @@
 .icon-application_form_add { background-image: url(application_form_add.png) !important; background-repeat: no-repeat; }
 .icon-application_form { background-image: url(application_form.png) !important; background-repeat: no-repeat; }
 .icon-arrow_refresh { background-image: url(arrow_refresh.png) !important; background-repeat: no-repeat; }
+.icon-arrow_switch { background-image: url(arrow_switch.png) !important; background-repeat: no-repeat; }
 .icon-barcode-32 { background-image: url(barcode.png) !important; background-repeat: no-repeat; }
 .icon-barcode-16 { background-image: url(barcode_16.png) !important; background-repeat: no-repeat; }
 .icon-tools_box { background-image: url(tools_box.png) !important; background-repeat: no-repeat; }
 .icon-cancel { background-image: url(cancel.png) !important; background-repeat: no-repeat; }
 .icon-cross { background-image: url(cross.png) !important; background-repeat: no-repeat; }
 .icon-cross-green { background-image: url(cross_green.png) !important; background-repeat: no-repeat; }
+.icon-cross-red_32 { background-image: url(cross_red_32.png) !important; background-repeat: no-repeat; }
 .icon-cow { background-image: url(cow.png) !important; background-repeat: no-repeat; }
 .icon-control_fastforward_blue { background-image: url(control_fastforward_blue.png) !important; background-repeat: no-repeat; }
 .icon-control_rewind_blue { background-image: url(control_rewind_blue.png) !important; background-repeat: no-repeat; }
@@ -71,6 +73,7 @@
 .icon-page_edit { background-image: url(page_edit.png) !important; background-repeat: no-repeat; }
 .icon-pencil_add { background-image: url(pencil_add.png) !important; background-repeat: no-repeat; }
 .icon-printer { background-image: url(printer.png) !important; background-repeat: no-repeat; }
+.icon-pill { background-image: url(pill.png) !important; background-repeat: no-repeat; }
 .icon-report { background-image: url(report.png) !important; background-repeat: no-repeat; }
 .icon-user_suit { background-image: url(user_suit.gif) !important; background-repeat: no-repeat; }
 .icon-scale-32 { background-image: url(scale.png) !important; background-repeat: no-repeat; }

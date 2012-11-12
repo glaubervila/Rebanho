@@ -11,6 +11,7 @@ Ext.define('Rebanho.model.Ocorrencia', {
         {name:'id', type: 'int'},
         {name:'confinamento_id', type: 'int'},
         {name:'quadra_id', type: 'int'},
+        {name:'vacina_id', type: 'int'},
         {name:'animal_id', type: 'int'},
         {name:'data', type: 'date', dateFormat: 'Y-m-d' },
         {name:'tipo', type: 'string'},
@@ -19,17 +20,24 @@ Ext.define('Rebanho.model.Ocorrencia', {
 
         {name:'confinamento', type: 'string'},
         {name:'quadra', type: 'string'},
+        {name:'peso', type: 'float'},
     ],
 
-    proxy: {
-
-        type: 'rest',
-        url: 'php/main.php',
-        extraParams:{
-            classe: 'Ocorrencias',
-            returnJson: true,
-        },
-
-    },
+//     proxy: {
+// 
+//         type: 'rest',
+//         url: 'php/main.php',
+//         extraParams:{
+//             classe: 'Ocorrencias',
+//             returnJson: true,
+//         },
+//         writer: {
+//             type: 'json',
+//             root: 'data',
+//             writeAllFields: true,
+//             encode: true,
+//             allowSingle: true,
+//         },
+//     },
 
 });

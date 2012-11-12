@@ -19,17 +19,6 @@ Ext.define('Rebanho.view.compras.fornecedores.FornecedoresTriggerField', {
 
         this.store = 'Fornecedores';
 
-        // Zerar os filtros na Store
-        // Limpando o Filtro
-        store.clearFilter(true);
-
-        // Setando o Atributo Confinamento
-        this.confinamento = Ext.getCmp('main_viewport').getConfinamentoId();
-
-        store.filter([
-            {property: "confinamento_id", value: this.confinamento},
-        ]);
-
         this.callParent(arguments);
 
     },

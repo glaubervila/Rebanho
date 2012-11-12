@@ -1,9 +1,13 @@
-Ext.define('Rebanho.store.Ocorrencias', {
+Ext.define('Rebanho.store.PesosPorAnimal', {
     extend: 'Rebanho.store.MyStore',
 
+    autoLoad: false,
+    
     remoteFilter: true,
 
-    model: 'Rebanho.model.Ocorrencia',
+    remoteSorter: true,
+
+    model: 'Rebanho.model.PesosPorAnimal',
 
     groupField: 'confinamento_id',
 
@@ -12,7 +16,8 @@ Ext.define('Rebanho.store.Ocorrencias', {
         type: 'rest',
         url: 'php/main.php',
         extraParams:{
-            classe: 'Ocorrencias',
+            classe: 'Pesagens',
+            action: 'getPesosPorAnimal',
             returnJson: true,
         },
 
@@ -21,6 +26,7 @@ Ext.define('Rebanho.store.Ocorrencias', {
             root: 'data',
             totalProperty: 'total'
         },
+
         writer: {
             type: 'json',
             root: 'data',
@@ -28,7 +34,9 @@ Ext.define('Rebanho.store.Ocorrencias', {
             encode: true,
             allowSingle: true,
         },
+
     },
+
     sorters: [
         {
             property: 'data',
@@ -42,4 +50,5 @@ Ext.define('Rebanho.store.Ocorrencias', {
             direction: 'DESC'
         }
     ],
+    
 });

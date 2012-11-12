@@ -1,21 +1,19 @@
-Ext.define('Rebanho.view.animais.AnimaisWindow' ,{
+Ext.define('Rebanho.view.cadastros.vacinas.VacinasWindow' ,{
     extend: 'Ext.window.Window',
 
-    alias : 'widget.animaiswindow',
+    alias : 'widget.vacinaswindow',
 
-    title: 'Cadastro De Animais',
+    title: 'Cadastro de Vacinas',
 
     layout: 'fit',
 
     autoShow: true,
 
-    width: 900,
+    width: 400,
 
-    height: 400,
+    height: 250,
 
-    modal: true,
-
-    iconCls: 'icon-application_form',
+    iconCls: 'icon-pill',
 
     initComponent: function() {
 
@@ -24,7 +22,7 @@ Ext.define('Rebanho.view.animais.AnimaisWindow' ,{
         Ext.applyIf(me, {
 
             items: [
-                Ext.widget('animaisform'),
+                Ext.widget('vacinasform'),
             ]
         });
 

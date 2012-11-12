@@ -9,7 +9,7 @@ Ext.define('Rebanho.controller.Animais', {
     stores: [
         'Animais',
         'AnimaisResumo',
-        'Pesagens',
+        'PesosPorAnimal',
         'Ocorrencias',
         'Caracteristicas',
         'Quadras',
@@ -115,6 +115,12 @@ Ext.define('Rebanho.controller.Animais', {
         });
     },
 
+
+    getRecordAnimal: function(){
+        if (this.animal){
+            return this.animal;
+        }
+    },
 
     // ----------< Funcoes da Grid de Animais por Confinamento >----------
     /** Funcao: onAfterRender
@@ -227,15 +233,9 @@ Ext.define('Rebanho.controller.Animais', {
             // Carregar a Store de Confinamento
             //this.getStore('Confinamentos').load();
 
-            // Carregar a Stores de Pesagens
-            store_pesagens = this.getStore('Pesagens');
-            // Limpando o Filtro
-            store_pesagens.clearFilter(true);
+            // Carregar a Stores de PesosPorAnimal
+            this.getPesosPorAnimal(this.animal_id);
 
-            // Adicionando novo Filtro pra Pegar todas as Ocorrencias deste animal
-            store_pesagens.filter([
-                {property: "animal_id", value: this.animal_id},
-            ]);
 
             // Carrefar a Store de Ocorrencias
             store_ocorrencia = this.getStore('Ocorrencias');
@@ -328,6 +328,7 @@ Ext.define('Rebanho.controller.Animais', {
         var record = Ext.create('Rebanho.model.Animal',animal);
         this.animal = record;
 
+
         // Carregando a Store de Quadras e de Caracteristicas
         this.getStore('Caracteristicas').load();
         this.getStore('Quadras').load();
@@ -336,10 +337,26 @@ Ext.define('Rebanho.controller.Animais', {
         this.criaWindowAnimais();
         this.getAnimaisForm().getForm().loadRecord(this.animal);
 
-        // Fechando a Janela de Pesquisar
+        // Setando o Id do Animal para as Ocorrencias
+        cntOcorrencias = this.getController('Ocorrencias');
+        cntOcorrencias.setAnimalId(this.animal.data.id);
+
         this.getLocalizarAnimalWindow().close();
+
     },
 
+    reloadAnimal: function(){
+        codigo = this.animalCodigo;
+
+        form = this.getAnimaisForm();
+        tabpanel = form.down('#animalFormTabPanel');
+        active_tab = tabpanel.getActiveTab();
+
+        this.win.close();
+        this.getAnimal(codigo);
+
+        tabpanel.setActiveTab(active_tab);
+    },
 
     // ----------< Funcoes da Grid AnimaisResumo >----------
     onAfterRenderAnimaisResumoGrid: function(){
@@ -401,6 +418,23 @@ Ext.define('Rebanho.controller.Animais', {
     },
 
 
+
+    getPesosPorAnimal: function (animal_id){
+        console.log('Animais - getPesosPorAnimal('+animal_id+')');
+
+        store_pesagens = this.getPesosPorAnimalStore();
+
+
+        store_pesagens = this.getStore('PesosPorAnimal');
+        // Limpando o Filtro
+        store_pesagens.clearFilter(true);
+        store_pesagens.proxy.setExtraParam('animal_id',animal_id);
+        // Adicionando novo Filtro pra Pegar todas as Ocorrencias deste animal
+        store_pesagens.filter([
+            {property: "animal_id", value: animal_id},
+        ]);
+
+    },
 
 });
 
