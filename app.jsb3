@@ -870,6 +870,16 @@
                     "path": "app/store/"
                 },
                 {
+                    "clsName": "Rebanho.model.Ocorrencia",
+                    "name": "Ocorrencia.js",
+                    "path": "app/model/"
+                },
+                {
+                    "clsName": "Rebanho.view.ocorrencias.OcorrenciaWindow",
+                    "name": "OcorrenciaWindow.js",
+                    "path": "app/view/ocorrencias/"
+                },
+                {
                     "clsName": "Rebanho.view.ocorrencias.pesagens.PesagensPorDataWindow",
                     "name": "PesagensPorDataWindow.js",
                     "path": "app/view/ocorrencias/pesagens/"
@@ -918,6 +928,16 @@
                     "clsName": "Rebanho.model.Quadra",
                     "name": "Quadra.js",
                     "path": "app/model/"
+                },
+                {
+                    "clsName": "Rebanho.model.Vacina",
+                    "name": "Vacina.js",
+                    "path": "app/model/"
+                },
+                {
+                    "clsName": "Rebanho.view.cadastros.vacinas.VacinasWindow",
+                    "name": "VacinasWindow.js",
+                    "path": "app/view/cadastros/vacinas/"
                 },
                 {
                     "clsName": "Rebanho.model.TransferenciaAnimal",
@@ -980,6 +1000,46 @@
                     "path": "app/model/"
                 },
                 {
+                    "clsName": "Ext.chart.Callout",
+                    "name": "Callout.js",
+                    "path": "extjs/src/chart/"
+                },
+                {
+                    "clsName": "Ext.chart.Highlight",
+                    "name": "Highlight.js",
+                    "path": "extjs/src/chart/"
+                },
+                {
+                    "clsName": "Ext.chart.Label",
+                    "name": "Label.js",
+                    "path": "extjs/src/chart/"
+                },
+                {
+                    "clsName": "Ext.chart.MaskLayer",
+                    "name": "MaskLayer.js",
+                    "path": "extjs/src/chart/"
+                },
+                {
+                    "clsName": "Ext.chart.Navigation",
+                    "name": "Navigation.js",
+                    "path": "extjs/src/chart/"
+                },
+                {
+                    "clsName": "Ext.chart.Shape",
+                    "name": "Shape.js",
+                    "path": "extjs/src/chart/"
+                },
+                {
+                    "clsName": "Ext.chart.TipSurface",
+                    "name": "TipSurface.js",
+                    "path": "extjs/src/chart/"
+                },
+                {
+                    "clsName": "Ext.chart.theme.Theme",
+                    "name": "Theme.js",
+                    "path": "extjs/src/chart/theme/"
+                },
+                {
                     "clsName": "Ext.layout.container.Card",
                     "name": "Card.js",
                     "path": "extjs/src/layout/container/"
@@ -1025,14 +1085,14 @@
                     "path": "extjs/src/layout/component/field/"
                 },
                 {
-                    "clsName": "Ext.layout.component.field.Trigger",
-                    "name": "Trigger.js",
-                    "path": "extjs/src/layout/component/field/"
-                },
-                {
                     "clsName": "Ext.layout.component.BoundList",
                     "name": "BoundList.js",
                     "path": "extjs/src/layout/component/"
+                },
+                {
+                    "clsName": "Ext.layout.component.field.Trigger",
+                    "name": "Trigger.js",
+                    "path": "extjs/src/layout/component/field/"
                 },
                 {
                     "clsName": "Ext.layout.component.Tab",
@@ -1145,11 +1205,6 @@
                     "path": "app/store/"
                 },
                 {
-                    "clsName": "Rebanho.model.Ocorrencia",
-                    "name": "Ocorrencia.js",
-                    "path": "app/model/"
-                },
-                {
                     "clsName": "Rebanho.store.Ocorrencias",
                     "name": "Ocorrencias.js",
                     "path": "app/store/"
@@ -1165,6 +1220,11 @@
                     "path": "app/store/"
                 },
                 {
+                    "clsName": "Rebanho.model.PesosPorAnimal",
+                    "name": "PesosPorAnimal.js",
+                    "path": "app/model/"
+                },
+                {
                     "clsName": "Rebanho.model.Usuario",
                     "name": "Usuario.js",
                     "path": "app/model/"
@@ -1172,6 +1232,11 @@
                 {
                     "clsName": "Rebanho.store.Usuarios",
                     "name": "Usuarios.js",
+                    "path": "app/store/"
+                },
+                {
+                    "clsName": "Rebanho.store.Vacinas",
+                    "name": "Vacinas.js",
                     "path": "app/store/"
                 },
                 {
@@ -1183,6 +1248,121 @@
                     "clsName": "Rebanho.store.Clientes",
                     "name": "Clientes.js",
                     "path": "app/store/"
+                },
+                {
+                    "clsName": "Ext.chart.LegendItem",
+                    "name": "LegendItem.js",
+                    "path": "extjs/src/chart/"
+                },
+                {
+                    "clsName": "Ext.chart.Legend",
+                    "name": "Legend.js",
+                    "path": "extjs/src/chart/"
+                },
+                {
+                    "clsName": "Ext.chart.Mask",
+                    "name": "Mask.js",
+                    "path": "extjs/src/chart/"
+                },
+                {
+                    "clsName": "Ext.chart.Tip",
+                    "name": "Tip.js",
+                    "path": "extjs/src/chart/"
+                },
+                {
+                    "clsName": "Ext.chart.series.Series",
+                    "name": "Series.js",
+                    "path": "extjs/src/chart/series/"
+                },
+                {
+                    "clsName": "Ext.chart.series.Cartesian",
+                    "name": "Cartesian.js",
+                    "path": "extjs/src/chart/series/"
+                },
+                {
+                    "clsName": "Ext.chart.series.Gauge",
+                    "name": "Gauge.js",
+                    "path": "extjs/src/chart/series/"
+                },
+                {
+                    "clsName": "Ext.chart.series.Pie",
+                    "name": "Pie.js",
+                    "path": "extjs/src/chart/series/"
+                },
+                {
+                    "clsName": "Ext.chart.series.Radar",
+                    "name": "Radar.js",
+                    "path": "extjs/src/chart/series/"
+                },
+                {
+                    "clsName": "Ext.chart.theme.Base",
+                    "name": "Base.js",
+                    "path": "extjs/src/chart/theme/"
+                },
+                {
+                    "clsName": "Ext.chart.Chart",
+                    "name": "Chart.js",
+                    "path": "extjs/src/chart/"
+                },
+                {
+                    "clsName": "Ext.chart.axis.Abstract",
+                    "name": "Abstract.js",
+                    "path": "extjs/src/chart/axis/"
+                },
+                {
+                    "clsName": "Ext.chart.axis.Axis",
+                    "name": "Axis.js",
+                    "path": "extjs/src/chart/axis/"
+                },
+                {
+                    "clsName": "Ext.chart.axis.Category",
+                    "name": "Category.js",
+                    "path": "extjs/src/chart/axis/"
+                },
+                {
+                    "clsName": "Ext.chart.axis.Gauge",
+                    "name": "Gauge.js",
+                    "path": "extjs/src/chart/axis/"
+                },
+                {
+                    "clsName": "Ext.chart.axis.Numeric",
+                    "name": "Numeric.js",
+                    "path": "extjs/src/chart/axis/"
+                },
+                {
+                    "clsName": "Ext.chart.axis.Radial",
+                    "name": "Radial.js",
+                    "path": "extjs/src/chart/axis/"
+                },
+                {
+                    "clsName": "Ext.chart.axis.Time",
+                    "name": "Time.js",
+                    "path": "extjs/src/chart/axis/"
+                },
+                {
+                    "clsName": "Ext.chart.series.Area",
+                    "name": "Area.js",
+                    "path": "extjs/src/chart/series/"
+                },
+                {
+                    "clsName": "Ext.chart.series.Bar",
+                    "name": "Bar.js",
+                    "path": "extjs/src/chart/series/"
+                },
+                {
+                    "clsName": "Ext.chart.series.Column",
+                    "name": "Column.js",
+                    "path": "extjs/src/chart/series/"
+                },
+                {
+                    "clsName": "Ext.chart.series.Line",
+                    "name": "Line.js",
+                    "path": "extjs/src/chart/series/"
+                },
+                {
+                    "clsName": "Ext.chart.series.Scatter",
+                    "name": "Scatter.js",
+                    "path": "extjs/src/chart/series/"
                 },
                 {
                     "clsName": "Ext.picker.Date",
@@ -1315,6 +1495,11 @@
                     "path": "app/view/compras/animais/"
                 },
                 {
+                    "clsName": "Rebanho.view.animais.AnimaisEstatisticasPanel",
+                    "name": "AnimaisEstatisticasPanel.js",
+                    "path": "app/view/animais/"
+                },
+                {
                     "clsName": "Rebanho.view.cadastros.usuarios.UsuariosForm",
                     "name": "UsuariosForm.js",
                     "path": "app/view/cadastros/usuarios/"
@@ -1385,11 +1570,6 @@
                     "path": "app/view/ocorrencias/"
                 },
                 {
-                    "clsName": "Rebanho.controller.Ocorrencias",
-                    "name": "Ocorrencias.js",
-                    "path": "app/controller/"
-                },
-                {
                     "clsName": "Rebanho.view.ocorrencias.pesagens.PesagensGrid",
                     "name": "PesagensGrid.js",
                     "path": "app/view/ocorrencias/pesagens/"
@@ -1455,6 +1635,11 @@
                     "path": "app/controller/"
                 },
                 {
+                    "clsName": "Rebanho.view.cadastros.vacinas.VacinasGrid",
+                    "name": "VacinasGrid.js",
+                    "path": "app/view/cadastros/vacinas/"
+                },
+                {
                     "clsName": "Rebanho.view.transferencias.SaidaGrid",
                     "name": "SaidaGrid.js",
                     "path": "app/view/transferencias/"
@@ -1505,6 +1690,11 @@
                     "path": "extjs/src/form/field/"
                 },
                 {
+                    "clsName": "Rebanho.view.cadastros.vacinas.VacinasCombo",
+                    "name": "VacinasCombo.js",
+                    "path": "app/view/cadastros/vacinas/"
+                },
+                {
                     "clsName": "Rebanho.view.cadastros.confinamentos.ConfinamentosCombo",
                     "name": "ConfinamentosCombo.js",
                     "path": "app/view/cadastros/confinamentos/"
@@ -1545,6 +1735,16 @@
                     "path": "app/controller/"
                 },
                 {
+                    "clsName": "Rebanho.view.cadastros.vacinas.VacinasForm",
+                    "name": "VacinasForm.js",
+                    "path": "app/view/cadastros/vacinas/"
+                },
+                {
+                    "clsName": "Rebanho.controller.Vacinas",
+                    "name": "Vacinas.js",
+                    "path": "app/controller/"
+                },
+                {
                     "clsName": "Rebanho.view.vendas.clientes.ClientesForm",
                     "name": "ClientesForm.js",
                     "path": "app/view/vendas/clientes/"
@@ -1568,6 +1768,16 @@
                     "clsName": "Rebanho.view.cadastros.quadras.QuadrasCombo",
                     "name": "QuadrasCombo.js",
                     "path": "app/view/cadastros/quadras/"
+                },
+                {
+                    "clsName": "Rebanho.view.ocorrencias.OcorrenciaForm",
+                    "name": "OcorrenciaForm.js",
+                    "path": "app/view/ocorrencias/"
+                },
+                {
+                    "clsName": "Rebanho.controller.Ocorrencias",
+                    "name": "Ocorrencias.js",
+                    "path": "app/controller/"
                 },
                 {
                     "clsName": "Rebanho.view.compras.fornecedores.FornecedoresTriggerField",
@@ -1652,6 +1862,16 @@
                 {
                     "clsName": "Rebanho.controller.EntradaAnimais",
                     "name": "EntradaAnimais.js",
+                    "path": "app/controller/"
+                },
+                {
+                    "clsName": "Rebanho.store.PesosPorAnimal",
+                    "name": "PesosPorAnimal.js",
+                    "path": "app/store/"
+                },
+                {
+                    "clsName": "Rebanho.controller.PesosPorAnimal",
+                    "name": "PesosPorAnimal.js",
                     "path": "app/controller/"
                 },
                 {
