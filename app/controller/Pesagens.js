@@ -63,9 +63,14 @@ Ext.define('Rebanho.controller.Pesagens', {
             'pesagensgrid button[action=action_relatorio]': {
                 click: this.onBtnClickRelatorio,
             },
-
+            'pesagensgrid button[action=action_salvar]': {
+                click: this.onBtnClickSalvar,
+            },
             'pesagensgrid [itemId=confinamento]': {
                 select: this.onSelectCmbConfinamentos
+            },
+            'pesagensgrid [itemId=dtf_data]': {
+                select: this.onSelectDtfData
             },
 
             // ----------< Actions da Window Relatorio Por Data >----------
@@ -114,7 +119,11 @@ Ext.define('Rebanho.controller.Pesagens', {
 
         // Gerando os Filtros para a Store
         // Recuperando a Data
-        data = Ext.Date.dateFormat(new Date(),'Y-m-d');
+        //data = Ext.Date.dateFormat(new Date(),'Y-m-d');
+        data = this.getPesagensGrid().down('#dtf_data').getValue();
+        if (!data){
+           data = Ext.Date.dateFormat(new Date(),'Y-m-d');
+        }
 
         // Recuperando a Store
         store = this.getStore('Pesagens');
@@ -285,7 +294,8 @@ Ext.define('Rebanho.controller.Pesagens', {
                     this.animal_id = retorno.animal_id;
                     // Setando o Objeto Animal
                     this.animal = retorno.animal;
-
+                    // Setando o Codigo
+                    this.animal.codigo = codigo;
                     // Digitar o Peso
                     this.digitarPeso();
 
@@ -306,29 +316,36 @@ Ext.define('Rebanho.controller.Pesagens', {
      * @param:{float}  peso   = peso digitado no prompt peso
      */
     gravarPesagem: function(peso){
+        console.log('Pesagens - gravarPesagem('+peso+')');
 
+        store = this.getStore('Pesagens');
         animal = this.animal;
+        data = this.getPesagensGrid().down('#dtf_data').getValue();
+        vacina = this.getPesagensGrid().down('#cmb_vacina').getValue();
+
+        if (!data){
+            data = Ext.Date.dateFormat(new Date(),'Y-m-d');
+        }
 
         // Criando o Registro
-        console.log('Criando o Registro');
         var pesagem = Ext.create('Rebanho.model.Pesagem', {
             confinamento_id : this.confinamento,
             quadra_id  : animal.quadra_id,
             animal_id  : this.animal_id,
-            data : Ext.Date.dateFormat(new Date(),'Y-m-d'),
+            //data : Ext.Date.dateFormat(new Date(),'Y-m-d'),
+            data: data,
             peso: peso,
             tipo: 2,
+            quadra: animal.quadra,
+            codigo: animal.codigo,
+            sexo: animal.sexo,
+            vacina_id: vacina,
         });
 
         errors = pesagem.validate();
 
         if (errors.isValid()){
-            if (pesagem.save()){
-                // Mostrando Mensagem de Sucesso
-                Ext.ux.Alert.alert('Sucesso!', 'Registro Gravado com Sucesso!', 'warning');
-
-                this.loadStore();
-            }
+            store.add(pesagem);
         }
         else {
             console.log(errors.items);
@@ -336,6 +353,37 @@ Ext.define('Rebanho.controller.Pesagens', {
         }
 
         this.inicioPesagem();
+    },
+
+    onBtnClickSalvar: function(button){
+        console.log('Pesagens - onBtnClickSalvar');
+
+        store = this.getStore('Pesagens');
+
+        // Limpando o Action da Grid
+        store.proxy.setExtraParam('action','inserir_pesagens');
+        store.sync();
+        store.proxy.setExtraParam('action','');
+
+        this.loadStore();
+    },
+
+    onSelectDtfData: function(){
+        // Selecionou data no piker
+        //ver se tem alguma coisa alterada na store
+        store = this.getStore('Pesagens');
+
+        records = store.getModifiedRecords();
+        console.log(records);
+        if (records[0]){
+            console.log('tem registros a salvar');
+            // Se tiver registros pra salvar, salva
+            this.onBtnClickSalvar();
+        }
+        else {
+            console.log('nao tem registros a salvar');
+            this.loadStore();
+        }
     },
 
     getContadores: function(){

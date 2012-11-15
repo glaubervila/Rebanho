@@ -51,6 +51,7 @@ Ext.define('Rebanho.view.compras.animais.EntradaAnimaisGrid' ,{
                     xtype: 'numberfield',
                     allowBlank: false,
                     minValue: 0,
+                    maxValue: 999,
                     hideTrigger: true,
                     keyNavEnabled: false,
                     mouseWheelEnabled: false

@@ -325,6 +325,11 @@ class Pesagens extends Base {
             $quadra = $this->find($row->quadra_id, 'quadras', 'quadra');
             $registro->quadra = $quadra->quadra;
 
+            $vacina = $this->filter(null, 'ocorrencias', "confinamento_id = {$registro->confinamento_id} AND animal_id = {$registro->animal_id} AND data = '{$registro->data}' AND tipo = 'V'", false, false);
+
+           
+            $registro->vacina = utf8_encode($vacina[0]->descricao);
+
             $aRegistros[] = $registro;
         }
 
@@ -610,35 +615,6 @@ class Pesagens extends Base {
         }
 
         $aRegistros = $records;
-        //var_dump($records);
-//         $aResult = $this->filter(null, 'pesagens', $strFiltros, $strSorters, false);
-// 
-//         // Recuperar as Informacoes de cada animal
-//         foreach ($aResult as $row){
-// 
-//             $registro = $row;
-// 
-//             // Informacoes do Animal
-//             $animal = $this->find($row->animal_id, 'animais');
-//             $registro->sexo = $animal->sexo;
-//             $registro->idade = $animal->idade;
-// 
-//             // Para Cada Registro Recuperar o Nome do Confinamento
-//             $confinamento = $this->find($registro->confinamento_id, 'confinamentos');
-//             $registro->confinamento  = $confinamento->confinamento;
-// 
-// 
-//             // Informacoes do Codigo
-//             $codigos = Animais::getCodigosById($row->animal_id, $animal->confinamento_id);
-//             $registro->codigo = $codigos[0]->codigo;
-// 
-//             // Informacoes da Quadra
-//             $quadra = $this->find($row->quadra_id, 'quadras', 'quadra');
-//             $registro->quadra = $quadra->quadra;
-// 
-//             $aRegistros[] = $registro;
-//         }
-
 
 
         $result = new StdClass();
@@ -653,6 +629,63 @@ class Pesagens extends Base {
         else {
             return $result;
         }
+    }
+
+    public function inserir_Pesagens($data, $json = true){
+
+        // Para Cada Registro de Pesagem, fazer um insert
+        $results = new StdClass();
+        if (is_array($data)){
+            foreach ($data as $registro){
+                if ($registro->id == 0){
+                    $return = $this->insert($registro, false);
+                }
+                else {
+                    $return = $this->update($registro, false);
+                }
+
+                if ($return->success || $return == true){
+                    // Se tiver Sucesso na Pesagem faz as outras ocorrencias
+                    // Vacinacao
+                    if ($registro->vacina_id){
+                        $vacina = Ocorrencias::OcorrenciaVacinacao($registro, false);
+
+                        if ($vacina->failure){
+                            $msgs[] = "Codigo: {$registro->codigo} - {$vacina->msg}";
+                        }
+                    }
+                    // Saber se tem que fazer o manejo
+                    $animal = $this->find($registro->animal_id, 'animais');
+
+                    // Fazer o Manejo
+                    if ($animal->quadra != $registro->quadra){
+                        $manejo = Manejos::manejoQuadras($registro, $registro->animal_id, $registro->quadra, false);
+                        if ($manejo->failure){
+                            $msgs[] = $manejo->msg;
+                        }
+                    }
+                }
+                else {
+                    if ($return->erros){
+                        $results->erros[] = $return->erros;
+                        $msgs[] = $return->erros->msg;
+                    }
+
+                }
+            }
+        }
+
+        if ($results->erros){
+            $results->failure = true;
+            $results->msg = implode('<br>',$msgs);
+        }
+        else {
+            $results->success = true;
+            $results->msg = "Todos os registros foram salvos.";
+        }
+
+        echo json_encode($results);
+
     }
 
 

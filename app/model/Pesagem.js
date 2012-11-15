@@ -19,11 +19,17 @@ Ext.define('Rebanho.model.Pesagem', {
         {name:'sexo', type: 'string'},
         {name:'quadra', type: 'string'},
         {name:'codigo', type: 'string'},
-        {name:'idade', type: 'string'},
+        
+        {name:'vacina_id', type: 'int'},
+        {name:'vacina', type: 'string'},
+
         {name:'icone', convert:function(value,record){
             // Se tiver Peso Coloca o Icone de Tick
-            if (record.get('peso') > 0){
+            if (record.get('id') > 0){
                 return '<img src="resources/tick.png">';
+            }
+            else {
+                return '<img src="resources/page_save.png">';
             }
         }},
 

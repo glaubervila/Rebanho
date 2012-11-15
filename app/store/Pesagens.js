@@ -3,12 +3,16 @@ Ext.define('Rebanho.store.Pesagens', {
 
     remoteFilter: true,
 
+    autoSync: false,
+
     model: 'Rebanho.model.Pesagem',
 
     proxy: {
 
         type: 'rest',
         url: 'php/main.php',
+        // BatchAction para enviar todas as linhas alteradas no mesmo request
+        batchActions: true,
         extraParams:{
             classe: 'Pesagens',
             action: '',
@@ -26,7 +30,7 @@ Ext.define('Rebanho.store.Pesagens', {
             root: 'data',
             writeAllFields: true,
             encode: true,
-            allowSingle: true,
+            allowSingle: false,
         },
 
     },
@@ -34,4 +38,28 @@ Ext.define('Rebanho.store.Pesagens', {
         property: 'data',
         direction: 'DESC'
     }],
+
+    listeners: {
+        write: function(store, operation){
+            var obj = Ext.decode(operation.response.responseText);
+    //        if (operation.action == 'update'){
+
+            if (obj.success){
+                Ext.ux.Alert.alert('Sucesso!', obj.msg, 'success');
+            }
+            else {
+
+                Ext.Array.each(obj.erros, function(value) {
+                    animal_id = value.id;
+                    record = store.getById(animal_id);
+                    record.set('error',true);
+                    record.set('icone','');
+                });
+
+                Ext.MessageBox.show({ title:'Atenção!', msg:"Um ou mais registros podem conter erros.<br>"+obj.msg+"<br> Os demais registros foram salvos.", buttons: Ext. MessageBox.OK, icon:  Ext.MessageBox.WARNING });
+
+            }
+        }
+    //    },
+    }
 });
