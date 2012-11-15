@@ -134,8 +134,7 @@ Ext.define('Rebanho.view.ocorrencias.pesagens.PesagensGrid' ,{
                     iconCls: 'icon-disk',
                     tooltip: 'Click para Salvar as Pesagens.',
                 },
-
-/*                {
+                {
                     xtype: 'button',
                     text: 'Relatório',
                     itemId: 'btnRelatorio',
@@ -143,12 +142,12 @@ Ext.define('Rebanho.view.ocorrencias.pesagens.PesagensGrid' ,{
                     iconCls: 'icon-printer',
                     tooltip: 'Click para Imprimir um Relatório da Pesagem.<br>O Relatório Conterá todas as Pesagens na Data Atual.',
                 },
-                '-',*/
+                '-',
                 // Contadores
                 {xtype: 'tbtext', itemId: 'tbpesados',text: '<b>Pesados:</b>'},
                 '-',
-                {xtype: 'tbtext', itemId: 'tbpesototal',text: '<b>Peso Total:</b>'},
-                {xtype: 'tbtext', itemId: 'tbpesomedio',text: '<b>Peso Médio:</b>'},
+                {xtype: 'tbtext', itemId: 'tbpesototal',text: '<b>Total:</b>'},
+                {xtype: 'tbtext', itemId: 'tbpesomedio',text: '<b>Médio:</b>'},
                 '-',
             ]
         }]

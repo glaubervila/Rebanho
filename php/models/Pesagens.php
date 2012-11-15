@@ -322,7 +322,7 @@ class Pesagens extends Base {
             $registro->codigo = $codigos[0]->codigo;
 
             // Informacoes da Quadra
-            $quadra = $this->find($row->quadra_id, 'quadras', 'quadra');
+            $quadra = $this->find($animal->quadra_id, 'quadras', 'quadra');
             $registro->quadra = $quadra->quadra;
 
             $vacina = $this->filter(null, 'ocorrencias', "confinamento_id = {$registro->confinamento_id} AND animal_id = {$registro->animal_id} AND data = '{$registro->data}' AND tipo = 'V'", false, false);

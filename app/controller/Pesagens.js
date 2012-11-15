@@ -403,9 +403,9 @@ Ext.define('Rebanho.controller.Pesagens', {
 
         grid.down('#tbpesados').setText('<b>Pesados: <font color="green">'+this.pesados+'</font></b>');
 
-        grid.down('#tbpesototal').setText('<b>Peso Total: <font color="blue">'+this.peso_total+' Kg</font></b>');
+        grid.down('#tbpesototal').setText('<b>Total: <font color="blue">'+this.peso_total+' Kg</font></b>');
 
-        grid.down('#tbpesomedio').setText('<b>Peso Médio: <font color="blue">'+this.peso_medio+' Kg</font></b>');
+        grid.down('#tbpesomedio').setText('<b>Médio: <font color="blue">'+this.peso_medio+' Kg</font></b>');
 
         // Testar se Tem mais de Um Animal Se tiver Habilita o Bortao Finalizar
         if (this.pesados > 0){
