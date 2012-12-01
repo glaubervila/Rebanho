@@ -65,4 +65,6 @@ Ext.define('Rebanho.model.Pesagem', {
 
     },
 
+
+
 });

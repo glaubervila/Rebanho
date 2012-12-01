@@ -277,12 +277,13 @@ Ext.define('Rebanho.view.layout.Header', {
                 },
             ]
         },
-//         {
-//             text: 'TESTE',
-//             handler: function(){
-//                 var tabs = Ext.getCmp('mainTabpanel').novaAba('pesagensgrid');
-//             },
-//         },
+        {
+            text: 'TESTE',
+            handler: function(){
+                //var tabs = Ext.getCmp('mainTabpanel').novaAba('pesagensgrid');
+                Ext.create('Rebanho.view.ocorrencias.pesagens.PesagensReportWindow',{});
+            },
+        },
 //         {
 //             text: 'TESTE2',
 //             handler: function(){

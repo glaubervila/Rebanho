@@ -1,10 +1,17 @@
 <?php
+// Biblioteca FPDF
+//define('FPDF_FONTPATH','../php/libs/FPDF/font/');
+require_once('../php/libs/FPDF/FPDF.php');
+require_once('../php/libs/FPDF/PDF_Code128.php');
 
 //Desliga o notice e warning do PHP.INI
 ini_set('error_reporting','E_ALL & ~E_NOTICE');
 session_start();
 
-header('Content-Type: text/javascript; charset=UTF-8');
+//header('Content-Type: text/javascript; charset=UTF-8');
+
+
+
 
 /**
  * função __autoload()
@@ -25,9 +32,6 @@ function __autoload($classe) {
         }
     }
 }
-
-// Biblioteca FPDF
-require_once('../php/libs/FPDF/FPDF.php');
 
 class Application {
 

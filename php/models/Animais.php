@@ -535,7 +535,7 @@ class Animais extends Base {
         // transformar em dias
         $idade_entrada_dias = ($idade_entrada * 30);
         // total de dias que entrou + o total de dias confinado / 30 para virar mes de novo
-        $idade_mes = round(($idade_entrada_dias + $dias_confinamento)/30);
+        $idade_mes = floor(($idade_entrada_dias + $dias_confinamento)/30);
 
         return $idade_mes;
     }
@@ -557,10 +557,12 @@ class Animais extends Base {
         }
 
         // Calculando o Tempo no Confinamento
-        $data_entrada = strtotime($data_entrada);
-        $data_atual   = strtotime(date('Y-m-d'));
+        //$data_entrada = strtotime($data_entrada);
+        //$data_atual   = strtotime(date('Y-m-d'));
+        $data_atual   = date('Y-m-d');
         //transformação do timestamp em  dias
-        $dias_confinamento = ($data_atual-$data_entrada)/86400;
+        //$dias_confinamento = ($data_atual-$data_entrada)/86400;
+        $dias_confinamento = $this->diferencaEntreDatas($data_entrada, $data_atual);
 
         if ($dias_confinamento > 0){
             return $dias_confinamento;
@@ -570,7 +572,7 @@ class Animais extends Base {
         }
     }
 
-    public function getAnimalResumido($animal_id, $codigo, $confinamento_id, $json = true){
+    public function getAnimalResumido($animal_id, $codigo, $confinamento_id, $json = true, $status = 1){
 
         $result = new StdClass();
 
@@ -581,12 +583,15 @@ class Animais extends Base {
         }
 
         if ($confinamento_id) {
-            $filter = "id = {$animal_id} AND confinamento_id = {$confinamento_id} AND status = 1";
+            $filter = "id = {$animal_id} AND confinamento_id = {$confinamento_id}";
         }
         else {
-            $filter = "id = {$animal_id} AND status = 1";
+            $filter = "id = {$animal_id}";
         }
 
+        if ($status){
+            $filter = " AND status = $status";
+        }
 
         // Informacoes do Animal
         $animal = $this->filter(null, 'animais', $filter, null, false);
@@ -766,6 +771,15 @@ class Animais extends Base {
         }
 
         return $return;
+    }
+
+    public function getStatus($status_id){
+
+        $aStatus[0] = 'Morto';
+        $aStatus[1] = 'Ativo';
+        $aStatus[2] = 'Vendido';
+
+        return $aStatus[$status_id];
     }
 
 }

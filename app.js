@@ -77,7 +77,10 @@ Ext.application({
         'Transferencias',
 
         // Vendas
-        'Clientes'
+        'Clientes',
+
+        // Relatorios
+        'PesagensReport',
     ],
 
 });

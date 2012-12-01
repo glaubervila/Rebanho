@@ -16,7 +16,7 @@
 *
 * Commutation des jeux ABC automatique et optimis�e.
 *******************************************************************************/
-require_once('fpdf.php');
+//require_once('fpdf.php');
 
 class PDF_Code128 extends FPDF {
 

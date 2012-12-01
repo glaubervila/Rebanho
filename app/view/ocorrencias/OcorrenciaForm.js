@@ -66,7 +66,6 @@ Ext.define('Rebanho.view.ocorrencias.OcorrenciaForm' ,{
                 }]
             },{
                 xtype: 'fieldset',
-                defaultType:'textfield',
                 layout: 'hbox',
                 items:[{
                     xtype: 'numberfield',

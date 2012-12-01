@@ -507,12 +507,17 @@ class Pesagens extends Base {
     }
 
 
-    public function getPesosPorAnimal($data){
-        $strFiltros = $this->parseFilter($data["filter"]);
-        $strSorters = $this->parseSorter($data["sort"]);
+    public function getPesosPorAnimal($data, $json = true){
+//         $strFiltros = $this->parseFilter($data["filter"]);
+//         $strSorters = $this->parseSorter($data["sort"]);
 
 
-        $animal_id = $data["animal_id"];
+        if (is_array($data)){
+            $animal_id = $data["animal_id"];
+        }
+        else {
+            $animal_id = $data->animal_id;
+        }
 
         $seq = 0;
 
@@ -577,8 +582,9 @@ class Pesagens extends Base {
                 // calcular o peso ganho
                 $peso_ganho = ($record->peso - $peso_anterior);
                 $record->peso_ganho = number_format($peso_ganho, 2, '.','.');
+                $record->peso_anterior = number_format($peso_anterior, 2, '.','.');
 
-                $record->intervalo  = round($this->diferencaEntreDatas($data_anterior, $record->data));
+                $record->intervalo  = $this->diferencaEntreDatas($data_anterior, $record->data);
 
                 $media_dia  = ($record->peso_ganho / $record->intervalo);
                 $record->media_dia = number_format($media_dia, 2, '.','.');
@@ -602,7 +608,7 @@ class Pesagens extends Base {
                 $peso_ganho = ($pesoSaida->peso - $peso_anterior);
                 $pesoSaida->peso_ganho = number_format($peso_ganho, 2, '.','.');
 
-                $pesoSaida->intervalo  = round($this->diferencaEntreDatas($data_anterior, $pesoSaida->data));
+                $pesoSaida->intervalo  = $this->diferencaEntreDatas($data_anterior, $pesoSaida->data);
 
                 $media_dia  = ($pesoSaida->peso_ganho / $pesoSaida->intervalo);
                 $pesoSaida->media_dia = number_format($media_dia, 2, '.','.');
@@ -622,7 +628,7 @@ class Pesagens extends Base {
         $result->data    = $aRegistros;
         $result->total   = count($aRegistros);
 
-        if ($data["returnJson"]){
+        if ($data["returnJson"] OR $json){
 
             echo json_encode($result);
         }
@@ -687,6 +693,141 @@ class Pesagens extends Base {
         echo json_encode($results);
 
     }
+
+
+
+    public function RelatorioIndividual($data, $json = true){
+
+        //var_dump($data);
+
+        //Montando a Query
+        $db = $this->getDb();
+
+        $db->exec("SET NAMES utf8");
+
+        // Saber os Ids e os pesos dos animais pesados que preenchem o filtro
+        $sql = "SELECT animal_id, data as data_pesagem, peso, tipo FROM pesagens WHERE ";
+
+        // 1 Filtro - Confinamento
+        $filtros[] = "confinamento_id = {$data->confinamento_id}";
+
+        // 2 Filtro - Periodo
+        if ($data->data_inicial && $data->data_final){
+
+            $filtros[] = "data BETWEEN '{$data->data_inicial}' AND '{$data->data_final}'";
+        }
+        else {
+            $filtros[] = "data >= '{$data->data_inicial}'";
+        }
+
+        $sql .= implode(' AND ', $filtros);
+
+
+        // Setar a Ordem
+        $sql .= " ORDER BY data ASC";
+
+        // Executar a Query
+        $stm = $db->prepare($sql);
+        $stm->execute();
+        $pesagens = $stm->fetchAll(\PDO::FETCH_OBJ);
+
+
+        //var_dump($pesagens);
+
+        $aRegistros = array();
+
+        // Para Cada Pesagem Saber as informacoes do Animal
+        foreach ($pesagens as $pesagem){
+            $registro = new StdClass();
+
+            $animal_id = $pesagem->animal_id;
+
+            // dados da pesagem
+            $registro->animal_id    = $animal_id;
+            $registro->peso         = $pesagem->peso;
+            $registro->data_pesagem = $pesagem->data_pesagem;
+            $registro->tipo_pesagem = $pesagem->tipo;
+
+            // dados do animal resumido
+            $animal = Animais::getAnimalResumido($animal_id, false, false, false, false);
+            $animal = $animal->animal;
+
+            $registro->confinamento_id = $animal->confinamento_id;
+            $registro->sexo      = $animal->sexo;
+            $registro->idade     = $animal->idade;
+            $registro->quadra_id = $animal->quadra_id;
+            $registro->quadra    = Quadras::getNomeQuadra($animal->quadra_id);
+            $registro->compra_id = $animal->compra_id;
+            $registro->dias_confinamento = $animal->dias_confinamento;
+            $registro->status    = $animal->status;
+            $registro->strStatus = Animais::getStatus($animal->status);
+            $registro->codigo    = $animal->codigo;
+
+            // Recuperando Peso de Entrada
+            $peso_entrada = Pesagens::getPesagem($registro->animal_id, $registro->confinamento_id, 1, 'DESC');
+
+            if ($peso_entrada){
+                $registro->peso_entrada = (int)$peso_entrada->peso;
+                $registro->data_entrada = $peso_entrada->data;
+            }
+
+
+            // Recuperando referencia da ultima pesagem
+            $pesagem_recente = Pesagens::getPesagem($registro->animal_id, $registro->confinamento_id, 2, 'DESC');
+
+            //var_dump($peso_atual);
+            if ($pesagem_recente){
+                $registro->pesagem_recente = (int)$pesagem_recente->peso;
+                $registro->pesagem_recente_data = $pesagem_recente->data;
+            }
+
+//             $pesos = (array)$pesos->data;
+
+            // Peso de Entrada
+
+            // Peso Atual
+//            $peso_atual = array_pop($pesos);
+//             $registro->intervalo = $peso_atual->intervalo;
+//             $registro->peso_anterior = $peso_atual->peso_anterior;
+//             $registro->peso_ganho = $peso_atual->peso_ganho;
+//             $registro->media_dia = $peso_atual->media_dia;
+
+            //var_dump($peso_atual);
+
+            //var_dump($pesos);
+
+            $aRegistros[] = $registro;
+            $registro = null;
+        }
+
+        $return = new StdClass();
+
+        if (count($aRegistros) > 0){
+
+            $return->success = true;
+            $return->data = $aRegistros;
+        }
+        else {
+            $return->failure = true;
+        }
+
+        return $return;
+    }
+
+
+    public function getPesagem($animal_id, $confinamento_id, $tipo, $data_order = 'DESC'){
+
+        $db = $this->getDb();
+
+        $sql = "SELECT * FROM pesagens WHERE animal_id = {$animal_id} AND confinamento_id = {$confinamento_id} AND tipo = $tipo ORDER BY data $data_order LIMIT 1;";
+
+        $stm = $db->prepare($sql);
+        $stm->execute();
+        $pesagens = $stm->fetchAll(\PDO::FETCH_OBJ);
+
+        return $pesagens[0];
+    }
+
 
 
 }

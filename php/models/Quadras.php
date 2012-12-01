@@ -110,4 +110,9 @@ class Quadras extends Base {
 
         return $qtd_animais[0]->quantidade;
     }
+
+    public function getNomeQuadra($quadra_id){
+        $quadra = $this->find($quadra_id, 'quadras', 'quadra');
+        return $quadra->quadra;
+    }
 }
