@@ -582,6 +582,7 @@ class Animais extends Base {
             $animal_id = $animal_id->animal_id;
         }
 
+
         if ($confinamento_id) {
             $filter = "id = {$animal_id} AND confinamento_id = {$confinamento_id}";
         }
@@ -590,8 +591,9 @@ class Animais extends Base {
         }
 
         if ($status){
-            $filter = " AND status = $status";
+            $filter .= " AND status = $status";
         }
+
 
         // Informacoes do Animal
         $animal = $this->filter(null, 'animais', $filter, null, false);
@@ -781,5 +783,26 @@ class Animais extends Base {
 
         return $aStatus[$status_id];
     }
+
+
+    // QUERY PARA IDADE DE ANIMAIS E PERMANENCIA
+// SELECT
+//     p.data as entrada_data,
+//     p.confinamento_id,
+//     a.idade as entrada_idade,
+//     -- CAST( (TO_DAYS(NOW())- TO_DAYS(data)) / 365.25 as SIGNED) AS idade
+//     (TO_DAYS(NOW())- TO_DAYS(p.data)) AS dias_confinado,
+//     (((a.idade*30) + (TO_DAYS(NOW())- TO_DAYS(p.data)))/30) as idade_atual
+// 
+// FROM
+//     pesagens p
+// INNER JOIN
+//     animais a
+// ON
+//     a.id = p.animal_id
+// WHERE
+//     p.tipo = 1
+//     -- AND p.confinamento_id = 2
+//     AND p.animal_id = 258;
 
 }

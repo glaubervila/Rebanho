@@ -42,25 +42,22 @@ class PesagensReport extends Base {
     public function RelatorioIndividual($data_report){
         // Testar o Tipo do Relatorio
 
-        $file = 'teste.pdf';
-        $path = '../tmp';
-        $filename = 'testeteste.pdf';
-        $arq = "$path/$file";
+//        $file = 'teste.pdf';
+//        $path = '../tmp';
+//        $filename = 'testeteste.pdf';
+//        $arq = "$path/$file";
 
         $pdf = new PesagensPDF('L','mm','A4');
 
         $pdf->setDataReport($data_report->data);
+        var_dump($data_report->data);
 
         $pdf->individual();
 
-        $pdf->Output($arq,'F');
+        $return = $pdf->Save('pesagens.pdf', 'F');
 
-        $aResult['success'] = "true";
-        $aResult['file']  = "{$file}";
-        $aResult['path']  = "{$path}";
-        $aResult['filename']  = "{$filename}";
-        $aResult['mime']  = "pdf";
-        echo json_encode($aResult);
+        //$pdf->Output($arq,'F');
+        echo json_encode($return);
 
 
     }

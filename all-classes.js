@@ -65743,6 +65743,49 @@ Ext.define('Rebanho.view.vendas.clientes.ClientesWindow' ,{
         this.callParent(arguments);
     }
  });
+Ext.define('Rebanho.model.Relatorio', {
+
+    extend: 'Ext.data.Model',
+
+    alias: 'Vacina',
+
+    fields: [
+        {name:'confinamento_id', type: 'int'},
+    ],
+
+
+});
+Ext.define('Rebanho.view.ocorrencias.pesagens.PesagensReportWindow' ,{
+    extend: 'Ext.window.Window',
+
+    alias : 'widget.pesagensreportwindow',
+
+    title: 'Relatórios de Pesagens',
+
+    layout: 'fit',
+
+    autoShow: true,
+
+    width: 300,
+
+    height: 400,
+
+    //iconCls: 'icon-',
+
+    initComponent: function() {
+
+        var me = this;
+
+        Ext.applyIf(me, {
+
+            items: [
+                Ext.widget('pesagensreportform'),
+            ]
+        });
+
+        this.callParent(arguments);
+    }
+ });
 /**
  * History management component that allows you to register arbitrary tokens that signify application
  * history state on navigation actions.  You can then handle the history {@link #change} event in order
@@ -74505,6 +74548,8 @@ Ext.define('Rebanho.model.Pesagem', {
         },
 
     },
+
+
 
 });
 
@@ -95791,6 +95836,208 @@ Ext.define('Rebanho.view.transferencias.EntradaForm' ,{
         this.callParent(arguments);
     }
 });
+Ext.define('Rebanho.view.ocorrencias.pesagens.PesagensReportForm' ,{
+    extend: 'Ext.form.Panel',
+
+    requires:[],
+    alias : 'widget.pesagensreportform',
+
+    bodyStyle:'padding:5px;',
+
+    //iconCls: 'icon-pill',
+
+    layout:'form',
+
+    initComponent: function() {
+        var me = this;
+
+        Ext.applyIf(me, {
+
+            defaultType:'textfield',
+            fieldDefaults: {
+                labelAlign: 'top',
+                labelWidth: 100,
+            },
+            defaults:{
+                layout:'form',
+                bodyStyle:'padding:4px',
+            },
+            items:[{
+                xtype: 'fieldset',
+                defaultType:'textfield',
+                defaults: {
+                    anchor: '-5',
+                },
+                items:[{
+                    xtype:'cmbconfinamento',
+                    fieldLabel:'Confinamento',
+                    name: 'confinamento_id',
+                    flex: 1,
+                },{
+                    xtype: 'fieldcontainer',
+                    layout: 'hbox',
+                    defaultType:'textfield',
+                    fieldDefaults: {
+                        labelAlign: 'top',
+                    },
+                    items:[{
+                        xtype: 'datefield',
+                        fieldLabel:'Data Inicial',
+                        name: 'data_inicial',
+                        format: 'd/m/y',
+                        submitFormat: 'Y-m-d',
+                        flex:1,
+                        allowBlank: false,
+                    },{
+                        xtype: 'datefield',
+                        fieldLabel:'Data Final',
+                        name: 'data_final',
+                        format: 'd/m/y',
+                        submitFormat: 'Y-m-d',
+                        flex:1,
+                        margins: '0 0 0 5',
+                        allowBlank: false,
+                    }]
+                },{
+                    xtype:'combobox',
+                    fieldLabel:'Tipo de Relatório',
+                    name: 'tipo_relatorio',
+                    width: 100,
+                    margins: '0 0 0 5',
+                    typeAhead: true,
+                    triggerAction: 'all',
+                    value: '0',
+                    store: [
+                        ['0','Individual'],
+                    ],
+                    flex: 1,
+                }]
+            },{
+                xtype: 'fieldset',
+                defaultType:'textfield',
+                title: 'Filtros',
+                defaults: {
+                    anchor: '-5',
+                },
+                items:[{
+                    xtype: 'fieldcontainer',
+                    layout: 'hbox',
+                    defaultType:'textfield',
+                    fieldDefaults: {
+                        labelAlign: 'top',
+                    },
+                    items:[{
+                        xtype:'cmbquadras',
+                        fieldLabel:'Quadra',
+                        name: 'quadra_id',
+                        flex: 1,
+                    },{
+                        xtype:'combobox',
+                        fieldLabel:'Sexo',
+                        name: 'sexo',
+                        width: 60,
+                        margins: '0 0 0 5',
+                        typeAhead: true,
+                        triggerAction: 'all',
+                        value: '0',
+                        store: [
+                            ['0',''],
+                            ['M','M'],
+                            ['F','F'],
+                        ]
+                    }]
+                },{
+                    xtype: 'fieldcontainer',
+                    layout: 'hbox',
+                    items:[{
+                        xtype: 'fieldcontainer',
+                        fieldLabel: 'Peso',
+                        labelAlign: 'top',
+                        layout: 'hbox',
+                        flex:1,
+                        defaults: {
+                            hideLabel: true
+                        },
+                        items:[{
+                            xtype:'combobox',
+                            name: 'peso_comparacao',
+                            width: 40,
+                            typeAhead: true,
+                            triggerAction: 'all',
+                            value: '0',
+                            store: [
+                                ['0',''],
+                                ['=','='],
+                                ['<=','<='],
+                                ['=>','>='],
+                            ]
+                        },{
+                            xtype:'textfield',
+                            fieldLabel:'',
+                            name: 'peso',
+                            //width: 40,
+                            flex: 1,
+                            margins: '0 0 0 5',
+                        }]
+                    },{
+                        xtype: 'fieldcontainer',
+                        fieldLabel: 'Idade',
+                        layout: 'hbox',
+                        labelAlign: 'top',
+                        border: true,
+                        flex: 1,
+                        defaults: {
+                            hideLabel: true
+                        },
+                        items:[{
+                            xtype:'combobox',
+                            name: 'idade_comparacao',
+                            width: 40,
+                            typeAhead: true,
+                            triggerAction: 'all',
+                            value: '0',
+                            store: [
+                                ['0',''],
+                                ['=','='],
+                                ['<=','<='],
+                                ['=>','>='],
+                            ]
+                        },{
+                            xtype:'textfield',
+                            fieldLabel:'',
+                            name: 'idade',
+                            //width: 60,
+                            flex: 1,
+                            margins: '0 0 0 5',
+                        }]
+                    }]
+                }]
+            }],
+            // Barra e Menus
+            bbar:{
+                items:[{
+                    xtype: 'button',
+                    text: 'Gerar Relatorio',
+                    action: 'action_report',
+                    iconCls: 'icon-printer',
+                    //tooltip: 'Click para <font color="blue"><b>Salvar</b></font> as Informações.'
+                },
+                '->',
+                {
+                    xtype: 'button',
+                    text: 'Cancelar',
+                    action: 'action_cancelar',
+                    iconCls: 'icon-cancel',
+                    tooltip: 'Click para <font color="red"><b>Abandonar</b></font> a Janela de Cadastro<br>Nenhuma informação será Gravada e o Cadastro será Fechado.'
+                }]
+            }
+
+        });
+
+        this.callParent(arguments);
+
+    }
+ }); 
 // Currently has the following issues:
 // - Does not handle postEditValue
 // - Fields without editors need to sync with their values in Store
@@ -106268,12 +106515,13 @@ Ext.define('Rebanho.view.layout.Header', {
                 },
             ]
         },
-//         {
-//             text: 'TESTE',
-//             handler: function(){
-//                 var tabs = Ext.getCmp('mainTabpanel').novaAba('pesagensgrid');
-//             },
-//         },
+        {
+            text: 'TESTE',
+            handler: function(){
+                //var tabs = Ext.getCmp('mainTabpanel').novaAba('pesagensgrid');
+                Ext.create('Rebanho.view.ocorrencias.pesagens.PesagensReportWindow',{});
+            },
+        },
 //         {
 //             text: 'TESTE2',
 //             handler: function(){
@@ -108048,7 +108296,6 @@ Ext.define('Rebanho.view.ocorrencias.OcorrenciaForm' ,{
                 }]
             },{
                 xtype: 'fieldset',
-                defaultType:'textfield',
                 layout: 'hbox',
                 items:[{
                     xtype: 'numberfield',
@@ -114019,6 +114266,26 @@ Ext.define('Rebanho.controller.PesosPorAnimal', {
 });
 
 
+Ext.define('Rebanho.model.PesagensReport', {
+
+    extend: 'Ext.data.Model',
+
+    alias: 'PesagensReport',
+
+    fields: [
+        {name:'confinamento_id', type: 'int'},
+        {name:'data_inicial', type: 'date', dateFormat: 'Y-m-d' },
+        {name:'data_final', type: 'date', dateFormat: 'Y-m-d' },
+        {name:'tipo_relatorio', type: 'int'},
+        {name:'quadra_id', type: 'int'},
+        {name:'sexo', type: 'string'},
+        {name:'peso_comparacao', type: 'string'},
+        {name:'peso', type: 'float'},
+        {name:'idade_comparacao', type: 'string'},
+        {name:'idade', type: 'string'},
+    ],
+
+});
 /**
  * General purpose inflector class that {@link #pluralize pluralizes}, {@link #singularize singularizes} and
  * {@link #ordinalize ordinalizes} words. Sample usage:
@@ -114316,6 +114583,134 @@ Ext.define('Ext.util.Inflector', {
         this.singular(irregulars[singular], singular);
     }
 });
+Ext.define('Rebanho.store.PesagensReport', {
+    extend: 'Rebanho.store.MyStore',
+
+    remoteFilter: true,
+
+    autoSync: false,
+
+    model: 'Rebanho.model.PesagensReport',
+
+    proxy: {
+
+        type: 'rest',
+        url: 'php/main.php',
+        extraParams:{
+            classe: 'PesagensReport',
+            action: 'getRelatorioPesagens',
+            returnJson: true,
+        },
+        writer: {
+            type: 'json',
+            root: 'data',
+            writeAllFields: true,
+            encode: true,
+            allowSingle: true,
+        },
+
+    },
+
+    listeners: {
+        write: function(store, operation){
+            var obj = Ext.decode(operation.response.responseText);
+            console.log(obj);
+            if (obj.success){
+                //Ext.ux.Alert.alert('Sucesso!', obj.msg, 'success');
+                window.location.href = "php/core/Download_Arquivo.php?file="+obj.file+'&path='+obj.path+'&filename='+obj.filename+'&mime='+obj.mime;
+            }
+            else {
+
+                Ext.MessageBox.show({ title:'Atenção!', msg:"Um ou mais registros podem conter erros.<br>"+obj.msg+"<br> Os demais registros foram salvos.", buttons: Ext. MessageBox.OK, icon:  Ext.MessageBox.WARNING });
+
+            }
+        }
+    }
+});
+Ext.define('Rebanho.controller.PesagensReport', {
+    extend: 'Ext.app.Controller',
+
+    stores: ['PesagensReport'],
+
+    models: [
+        'Rebanho.model.Relatorio',
+    ],
+
+    views: [
+         'ocorrencias.pesagens.PesagensReportWindow',
+         'ocorrencias.pesagens.PesagensReportForm',
+    ],
+
+    refs: [
+        {
+            ref: 'pesagensReportForm',
+            selector: 'pesagensreportform'
+        },
+    ],
+
+    // Chave estrangeira confinamento_id
+    confinamento: 0,
+
+    init: function() {
+
+        // ----------< Actions no Store >----------
+        // Load da Store
+//         this.getVacinasStore().addListener('load',this.onStoreLoad, this);
+
+        this.control({
+
+            // ----------< Actions do Grid >----------
+
+            // Ao Clicar no Botao Novo
+
+            'pesagensreportform button[action=action_report]': {
+                click: this.onBtnClickReport
+            },
+//             // Ao Clicar no Botao Excluir na Grid
+//             'vacinasgrid button[action=action_excluir]': {
+//                 click: this.onBtnExcluirClick
+//             },
+
+/*            'vacinasgrid': {
+                // Ao Selecionar um Registro na Grid
+                selectionchange: this.onSelectChange,
+                render:function(){
+                    this.getVacinasStore().load();
+                },
+                // DoubleClick em uma linha da Grid
+                itemdblclick: this.onBtnEditarClick,
+
+            },
+*/
+        });
+
+    },
+
+
+    onBtnClickReport: function (button){
+        console.log('PesagensReport - onBtnClickReport');
+
+        // Recuperar as informacoes do form e enviar a requisicao
+        form = button.up('form');
+        values = form.getValues();
+        record = Ext.create('Rebanho.model.PesagensReport', values);
+        //console.log(values);
+
+        store = this.getStore('PesagensReport');
+        //console.log(store);
+        store.removeAll(true);
+        store.add(record);
+        store.sync();
+        //record.save();
+        
+
+        
+    },
+
+});
+
+
+
 /**
  * @author Ed Spencer
  * @class Ext.data.association.HasMany

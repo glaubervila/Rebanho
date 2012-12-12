@@ -975,6 +975,16 @@
                     "path": "app/view/vendas/clientes/"
                 },
                 {
+                    "clsName": "Rebanho.model.Relatorio",
+                    "name": "Relatorio.js",
+                    "path": "app/model/"
+                },
+                {
+                    "clsName": "Rebanho.view.ocorrencias.pesagens.PesagensReportWindow",
+                    "name": "PesagensReportWindow.js",
+                    "path": "app/view/ocorrencias/pesagens/"
+                },
+                {
                     "clsName": "Ext.util.History",
                     "name": "History.js",
                     "path": "extjs/src/util/"
@@ -1515,6 +1525,11 @@
                     "path": "app/view/transferencias/"
                 },
                 {
+                    "clsName": "Rebanho.view.ocorrencias.pesagens.PesagensReportForm",
+                    "name": "PesagensReportForm.js",
+                    "path": "app/view/ocorrencias/pesagens/"
+                },
+                {
                     "clsName": "Ext.grid.RowEditor",
                     "name": "RowEditor.js",
                     "path": "extjs/src/grid/"
@@ -1875,9 +1890,24 @@
                     "path": "app/controller/"
                 },
                 {
+                    "clsName": "Rebanho.model.PesagensReport",
+                    "name": "PesagensReport.js",
+                    "path": "app/model/"
+                },
+                {
                     "clsName": "Ext.util.Inflector",
                     "name": "Inflector.js",
                     "path": "extjs/src/util/"
+                },
+                {
+                    "clsName": "Rebanho.store.PesagensReport",
+                    "name": "PesagensReport.js",
+                    "path": "app/store/"
+                },
+                {
+                    "clsName": "Rebanho.controller.PesagensReport",
+                    "name": "PesagensReport.js",
+                    "path": "app/controller/"
                 },
                 {
                     "clsName": "Ext.data.association.HasMany",

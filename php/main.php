@@ -1,14 +1,30 @@
 <?php
 // Biblioteca FPDF
-//define('FPDF_FONTPATH','../php/libs/FPDF/font/');
+define('FPDF_FONTPATH','../php/libs/FPDF/font/');
 require_once('../php/libs/FPDF/FPDF.php');
-require_once('../php/libs/FPDF/PDF_Code128.php');
+//require_once('../php/libs/FPDF/PDF_Code128.php');
 
 //Desliga o notice e warning do PHP.INI
 ini_set('error_reporting','E_ALL & ~E_NOTICE');
+ini_set('memory_limit', '16M');
 session_start();
 
+$base_path = getcwd();
+define("BASE_PATH", $base_path);
+
 //header('Content-Type: text/javascript; charset=UTF-8');
+
+//     if(PHP_OS == 'WINNT') {
+//         $base_path = getcwd();
+
+        //echo getcwd();
+//     }
+//     else {
+        //echo getcwd();
+        //$path = "../log";
+//     }
+    
+
 
 
 

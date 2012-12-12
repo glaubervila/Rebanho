@@ -29,10 +29,19 @@ Ext.define('Rebanho.store.PesagensReport', {
     listeners: {
         write: function(store, operation){
             var obj = Ext.decode(operation.response.responseText);
-            console.log(obj);
+            //console.log(obj);
             if (obj.success){
+
+                if (obj.filename){
+                    this.fireEvent('Download_Relatorio', this, obj);
+                }
+
+                //url = "php/core/Download_Arquivo.php?file="+obj.file+'&path='+obj.path+'&filename='+obj.filename+'&mime='+obj.mime;
+
+                //window.open(url,'_blank');
                 //Ext.ux.Alert.alert('Sucesso!', obj.msg, 'success');
-                window.location.href = "php/core/Download_Arquivo.php?file="+obj.file+'&path='+obj.path+'&filename='+obj.filename+'&mime='+obj.mime;
+                //window.location.href = "php/core/Download_Arquivo.php?file="+obj.file+'&path='+obj.path+'&filename='+obj.filename+'&mime='+obj.mime;
+
             }
             else {
 

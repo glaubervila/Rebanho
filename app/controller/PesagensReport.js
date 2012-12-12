@@ -25,8 +25,8 @@ Ext.define('Rebanho.controller.PesagensReport', {
     init: function() {
 
         // ----------< Actions no Store >----------
-        // Load da Store
-//         this.getVacinasStore().addListener('load',this.onStoreLoad, this);
+        // Eventos da Store
+        this.getPesagensReportStore().addListener('Download_Relatorio',this.onDownloadRelatori, this);
 
         this.control({
 
@@ -71,13 +71,22 @@ Ext.define('Rebanho.controller.PesagensReport', {
         //console.log(store);
         store.removeAll(true);
         store.add(record);
-        store.sync();
-        //record.save();
-        
 
-        
+        //Ext.Ajax.timeout = 12000;
+        store.sync();
+        record.save();
+
+
     },
 
+    onDownloadRelatori: function(store,obj){
+
+        url = "php/core/Download_Arquivo.php?file="+obj.file+'&path='+obj.path+'&filename='+obj.filename+'&mime='+obj.mime;
+
+        window.open(url,'_blank');
+    },
+
+    
 });
 
 

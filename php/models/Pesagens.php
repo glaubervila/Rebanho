@@ -706,25 +706,66 @@ class Pesagens extends Base {
         $db->exec("SET NAMES utf8");
 
         // Saber os Ids e os pesos dos animais pesados que preenchem o filtro
-        $sql = "SELECT animal_id, data as data_pesagem, peso, tipo FROM pesagens WHERE ";
+        //$sql = "SELECT animal_id, data as data_pesagem, peso, tipo FROM pesagens WHERE ";
 
-        // 1 Filtro - Confinamento
-        $filtros[] = "confinamento_id = {$data->confinamento_id}";
+        $sql = "SELECT
+                    a.id,
+                    a.quadra_id,
+                    a.status,
+                    a.sexo,
+                    a.compra_id,
+                    p.confinamento_id,
+                    p.data as pesagem_data,
+                    p.peso as pesagem_peso,
+                    p.tipo as pesagem_tipo,
+                    c.codigo,
+                    c.animal_id
+                FROM
+                    animais a
+                INNER JOIN
+                    pesagens p
+                ON
+                    a.id = p.animal_id
+                INNER JOIN
+                    animais_codigos c
+                ON
+                    a.id = c.animal_id
+                    AND p.confinamento_id = c.confinamento_id WHERE ";
 
-        // 2 Filtro - Periodo
+        // 1 Filtro - Confinamento pelo confinamento da pesagem
+        $filtros[] = "p.confinamento_id = {$data->confinamento_id}";
+
+        // 2 Filtro - Periodo pela data da pesagem
         if ($data->data_inicial && $data->data_final){
-
-            $filtros[] = "data BETWEEN '{$data->data_inicial}' AND '{$data->data_final}'";
+            // Se tiver data inicial e data final pesquisar pelo periodo
+            $filtros[] = "p.data BETWEEN '{$data->data_inicial}' AND '{$data->data_final}'";
         }
         else {
-            $filtros[] = "data >= '{$data->data_inicial}'";
+            // se nao tiver date final retorna so os da data igual a inicial
+            $filtros[] = "p.data = '{$data->data_inicial}'";
         }
+
+        // 3 Filtro - Por Quadra , filtrar pela quadra ondo animal esta
+        if ($data->quadra_id){
+
+            $filtros[] = "a.quadra_id = '{$data->quadra_id}'";
+        }
+
+        // 4 - Filtro - Sexo, filtrar pelo sexo do animal
+        if ($data->sexo){
+
+            $filtros[] = "a.sexo = '{$data->sexo}'";
+        }
+
 
         $sql .= implode(' AND ', $filtros);
 
 
         // Setar a Ordem
-        $sql .= " ORDER BY data ASC";
+        $sql .= " ORDER BY p.data ASC";
+
+
+        //echo $sql;
 
         // Executar a Query
         $stm = $db->prepare($sql);
@@ -740,28 +781,30 @@ class Pesagens extends Base {
         foreach ($pesagens as $pesagem){
             $registro = new StdClass();
 
-            $animal_id = $pesagem->animal_id;
+            $animal_id = $pesagem->id;
 
             // dados da pesagem
             $registro->animal_id    = $animal_id;
-            $registro->peso         = $pesagem->peso;
-            $registro->data_pesagem = $pesagem->data_pesagem;
-            $registro->tipo_pesagem = $pesagem->tipo;
+            $registro->peso         = (int)$pesagem->pesagem_peso;
+            $registro->data_pesagem = $pesagem->pesagem_data;
+            $registro->tipo_pesagem = $pesagem->pesagem_tipo;
 
             // dados do animal resumido
-            $animal = Animais::getAnimalResumido($animal_id, false, false, false, false);
-            $animal = $animal->animal;
+//             $animal = Animais::getAnimalResumido($animal_id, false, false, false, false);
+//             $animal = $animal->animal;
 
-            $registro->confinamento_id = $animal->confinamento_id;
-            $registro->sexo      = $animal->sexo;
-            $registro->idade     = $animal->idade;
-            $registro->quadra_id = $animal->quadra_id;
-            $registro->quadra    = Quadras::getNomeQuadra($animal->quadra_id);
-            $registro->compra_id = $animal->compra_id;
+            $registro->confinamento_id = $pesagem->confinamento_id;
+            $registro->sexo      = $pesagem->sexo;
+            //$registro->idade     = $animal->idade;
+            $registro->quadra_id = $pesagem->quadra_id;
+            if ($registro->quadra_id != 0){
+                $registro->quadra    = Quadras::getNomeQuadra($pesagem->quadra_id);
+            }
+            $registro->compra_id = $pesagem->compra_id;
             $registro->dias_confinamento = $animal->dias_confinamento;
-            $registro->status    = $animal->status;
-            $registro->strStatus = Animais::getStatus($animal->status);
-            $registro->codigo    = $animal->codigo;
+            $registro->status    = $pesagem->status;
+            $registro->strStatus = Animais::getStatus($pesagem->status);
+            $registro->codigo    = $pesagem->codigo;
 
             // Recuperando Peso de Entrada
             $peso_entrada = Pesagens::getPesagem($registro->animal_id, $registro->confinamento_id, 1, 'DESC');
@@ -773,20 +816,20 @@ class Pesagens extends Base {
 
 
             // Recuperando referencia da ultima pesagem
-            $pesagem_recente = Pesagens::getPesagem($registro->animal_id, $registro->confinamento_id, 2, 'DESC');
+            //$pesagem_recente = Pesagens::getPesagem($registro->animal_id, $registro->confinamento_id, 2, 'DESC');
 
             //var_dump($peso_atual);
-            if ($pesagem_recente){
-                $registro->pesagem_recente = (int)$pesagem_recente->peso;
-                $registro->pesagem_recente_data = $pesagem_recente->data;
-            }
+            //if ($pesagem_recente){
+            //    $registro->pesagem_recente = (int)$pesagem_recente->peso;
+            //    $registro->pesagem_recente_data = $pesagem_recente->data;
+            //}
 
 //             $pesos = (array)$pesos->data;
 
             // Peso de Entrada
 
             // Peso Atual
-//            $peso_atual = array_pop($pesos);
+//             $peso_atual = array_pop($pesos);
 //             $registro->intervalo = $peso_atual->intervalo;
 //             $registro->peso_anterior = $peso_atual->peso_anterior;
 //             $registro->peso_ganho = $peso_atual->peso_ganho;
@@ -827,7 +870,5 @@ class Pesagens extends Base {
 
         return $pesagens[0];
     }
-
-
 
 }
