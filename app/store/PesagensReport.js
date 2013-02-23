@@ -44,8 +44,10 @@ Ext.define('Rebanho.store.PesagensReport', {
 
             }
             else {
-
-                Ext.MessageBox.show({ title:'Atenção!', msg:"Um ou mais registros podem conter erros.<br>"+obj.msg+"<br> Os demais registros foram salvos.", buttons: Ext. MessageBox.OK, icon:  Ext.MessageBox.WARNING });
+                if (obj.msg){
+                    Ext.MessageBox.show({ title:'Atenção!', msg:obj.msg, buttons: Ext. MessageBox.OK, icon:  Ext.MessageBox.WARNING });
+                }
+                Ext.MessageBox.show({ title:'Atenção!', msg:"Desculpe, mas houve uma Falha e Não foi possivel realizar a operação", buttons: Ext. MessageBox.OK, icon:  Ext.MessageBox.WARNING });
 
             }
         }

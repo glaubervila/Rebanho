@@ -714,23 +714,29 @@ class Pesagens extends Base {
                     a.status,
                     a.sexo,
                     a.compra_id,
+                    a.idade as idade_entrada,
                     p.confinamento_id,
                     p.data as pesagem_data,
                     p.peso as pesagem_peso,
                     p.tipo as pesagem_tipo,
                     c.codigo,
-                    c.animal_id
+                    c.animal_id,
+                    d.data_pesagem as data_entrada
                 FROM
                     animais a
-                INNER JOIN
+                LEFT JOIN
                     pesagens p
                 ON
                     a.id = p.animal_id
-                INNER JOIN
+                LEFT JOIN
                     animais_codigos c
                 ON
                     a.id = c.animal_id
-                    AND p.confinamento_id = c.confinamento_id WHERE ";
+                    AND p.confinamento_id = c.confinamento_id 
+                LEFT JOIN
+                    compras d
+                ON a.compra_id = d.id AND p.confinamento_id = d.confinamento_id
+                WHERE ";
 
         // 1 Filtro - Confinamento pelo confinamento da pesagem
         $filtros[] = "p.confinamento_id = {$data->confinamento_id}";
@@ -801,7 +807,7 @@ class Pesagens extends Base {
                 $registro->quadra    = Quadras::getNomeQuadra($pesagem->quadra_id);
             }
             $registro->compra_id = $pesagem->compra_id;
-            $registro->dias_confinamento = $animal->dias_confinamento;
+            //$registro->dias_confinamento = $animal->dias_confinamento;
             $registro->status    = $pesagem->status;
             $registro->strStatus = Animais::getStatus($pesagem->status);
             $registro->codigo    = $pesagem->codigo;
@@ -814,6 +820,22 @@ class Pesagens extends Base {
                 $registro->data_entrada = $peso_entrada->data;
             }
 
+
+            // Idade de Entrada
+            $idade_entrada = $pesagem->idade_entrada;
+            $registro->idade_entrada = $pesagem->idade_entrada;
+
+            // Data de Entrada
+            $data_entrada = $pesagem->data_entrada;
+            $registro->data_entrada = $pesagem->data_entrada;
+
+            // Dias Confinamento
+            $dias_confinamento = Animais::calcularDiasConfinamento($data_entrada);
+            $registro->dias_confinamento = $dias_confinamento;
+
+            // Idade Atual
+            $idade_atual = Animais::calcularIdade($idade_entrada, $dias_confinamento);
+            $registro->idade_atual = $idade_atual;
 
             // Recuperando referencia da ultima pesagem
             //$pesagem_recente = Pesagens::getPesagem($registro->animal_id, $registro->confinamento_id, 2, 'DESC');
@@ -852,7 +874,9 @@ class Pesagens extends Base {
         }
         else {
             $return->failure = true;
+            $result->message = "Desculpe mas Nenhum resultado Foi Encontrado!";
         }
+
 
         return $return;
     }

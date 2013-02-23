@@ -91,12 +91,21 @@ Ext.define('Rebanho.view.layout.Header', {
                             },
                         },
                         {
+                            text: 'Nascimentos',
+                            iconCls:'icon-table_gear',
+                            handler: function(){
+                                var tabs = Ext.getCmp('mainTabpanel').novaAba('nascimentosgrid');
+                            },
+                        },
+                        {
                             text: 'Manejo',
                             iconCls: 'icon-application_form',
+                            disabled: true
                         },
                         {
                             text: 'Remarcar',
                             iconCls: 'icon-application_form',
+                            disabled: true
                         },
                         {
                             text: 'Relatorios',

@@ -757,4 +757,18 @@ abstract class Base {
         return $dias;
     }
 
+
+    public function dateBr($data){
+        if ($data){
+            $aData = explode('-',$data);
+            $yy = $aData[0];
+            $mm = $aData[1];
+            $dd = $aData[2];
+
+            $y =  substr($yy, -2);
+            $data_nova = "$dd/$mm/$y";
+            return $data_nova;
+        }
+    }
+
 }

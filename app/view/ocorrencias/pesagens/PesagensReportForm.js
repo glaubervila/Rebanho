@@ -71,6 +71,7 @@ Ext.define('Rebanho.view.ocorrencias.pesagens.PesagensReportForm' ,{
                     value: '0',
                     store: [
                         ['0','Individual'],
+                        ['1','Pesagens Resumido'],
                     ],
                     flex: 1,
                 }]

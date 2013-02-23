@@ -885,6 +885,16 @@
                     "path": "app/view/ocorrencias/pesagens/"
                 },
                 {
+                    "clsName": "Rebanho.model.Nascimento",
+                    "name": "Nascimento.js",
+                    "path": "app/model/"
+                },
+                {
+                    "clsName": "Rebanho.view.ocorrencias.nascimentos.NascimentosWindow",
+                    "name": "NascimentosWindow.js",
+                    "path": "app/view/ocorrencias/nascimentos/"
+                },
+                {
                     "clsName": "Rebanho.model.AnimalResumo",
                     "name": "AnimalResumo.js",
                     "path": "app/model/"
@@ -1217,6 +1227,11 @@
                 {
                     "clsName": "Rebanho.store.Ocorrencias",
                     "name": "Ocorrencias.js",
+                    "path": "app/store/"
+                },
+                {
+                    "clsName": "Rebanho.store.Nascimentos",
+                    "name": "Nascimentos.js",
                     "path": "app/store/"
                 },
                 {
@@ -1600,6 +1615,11 @@
                     "path": "app/controller/"
                 },
                 {
+                    "clsName": "Rebanho.view.ocorrencias.nascimentos.NascimentosGrid",
+                    "name": "NascimentosGrid.js",
+                    "path": "app/view/ocorrencias/nascimentos/"
+                },
+                {
                     "clsName": "Rebanho.view.animais.AnimaisGrid",
                     "name": "AnimaisGrid.js",
                     "path": "app/view/animais/"
@@ -1792,6 +1812,16 @@
                 {
                     "clsName": "Rebanho.controller.Ocorrencias",
                     "name": "Ocorrencias.js",
+                    "path": "app/controller/"
+                },
+                {
+                    "clsName": "Rebanho.view.ocorrencias.nascimentos.NascimentosForm",
+                    "name": "NascimentosForm.js",
+                    "path": "app/view/ocorrencias/nascimentos/"
+                },
+                {
+                    "clsName": "Rebanho.controller.Nascimentos",
+                    "name": "Nascimentos.js",
                     "path": "app/controller/"
                 },
                 {

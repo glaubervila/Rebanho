@@ -398,14 +398,25 @@ Ext.define('Rebanho.controller.EntradaAnimais', {
      */
     finalizarPesagem: function (){
 
-        // Confirmar Finalizar
-        Ext.MessageBox.confirm('Confirmação', 'Deseja Mesmo <font color="blue"><b>Finalizar a Pesagem</b></font>?<br>Atenção: Ao Finalizar a pesagem não podera ser feita mais alterações.', function(btn){
 
-            if (btn == 'yes'){
-                this.finalizarNota();
-            }
-        },this);
+        grid = this.getEntradaAnimaisGrid();
+        store = grid.getStore();
+        // Saber se todos os registros foram salvos
+        if (store.getModifiedRecords()){
+            console.log('tem registros a salvar');
 
+            Ext.MessageBox.alert('Atenção!', 'Você tem registros a serem salvos.<br>Clique em <font color="blue">Salvar</font> e depois em Finalizar.');
+        }
+        else{
+
+            // Confirmar Finalizar
+            Ext.MessageBox.confirm('Confirmação', 'Deseja Mesmo <font color="blue"><b>Finalizar a Pesagem</b></font>?<br>Atenção: Ao Finalizar a pesagem não podera ser feita mais alterações.', function(btn){
+
+                if (btn == 'yes'){
+                    this.finalizarNota();
+                }
+            },this);
+        }
     },
 
     finalizarNota: function(){

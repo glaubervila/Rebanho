@@ -76,7 +76,7 @@ Ext.define('Rebanho.Initialization', {requires: ['Ext.ux.Router']},
                     }
 
                 }else{
-                Ext.ux.Router.redirect('login');
+                    Ext.ux.Router.redirect('login');
                 }
           },
           failure: function ( result, request) { 

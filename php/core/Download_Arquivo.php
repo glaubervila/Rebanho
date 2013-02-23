@@ -33,7 +33,7 @@ if (file_exists($file_result) && is_readable($file_result)) {
     // Special headers for IE 6
 //     header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
 //     header('Pragma: public');
-    var_dump($file_result);
+    //var_dump($file_result);
     $fp = fopen($file_result, "rb");
     fpassthru($fp);
     fclose($fp);

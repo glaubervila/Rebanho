@@ -20,6 +20,7 @@ class Ocorrencias extends Base {
  *     8 - Desmama
  *     9 - Castracao
  *     V - Vacinacao
+ *     N - Nascimento
  *     M - Morte
  *     O - Outras
  */
@@ -365,6 +366,7 @@ class Ocorrencias extends Base {
         $atipos['8'] = 'Desmama';
         $atipos['9'] = 'Castracao';
         $atipos['V'] = 'Vacinacao';
+        $atipos['N'] = 'Nascimento';
         $atipos['M'] = 'Morte';
         $atipos['O'] = 'Outras';
 

@@ -45,7 +45,7 @@ class Animais extends Base {
         // Para Cada Animal fazer o Insert
         foreach ($animais as $animal) {
 
-            $query = 'INSERT INTO animais (id, confinamento_id, quadra_id, compra_id, fornecedor_id, caracteristica_id, sisbov, sexo, idade, classificacao, escore, status) VALUES (:id, :confinamento_id, :quadra_id, :compra_id, :fornecedor_id, :caracteristica_id, :sisbov, :sexo, :idade, :classificacao, :escore, :status)';
+            $query = 'INSERT INTO animais (id, confinamento_id, quadra_id, compra_id, fornecedor_id, caracteristica_id, sisbov, sexo, idade, classificacao, escore, status, data_nascimento, mae_id, pai_id) VALUES (:id, :confinamento_id, :quadra_id, :compra_id, :fornecedor_id, :caracteristica_id, :sisbov, :sexo, :idade, :classificacao, :escore, :status, :data_nascimento, :mae_id, :pai_id)';
 
             $stm = $db->prepare($query);
             $stm->bindValue(':id', $next_id);
@@ -60,6 +60,9 @@ class Animais extends Base {
             $stm->bindValue(':classificacao', $animal->classificacao);
             $stm->bindValue(':escore', $animal->escore);
             $stm->bindValue(':status', 1);
+            $stm->bindValue(':data_nascimento', $animal->data_nascimento);
+            $stm->bindValue(':mae_id', $animal->mae_id);
+            $stm->bindValue(':pai_id', $animal->pai_id);
 
             $stm->execute();
 
@@ -107,21 +110,52 @@ class Animais extends Base {
 
                 $confinamento = $this->findBy('id', $animal->confinamento_id, 'confinamentos');
 
-                $descricao = "Entrada - {$confinamento->confinamento}";
+                if ($animal->nascimento){
 
-                $query_ocorrencia = "INSERT INTO ocorrencias (confinamento_id, quadra_id, animal_id, ocorrencia, descricao, data, tipo) VALUES (:confinamento_id, :quadra_id, :animal_id, :ocorrencia, :descricao, :data, :tipo);";
+                    // Ocorrencia no Animal
+                    $query_ocorrencia = "INSERT INTO ocorrencias (confinamento_id, quadra_id, animal_id, ocorrencia, descricao, data, tipo) VALUES (:confinamento_id, :quadra_id, :animal_id, :ocorrencia, :descricao, :data, :tipo);";
 
-                $stm = $db->prepare($query_ocorrencia);
+                    $stm = $db->prepare($query_ocorrencia);
 
-                $stm->bindValue(':confinamento_id', $animal->confinamento_id);
-                $stm->bindValue(':quadra_id', $animal->quadra_id);
-                $stm->bindValue(':animal_id', $idAnimal);
-                $stm->bindValue(':tipo', 1);
-                $stm->bindValue(':ocorrencia', 'Entrada');
-                $stm->bindValue(':descricao', $descricao);
-                $stm->bindValue(':data', $codigo->data);
+                    $stm->bindValue(':confinamento_id', $animal->confinamento_id);
+                    $stm->bindValue(':quadra_id', $animal->quadra_id);
+                    $stm->bindValue(':animal_id', $idAnimal);
+                    $stm->bindValue(':tipo', 'N');
+                    $stm->bindValue(':ocorrencia', 'Nascimento');
+                    $stm->bindValue(':descricao', "Nascimento -  Peso {$animal->peso} Kg");
+                    $stm->bindValue(':data', $animal->data_nascimento);
 
-                $stm->execute();
+                    $stm->execute();
+
+                    // Lancamento do Peso
+                    $query = 'INSERT INTO pesagens (confinamento_id, quadra_id, animal_id, data, peso, tipo) VALUES (:confinamento_id, :quadra_id, :animal_id, :data, :peso, :tipo);';
+
+                    $stm = $db->prepare($query);
+
+                    $stm->bindValue(':confinamento_id', $animal->confinamento_id);
+                    $stm->bindValue(':quadra_id', $animal->quadra_id);
+                    $stm->bindValue(':animal_id', $idAnimal);
+                    $stm->bindValue(':data', $animal->data_nascimento);
+                    $stm->bindValue(':peso', $animal->peso);
+                    $stm->bindValue(':tipo', 1);
+
+                    $stm->execute();
+                }
+                else {
+                    $query_ocorrencia = "INSERT INTO ocorrencias (confinamento_id, quadra_id, animal_id, ocorrencia, descricao, data, tipo) VALUES (:confinamento_id, :quadra_id, :animal_id, :ocorrencia, :descricao, :data, :tipo);";
+
+                    $stm = $db->prepare($query_ocorrencia);
+
+                    $stm->bindValue(':confinamento_id', $animal->confinamento_id);
+                    $stm->bindValue(':quadra_id', $animal->quadra_id);
+                    $stm->bindValue(':animal_id', $idAnimal);
+                    $stm->bindValue(':tipo', 1);
+                    $stm->bindValue(':ocorrencia', 'Entrada');
+                    $stm->bindValue(':descricao', $descricao);
+                    $stm->bindValue(':data', $codigo->data);
+
+                    $stm->execute();
+                }
 
                 $error = $stm->errorInfo();
 
@@ -785,7 +819,32 @@ class Animais extends Base {
     }
 
 
-    // QUERY PARA IDADE DE ANIMAIS E PERMANENCIA
+    public function getMae($codigo){
+
+        $db = $this->getDb();
+
+        $sql = "SELECT animais.*, animais_codigos.* FROM animais INNER JOIN animais_codigos ON animais.id = animais_codigos.animal_id WHERE codigo = {$codigo} AND sexo = 'F';";
+
+        $stm = $db->prepare($sql);
+        $stm->execute();
+
+        return $stm->fetchObject();
+    }
+
+    public function getPai($codigo){
+
+        $db = $this->getDb();
+
+        $sql = "SELECT animais.*, animais_codigos.* FROM animais INNER JOIN animais_codigos ON animais.id = animais_codigos.animal_id WHERE codigo = {$codigo} AND sexo = 'M';";
+
+        $stm = $db->prepare($sql);
+        $stm->execute();
+
+        return $stm->fetchObject();
+    }
+
+
+// QUERY PARA IDADE DE ANIMAIS E PERMANENCIA
 // SELECT
 //     p.data as entrada_data,
 //     p.confinamento_id,

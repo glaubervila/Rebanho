@@ -60,6 +60,7 @@ Ext.application({
         // Ocorrencias
         'Ocorrencias',
         'Pesagens',
+        'Nascimentos',
 
         // Animais
         'Animais',

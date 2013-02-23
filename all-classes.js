@@ -65107,6 +65107,72 @@ Ext.define('Rebanho.view.ocorrencias.pesagens.PesagensPorDataWindow' ,{
 
  }); 
 
+Ext.define('Rebanho.model.Nascimento', {
+
+    extend: 'Ext.data.Model',
+
+    requires : [],
+
+    alias: 'nascimento',
+
+
+    fields: [
+        {name:'animal_id', type: 'int'},
+        {name:'confinamento_id', type: 'int'},
+        {name:'quadra_id', type: 'int'},
+        {name:'caracteristica_id', type: 'int'},
+        {name:'data_nascimento', type: 'date', dateFormat: 'Y-m-d' },
+        {name:'codigo_mae', type: 'int'},
+        {name:'codigo_pai', type: 'int'},
+        {name:'codigo', type: 'int'},
+        {name:'peso', type: 'float'},
+        {name:'sexo', type: 'string'},
+
+        {name:'confinamento', type: 'string'},
+        {name:'quadra', type: 'string'},
+    ],
+
+});
+
+Ext.define('Rebanho.view.ocorrencias.nascimentos.NascimentosWindow' ,{
+    extend: 'Ext.window.Window',
+
+    requires:[ ],
+
+    alias : 'widget.nascimentoswindow',
+
+    title: 'Cadastro de Nascimento',
+
+    layout: 'fit',
+
+    autoShow: true,
+
+    resizable:false,
+
+    width: 400,
+
+    height: 400,
+
+    iconCls: 'icon-application_form',
+ 
+    modal: true,
+
+    initComponent: function() {
+
+        var me = this;
+
+        Ext.applyIf(me, {
+
+            items: [{
+                xtype:'nascimentosform',
+            }]
+        });
+
+        this.callParent(arguments);
+    },
+
+ }); 
+
 Ext.define('Rebanho.model.AnimalResumo', {
 
     extend: 'Ext.data.Model',
@@ -74717,6 +74783,46 @@ Ext.define('Rebanho.store.Ocorrencias', {
             direction: 'DESC'
         },{
             property: 'id',
+            direction: 'DESC'
+        }
+        ,{
+            property: 'confinamento_id',
+            direction: 'DESC'
+        }
+    ],
+});
+Ext.define('Rebanho.store.Nascimentos', {
+    extend: 'Rebanho.store.MyStore',
+
+    remoteFilter: true,
+
+    model: 'Rebanho.model.Nascimento',
+
+    proxy: {
+
+        type: 'rest',
+        url: 'php/main.php',
+        extraParams:{
+            classe: 'Nascimentos',
+            returnJson: true,
+        },
+
+        reader: {
+            type: 'json',
+            root: 'data',
+            totalProperty: 'total'
+        },
+        writer: {
+            type: 'json',
+            root: 'data',
+            writeAllFields: true,
+            encode: true,
+            allowSingle: true,
+        },
+    },
+    sorters: [
+        {
+            property: 'data',
             direction: 'DESC'
         }
         ,{
@@ -92322,7 +92428,7 @@ Ext.define('Rebanho.Initialization', {requires: ['Ext.ux.Router']},
                     }
 
                 }else{
-                Ext.ux.Router.redirect('login');
+                    Ext.ux.Router.redirect('login');
                 }
           },
           failure: function ( result, request) { 
@@ -95909,6 +96015,7 @@ Ext.define('Rebanho.view.ocorrencias.pesagens.PesagensReportForm' ,{
                     value: '0',
                     store: [
                         ['0','Individual'],
+                        ['1','Pesagens Resumido'],
                     ],
                     flex: 1,
                 }]
@@ -101454,6 +101561,80 @@ Ext.define('Rebanho.controller.Pesagens', {
 });
 
 
+Ext.define('Rebanho.view.ocorrencias.nascimentos.NascimentosGrid' ,{
+    extend: 'Ext.grid.Panel',
+
+    requires: [ ],
+
+    alias : 'widget.nascimentosgrid',
+
+    title: 'Nascimentos de Animais',
+
+    loadMask: true,
+
+    iconCls: 'icon-grid',
+
+    initComponent: function() {
+
+        this.store = 'Nascimentos';
+
+
+        this.columns = [
+            //Ext.create('Ext.grid.RowNumberer'),
+            {
+                text: "Data",
+                dataIndex: 'data',
+                sortable: true,
+                width: 100,
+                renderer : Ext.util.Format.dateRenderer('d-m-Y'),
+            },
+            {
+                text: "Código",
+                dataIndex: 'animal_id',
+                sortable: false,
+                width: 100,
+            },
+            {
+                text: "Peso",
+                dataIndex: 'ocorrencia',
+                sortable: false,
+                width: 100,
+            },
+            {
+                text: "Mãe",
+                dataIndex: 'descricao',
+                sortable: false,
+                flex:true,
+            },
+            {
+                text: "Pai",
+                dataIndex: 'descricao',
+                sortable: false,
+                flex:true,
+            },
+        ];
+
+        this.dockedItems= [{
+            xtype: 'toolbar',
+            items: [{
+                xtype: 'toolbar',
+                items: [{
+                    text: 'Novo Nascimento',
+                    iconCls: 'icon-add',
+                    action: 'action_adicionar',
+                    itemId: 'btnAdicionar',
+                    tooltip: 'Click para Lançar uma Ocorrência, Para este Animal.',
+                }]
+            }],
+
+        }]
+
+
+        this.callParent(arguments);
+    },
+
+ }); 
+
 Ext.define('Rebanho.view.animais.AnimaisGrid' ,{
     extend: 'Ext.grid.Panel',
 
@@ -106329,12 +106510,21 @@ Ext.define('Rebanho.view.layout.Header', {
                             },
                         },
                         {
+                            text: 'Nascimentos',
+                            iconCls:'icon-table_gear',
+                            handler: function(){
+                                var tabs = Ext.getCmp('mainTabpanel').novaAba('nascimentosgrid');
+                            },
+                        },
+                        {
                             text: 'Manejo',
                             iconCls: 'icon-application_form',
+                            disabled: true
                         },
                         {
                             text: 'Remarcar',
                             iconCls: 'icon-application_form',
+                            disabled: true
                         },
                         {
                             text: 'Relatorios',
@@ -108579,6 +108769,296 @@ Ext.define('Rebanho.controller.Ocorrencias', {
         }
 
     },
+});
+
+
+Ext.define('Rebanho.view.ocorrencias.nascimentos.NascimentosForm' ,{
+    extend: 'Ext.form.Panel',
+
+    requires:[
+        'Rebanho.view.cadastros.quadras.QuadrasCombo',
+    ],
+    alias : 'widget.nascimentosform',
+
+    bodyStyle:'padding:5px;',
+
+    iconCls: 'icon-application_form',
+
+    layout:'form',
+
+    initComponent: function() {
+        var me = this;
+
+        Ext.applyIf(me, {
+
+            defaultType:'textfield',
+            fieldDefaults: {
+                labelAlign: 'top',
+            },
+            items:[{
+                xtype: 'fieldset',
+                defaultType:'textfield',
+                items:[{
+                    name: 'animal_id',
+                    hidden: true,
+                },{
+                    xtype: 'fieldcontainer',
+                    layout: 'hbox',
+                    fieldDefaults: {
+                        labelAlign: 'top',
+                    },
+                    items:[{
+                        xtype:'cmbconfinamento',
+                        fieldLabel:'Confinamento',
+                        name: 'confinamento_id',
+                        itemId: 'confinamento',
+                        width: 200,
+                    },{
+                        xtype: 'datefield',
+                        fieldLabel:'Data de Nascimentos',
+                        name: 'data_nascimento',
+                        format: 'd/m/y',
+                        submitFormat: 'Y-m-d',
+                        flex:1,
+                        allowBlank: false,
+                        margins: '0 0 0 5',
+                    }]
+
+                }]
+            },{
+                xtype: 'fieldset',
+                layout: 'hbox',
+                items:[{
+                    xtype: 'numberfield',
+                    fieldLabel:'Mãe',
+                    name: 'codigo_mae',
+                    minValue: 0,
+                    hideTrigger: true,
+                    flex: 1,
+                    allowBlank: false,
+                },{
+                    xtype: 'numberfield',
+                    fieldLabel:'Pai',
+                    name: 'codigo_pai',
+                    minValue: 0,
+                    hideTrigger: true,
+                    flex: 1,
+                    margins: '0 0 0 5',
+                },{
+                    xtype: 'numberfield',
+                    fieldLabel:'Código',
+                    name: 'codigo',
+                    minValue: 0,
+                    keyNavEnabled: false,
+                    mouseWheelEnabled: false,
+                    hideTrigger: true,
+                    flex: 1,
+                    margins: '0 0 0 5',
+                    allowBlank: false,
+                }]
+            },{
+                xtype: 'fieldset',
+                layout: 'hbox',
+                items:[{
+                    xtype:'cmbcaracteristicas',
+                    fieldLabel:'Caracteristica',
+                    name: 'caracteristica_id',
+                    flex: 1,
+                    allowBlank: false,
+                },{
+                    xtype:'combobox',
+                    fieldLabel:'Sexo',
+                    name: 'sexo',
+                    width: 50,
+                    margins: '0 0 0 5',
+                    typeAhead: true,
+                    triggerAction: 'all',
+                    selectOnTab: true,
+                    store: [
+                        ['F','F'],
+                        ['M','M'],
+                    ],
+                    allowBlank: false,
+                }]
+            },{
+                xtype: 'fieldset',
+                layout: 'hbox',
+                items:[{
+                    xtype: 'numberfield',
+                    fieldLabel:'Peso',
+                    name: 'peso',
+                    minValue: 0,
+                    maxValue: 999,
+                    hideTrigger: true,
+                    keyNavEnabled: false,
+                    mouseWheelEnabled: false,
+                    flex: 1,
+                    margins: '0 0 0 5',
+                },{
+                    xtype:'cmbquadras',
+                    fieldLabel:'Quadra Destino',
+                    name: 'quadra_id',
+                    flex: 2,
+                    margins: '0 0 0 5',
+                    allowBlank: false,
+                }]
+            }]
+            , buttons:[{
+                text: 'Limpar',
+                iconCls: 'icon-cancel',
+                scope: this,
+                handler: function(button){
+                    var form = this.getForm().reset();
+                }
+            },{
+                text: 'Salvar',
+                iconCls: 'icon-disk',
+                scope: this,
+                itemId: 'btnSalvar',
+                action: 'action_salvar',
+            }]
+
+        });
+
+        this.callParent(arguments);
+    }
+ }); 
+Ext.define('Rebanho.controller.Nascimentos', {
+    extend: 'Ext.app.Controller',
+
+    require:[ ],
+
+    stores: [
+        'Nascimentos',
+    ],
+
+    models: [
+        'Rebanho.model.Nascimento',
+    ],
+
+    views: [
+        // Grid de Nascimentos por Confinamentos
+        'ocorrencias.nascimentos.NascimentosGrid',
+        // Form de Nascimentos
+        'ocorrencias.nascimentos.NascimentosForm',
+        // Window de Nascimentos
+        'ocorrencias.nascimentos.NascimentosWindow',
+    ],
+
+    refs: [
+        {
+            ref: 'nascimentosGrid',
+            selector: 'nascimentosgrid'
+        },
+        {
+            ref: 'nascimentosForm',
+            selector: 'nascimentosform'
+        },
+        {
+            ref: 'nascimentosWindow',
+            selector: 'nascimentoswindow'
+        },
+    ],
+
+    init: function() {
+
+        // ----------< Actions no Store >----------
+        // Load da Store
+        //this.getStore('Pesagens').addListener('load', this.onLoadStore, this);
+
+        this.control({
+
+            // ----------< Actions do Grid de Nascimentos >----------
+            'nascimentosgrid': {
+                render: this.onGridRender,
+                afterrender: this.onGridAfterRender,
+            },
+            'nascimentosgrid [action=action_adicionar]': {
+                click: this.onClickBtnNovo
+            },
+            // ----------< Actions do Form de Nascimentos >----------
+            'nascimentosform': {
+                afterrender: this.onFormAfterRender,
+            },
+            'nascimentosform [action=action_salvar]': {
+                click: this.onClickBtnSalvar
+            },
+
+
+        });
+    },
+
+
+    // ----------< Funcoes da Grid de Nascimentos por Confinamento >----------
+
+    onGridRender: function(){
+        console.log('Nascimentos - onGridRender');
+    },
+
+    onGridAfterRender: function(){
+        console.log('Nascimentos - onGridAfterRender');
+    },
+
+    onClickBtnNovo: function(){
+        console.log('Nascimentos - onClickBtnNovo');
+
+        this.criaWindow();
+    },
+
+
+    // ----------< Funcoes do Form de Nascimentos >----------
+    onFormAfterRender: function(){
+        console.log('Nascimentos - onFormAfterRender');
+
+        // Setando o Atributo Confinamento
+        this.confinamento = Ext.getCmp('main_viewport').getConfinamentoId();
+
+        // Setando o Valor da Combo Confinamento
+        cmbConfinamento = this.getNascimentosForm().down('#confinamento');
+        cmbConfinamento.setValue(this.confinamento);
+
+        // Se o Usuario Pertencer a um Confinamento desabilitar a Combo
+        if (this.confinamento > 0) {
+            cmbConfinamento.setReadOnly(true);
+        }
+    },
+
+    onClickBtnSalvar:function(btn){
+        console.log('Nascimentos - onFormAfterRender');
+
+        form = btn.up('form').getForm();
+        values = form.getValues();
+
+        if (form.isValid){
+            //console.log(values);
+            var record = Ext.create('Rebanho.model.Nascimento',values);
+
+            store = this.getStore('Nascimentos');
+
+            store.add(record);
+
+            //store.sync();
+
+            //this.win.close();
+
+            // Recarregar o Cadastro do Animal
+            //ctlr_animal = this.getController('Animais');
+            //ctlr_animal.reloadAnimal();
+        }
+        else {
+            Ext.ux.Alert.alert('Atenção!', 'Preencha todos os campos...', 'warning');
+        }
+    },
+    
+    // ----------< Funcoes da Window de Nascimentos >----------
+    criaWindow: function(){
+        if (this.win){
+            this.win.close();
+            this.win = null;
+        }
+        this.win = Ext.widget('nascimentoswindow');
+    },
+
 });
 
 
@@ -114015,14 +114495,25 @@ Ext.define('Rebanho.controller.EntradaAnimais', {
      */
     finalizarPesagem: function (){
 
-        // Confirmar Finalizar
-        Ext.MessageBox.confirm('Confirmação', 'Deseja Mesmo <font color="blue"><b>Finalizar a Pesagem</b></font>?<br>Atenção: Ao Finalizar a pesagem não podera ser feita mais alterações.', function(btn){
 
-            if (btn == 'yes'){
-                this.finalizarNota();
-            }
-        },this);
+        grid = this.getEntradaAnimaisGrid();
+        store = grid.getStore();
+        // Saber se todos os registros foram salvos
+        if (store.getModifiedRecords()){
+            console.log('tem registros a salvar');
 
+            Ext.MessageBox.alert('Atenção!', 'Você tem registros a serem salvos.<br>Clique em <font color="blue">Salvar</font> e depois em Finalizar.');
+        }
+        else{
+
+            // Confirmar Finalizar
+            Ext.MessageBox.confirm('Confirmação', 'Deseja Mesmo <font color="blue"><b>Finalizar a Pesagem</b></font>?<br>Atenção: Ao Finalizar a pesagem não podera ser feita mais alterações.', function(btn){
+
+                if (btn == 'yes'){
+                    this.finalizarNota();
+                }
+            },this);
+        }
     },
 
     finalizarNota: function(){
@@ -114629,8 +115120,10 @@ Ext.define('Rebanho.store.PesagensReport', {
 
             }
             else {
-
-                Ext.MessageBox.show({ title:'Atenção!', msg:"Um ou mais registros podem conter erros.<br>"+obj.msg+"<br> Os demais registros foram salvos.", buttons: Ext. MessageBox.OK, icon:  Ext.MessageBox.WARNING });
+                if (obj.msg){
+                    Ext.MessageBox.show({ title:'Atenção!', msg:obj.msg, buttons: Ext. MessageBox.OK, icon:  Ext.MessageBox.WARNING });
+                }
+                Ext.MessageBox.show({ title:'Atenção!', msg:"Desculpe, mas houve uma Falha e Não foi possivel realizar a operação", buttons: Ext. MessageBox.OK, icon:  Ext.MessageBox.WARNING });
 
             }
         }

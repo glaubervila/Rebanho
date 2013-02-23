@@ -10,7 +10,7 @@ header('Content-Type: text/javascript; charset=UTF-8');
 class PesagensReport extends Base {
 
     private     $valor = null;
-    private     $data = null;
+    private     $data  = null;
     protected   $table = "pesagens";
 
 
@@ -26,33 +26,42 @@ class PesagensReport extends Base {
         }
 
 
-        switch ($data->tipo){
+        $result = new StdClass();
+
+        switch ($data->tipo_relatorio){
             // Tipo 0 - Relatorio Individual
             case 0:
                 $data_report = Pesagens::RelatorioIndividual($data, false);
+                //var_dump($data_report);
                 if ($data_report->success){
-                    $report = PesagensReport::RelatorioIndividual($data_report);
+                    $report = PesagensReport::RelatorioIndividual($data, $data_report);
+                }
+            break;
+            // Tipo 1 - Relatorio Pesagens Resumido
+            case 1:
+                $data_report = Pesagens::RelatorioIndividual($data, false);
+                //var_dump($data_report);
+                if ($data_report->success){
+                    $report = PesagensReport::RelatorioPesagensResumido($data, $data_report);
                 }
             break;
         }
 
-        //var_dump($report);
+        if ($data_report->failure){
+            echo json_encode($data_report);
+        }
     }
 
-    public function RelatorioIndividual($data_report){
+    public function RelatorioIndividual($data_filter, $data_report){
         // Testar o Tipo do Relatorio
 
-//        $file = 'teste.pdf';
-//        $path = '../tmp';
-//        $filename = 'testeteste.pdf';
-//        $arq = "$path/$file";
-
-        $pdf = new PesagensPDF('L','mm','A4');
+        $pdf = new PesagensPDF();
 
         $pdf->setDataReport($data_report->data);
-        var_dump($data_report->data);
+        //var_dump($data_report->data);
 
         $pdf->individual();
+
 
         $return = $pdf->Save('pesagens.pdf', 'F');
 
@@ -60,6 +69,35 @@ class PesagensReport extends Base {
         echo json_encode($return);
 
 
+    }
+
+    public function RelatorioPesagensResumido($data_filter, $data_report){
+
+
+        //var_dump($data_report);
+        $pdf = new PesagensResumidoPDF();
+
+        $pdf->setDataFilter($this->criar_filtros($data_filter));
+
+        //$pdf->setRepeatHeader(true);
+        $pdf->setDataReport($data_report->data);
+
+        $pdf->resumido();
+
+        $return = $pdf->Save('PesagensResumido.pdf', 'F');
+
+        echo json_encode($return);
+
+    }
+
+    public function criar_filtros($data_filter){
+
+        // Recuperando o Nome do Confinamento
+        $data_filter->confinamento = Confinamentos::getNome($data_filter->confinamento_id);
+        $data_filter->data_inicial = $this->dateBr($data_filter->data_inicial);
+        $data_filter->data_final = $this->dateBr($data_filter->data_final);
+        $data_filter->data_relatorio = date('d/m/Y H:m:i');
+        return $data_filter;
     }
 
 }
