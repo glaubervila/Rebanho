@@ -401,9 +401,12 @@ Ext.define('Rebanho.controller.EntradaAnimais', {
 
         grid = this.getEntradaAnimaisGrid();
         store = grid.getStore();
+        alterados = store.getModifiedRecords();
+        console.log(alterados);
         // Saber se todos os registros foram salvos
-        if (store.getModifiedRecords()){
+        if (alterados.length != 0){
             console.log('tem registros a salvar');
+            console.log(store.getModifiedRecords());
 
             Ext.MessageBox.alert('Atenção!', 'Você tem registros a serem salvos.<br>Clique em <font color="blue">Salvar</font> e depois em Finalizar.');
         }
