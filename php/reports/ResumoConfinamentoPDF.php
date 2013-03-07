@@ -1,7 +1,7 @@
 <?php
 
 
-class PesagensResumidoPDF extends appReports{
+class ResumoConfinamentoPDF extends appReports{
 
     private $orientacao ='P'; //orientação P-Retrato ou L-Paisagem
     private $papel      ='A4';     //formato do papel
@@ -9,7 +9,7 @@ class PesagensResumidoPDF extends appReports{
 
     private $destino = 'F';  //destivo do arquivo pdf I-borwser, S-retorna o arquivo, D-força download, F-salva em arquivo local
     private $pdfDir  = '';      //diretorio para salvar o pdf com a opção de destino = F
-    private $pdfName = 'PesagensResumido.pdf';
+    private $pdfName = 'ResumoConfinamento.pdf';
 
    public function GeraPdf(){
 
@@ -56,9 +56,9 @@ class PesagensResumidoPDF extends appReports{
         $this->Ln();
         // Nome do Relatorio
         $this->SetFont('Arial','B',10);
-        $this->Cell(0, 5, utf8_decode("Relatório de Pesagens - Resumido"), 0, 0, 'L');
+        $this->Cell(0, 5, utf8_decode("Relatório Resumo/Confinamento"), 0, 0, 'L');
         $this->Ln();
-        // Data Inicial
+/*        // Data Inicial
         $this->SetFont('Arial','B',8);
         $this->Cell(20, 4, utf8_decode("Data Inicial: "), 0, 0, 'L');
         $this->SetFont('Arial','',8);
@@ -68,7 +68,7 @@ class PesagensResumidoPDF extends appReports{
         $this->Cell(20, 4, utf8_decode("Data Final: "), 0, 0, 'L');
         $this->SetFont('Arial','',8);
         $this->Cell(20, 4, utf8_decode($this->data_filter->data_final), 0, 0, 'L');
-        $this->Ln();
+        $this->Ln();*/
         // Mostrando Resultados
         $this->SetFont('Arial','B',8);
         $this->Cell(25, 4, utf8_decode("Data Relatório: "), 0, 0, 'L');
@@ -84,7 +84,7 @@ class PesagensResumidoPDF extends appReports{
 
     }
 
-    public function resumido(){
+    public function resumoConfinamento(){
 
         $this->GeraPdf();
 
@@ -96,19 +96,30 @@ class PesagensResumidoPDF extends appReports{
         $this->addStyle('gridTitle', 'Times', '10', 'B', '#1F497D', '#E0EBFF');
         $this->addStyle('rowP', 'Times', '10', '',  '#000000', '#FFFFFF', 'T');
         $this->addStyle('rowI', 'Times', '10', '',  '#000000', '#FFFFFF', 'T');
-
+        $this->addStyle('gridTotais', 'Times', '10', 'B', '#1F497D', '#DCDCDC');
 
         //$this->gridAddColumn('LINENUNBER'    , 'N', 'center', 8, FALSE,TRUE);
-        $this->gridAddColumn('codigo', 'Codigo', 'center', 20);
-        $this->gridAddColumn('sexo', 'S', 'center', 5);
-        $this->gridAddColumn('idade_atual', 'Idade', 'center', 16);
-        $this->gridAddColumn('strStatus', 'Status', 'center', 16);
+        $this->gridAddColumn('quadra', 'Quadra', 'center', 80, 'upper', false, 'left');
+        $this->gridAddColumn('quantidade_machos', 'Machos', 'center', 30);
+        $this->gridAddColumn('quantidade_femeas', 'Femeas', 'center', 30);
+        $this->gridAddColumn('quantidade_total', 'Quantidade', 'center', 50);
+// 
+//         $this->gridAddColumn('dias_confinamento', 'Dias/Confinamento', 'center', 50);
+//         $this->gridAddColumn('data_pesagem', 'Data Pesagem', 'center', 30, 'dateBr');
+//         $this->gridAddColumn('peso', 'Peso', 'center', 53);
 
-        $this->gridAddColumn('dias_confinamento', 'Dias/Confinamento', 'center', 50);
-        $this->gridAddColumn('data_pesagem', 'Data Pesagem', 'center', 30, 'dateBr');
-        $this->gridAddColumn('peso', 'Peso', 'center', 53);
+        // Atribuindo os Totais
+        $this->setColumnTotal('quadra', 'Totais:', null, 'left');
+        $this->setColumnTotal('quantidade_machos', 'sum');
+        $this->setColumnTotal('quantidade_femeas', 'sum');
+        $this->setColumnTotal('quantidade_total', 'sum');
+
+
+
+
 
         $this->simpleGrid();
+
 
     }
 

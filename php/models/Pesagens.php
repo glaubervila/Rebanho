@@ -700,6 +700,13 @@ class Pesagens extends Base {
 
         //var_dump($data);
 
+        // Verificar os Campos Obrigatorios
+        if ((empty($data->data_inicial)) || ($data->data_inicial == null) ){
+            $return->failure = true;
+            $result->msg = "Campo Data Inicial é Obrigatório!";
+            return $result;
+        }
+
         //Montando a Query
         $db = $this->getDb();
 
@@ -746,9 +753,9 @@ class Pesagens extends Base {
             // Se tiver data inicial e data final pesquisar pelo periodo
             $filtros[] = "p.data BETWEEN '{$data->data_inicial}' AND '{$data->data_final}'";
         }
-        else {
+        else if ($data->data_inicial){
             // se nao tiver date final retorna so os da data igual a inicial
-            $filtros[] = "p.data = '{$data->data_inicial}'";
+            $filtros[] = "p.data >= '{$data->data_inicial}'";
         }
 
         // 3 Filtro - Por Quadra , filtrar pela quadra ondo animal esta
@@ -777,7 +784,6 @@ class Pesagens extends Base {
         $stm = $db->prepare($sql);
         $stm->execute();
         $pesagens = $stm->fetchAll(\PDO::FETCH_OBJ);
-
 
         //var_dump($pesagens);
 
@@ -837,29 +843,6 @@ class Pesagens extends Base {
             $idade_atual = Animais::calcularIdade($idade_entrada, $dias_confinamento);
             $registro->idade_atual = $idade_atual;
 
-            // Recuperando referencia da ultima pesagem
-            //$pesagem_recente = Pesagens::getPesagem($registro->animal_id, $registro->confinamento_id, 2, 'DESC');
-
-            //var_dump($peso_atual);
-            //if ($pesagem_recente){
-            //    $registro->pesagem_recente = (int)$pesagem_recente->peso;
-            //    $registro->pesagem_recente_data = $pesagem_recente->data;
-            //}
-
-//             $pesos = (array)$pesos->data;
-
-            // Peso de Entrada
-
-            // Peso Atual
-//             $peso_atual = array_pop($pesos);
-//             $registro->intervalo = $peso_atual->intervalo;
-//             $registro->peso_anterior = $peso_atual->peso_anterior;
-//             $registro->peso_ganho = $peso_atual->peso_ganho;
-//             $registro->media_dia = $peso_atual->media_dia;
-
-            //var_dump($peso_atual);
-
-            //var_dump($pesos);
 
             $aRegistros[] = $registro;
             $registro = null;
@@ -874,7 +857,7 @@ class Pesagens extends Base {
         }
         else {
             $return->failure = true;
-            $result->message = "Desculpe mas Nenhum resultado Foi Encontrado!";
+            $return->msg = "Desculpe mas Nenhum resultado Foi Encontrado!";
         }
 
 

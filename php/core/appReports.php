@@ -16,6 +16,8 @@ class appReports extends FPDF {
 
     private $lastLineH;
 
+    private $Total = null;
+
     public function setDataReport($data_report){
         $this->data_report = $data_report;
     }
@@ -47,6 +49,32 @@ class appReports extends FPDF {
     public function getRepeatColumsHeader(){
         return $this->repeatColumsHeader;
     }
+
+    public function setTotal($total){
+        $this->Total = $total;
+    }
+
+    /**
+     * Cria um totalizador na coluna
+     * @param $alias   nome da coluna a ser totalizada
+     * @param $formula fórmula a ser aplicada sum ou count
+     * @param $style Estilo a ser usado, default gridTotais
+     * @param $align se nao tiver alinhamento usa o da header da coluna
+     */
+    public function setColumnTotal($alias, $formula, $style,$align)
+    {
+        if (!$style){
+            $style = 'gridTotais';
+        }
+
+        $align = strtoupper(substr($align,0,1));
+
+        $this->ColumnTotal[$alias] = $formula;
+        $this->ColumnResults[$alias] = 0;
+        $this->ColumnTotalStyle[$alias] = $style;
+        $this->ColumnTotalAlign[$alias] = $align;
+    }
+
 
     function Save($filename,$mode = 'F'){
 
@@ -96,7 +124,7 @@ class appReports extends FPDF {
         // Arial italic 8
         $this->SetFont('Arial','I',8);
 
-        $this->Cell(200,10,utf8_decode('Cronos - Sistema de Pedidos'),0,0,'L');
+        $this->Cell(200,10,utf8_decode('Sistema Controle de Rebanho'),0,0,'L');
         // Page number
         $this->Cell(0,10,utf8_decode('Pág '.$this->PageNo().'/{nb}'),0,0,'R');
     }
@@ -241,31 +269,48 @@ class appReports extends FPDF {
             $width += $this->colWidths[$n];
         }
 
-//         echo ("W: $width - ");
-//         echo ("H: $heigh - ");
-//         echo ("C: $content - ");
-//         echo ("B: $border - ");
-//         echo ("A: $alignH | ");
+        // Saber se o Content ainda precisa de tratamentos
+        if (is_object($content)){
 
-        // UTF8 DECODE
-        $content = utf8_decode($content);
+            switch ($content->tipo) {
+                case 'Image':
 
-        // Verificar se é nessessario o ajuste
-        $str_width=$this->GetStringWidth($content);
+                    $x = $this->GetX();
+                    $y = $this->GetY();
+                    $this->Cell( $width, $heigh, '', $border, 0, $alignH, true);
 
-        if (($str_width > $width) && ($scale)){
-            // Escala a Fonte para Caber no campo.
-            $this->CellFit($width, $heigh, $content, $border, 0, $alignH, false,false,true);
+                    if ($content->value){
+                        $image = "{$content->value}";
+                        $extensao = "{$content->extensao}";
+                        $this->Image($image, $x, $y, null , $heigh, $extensao);
+                    }
 
+                break;
+            }
+        }
+        else if (is_string($content)){
+            // UTF8 DECODE
+            $content = utf8_decode($content);
+            // Verificar se é nessessario o ajuste
+            $str_width=$this->GetStringWidth($content);
+
+            if (($str_width > $width) && ($scale)){
+                // Escala a Fonte para Caber no campo.
+                $this->CellFit($width, $heigh, $content, $border, 0, $alignH, false,false,true);
+
+            }
+            else {
+                // String Normal
+                $this->Cell( $width, $heigh, $content, $border, 0, $alignH, true);
+            }
         }
         else {
-            // String Normal
+            // Celula Normal
             $this->Cell( $width, $heigh, $content, $border, 0, $alignH, true);
         }
 
         $this->colcounter++;
     }
-
 
     public function addColumnsHeader(){
         $this->gridAddRow();
@@ -274,6 +319,36 @@ class appReports extends FPDF {
             // adiciona as colunas de cabeçalho
             $this->gridAddCell($column['label'], $column['align'], 'gridTitle');
         }
+    }
+
+
+    /** Adiciona uma Linha de Total
+     * Uma linha Diferente das de total por coluna
+     * recebe um objeto Total
+        $total = new StdClass();
+        $total->label = "Total geral"; - descricao
+        $total->labelStyle = 'gridTitle'; - estilo da label
+        $total->labelColspan = 3; quantidade de colunas que vai ocupar
+        $total->labelAlign = 'left'; - alinhamento da label
+        $total->value = $total; - valor que vai na celula ao lado da label
+        $total->valueColspan = 1; - quantas colunas da grid vai ocupar
+        $total->valueAlign = 'center'; alinhamento do valor
+        $total->border = 1; = se usa borda ou nao na linha de total
+    */
+    public function addTotal(){
+        $total = $this->Total;
+        $this->gridAddRow();
+
+        // Adicionando a Label do Total
+        $this->gridAddCell($total->label, $total->labelAlign, $total->labelStyle, $total->labelColspan, $total->border, false);
+
+        // Se o estilo para o total for igual ao da label
+        if (!$total->valueStyle){
+            $total->valueStyle = $total->labelStyle;
+        }
+
+        $this->gridAddCell($total->value, $total->valueAlign, $total->valueStyle, $total->valueColspan, $total->border, false);
+
     }
 
     public function simpleGrid()
@@ -331,6 +406,25 @@ class appReports extends FPDF {
 
                 $this->gridAddCell($content, $ralign, $style, 1, $border, $scale);
 
+                // Verificar se a coluna tem totalizacao
+                // realiza as totalizações da coluna se necessário
+                if (isset($this->ColumnTotal[$alias])){
+
+                    $formula = $this->ColumnTotal[$alias];
+                    if ($formula == 'count')
+                    {
+                        $this->ColumnResults[$alias] ++;
+                    }
+                    else if ($formula == 'sum')
+                    {
+                        $this->ColumnResults[$alias] += $content;
+                    }
+                    else {
+                        $this->ColumnResults[$alias] = $formula;
+                    }
+                }
+
+
                 $content = null;
             }
 
@@ -340,47 +434,67 @@ class appReports extends FPDF {
 
         }
 
-        // Closing line
-        //$this->Cell(array_sum($this->colWidths),0,'','B');
-
-    }
-
-
-    function FancyTable($header, $data)
-    {
-        // Colors, line width and bold font
-        $this->SetFillColor(255,0,0);
-        $this->SetTextColor(255);
-        $this->SetDrawColor(128,0,0);
-        $this->SetLineWidth(.3);
-        $this->SetFont('','B');
-        // Header
-        $w = array(40, 35, 40, 45);
-        for($i=0;$i<count($header);$i++)
-                $this->Cell($w[$i],7,$header[$i],1,0,'C',true);
-        $this->Ln();
-        // Color and font restoration
-        $this->SetFillColor(224,235,255);
-        $this->SetTextColor(0);
-        $this->SetFont('');
-        // Data
-        $fill = false;
-        //var_dump($data);
-        foreach($data as $row)
-        {
-            $row = (array)$row;
-                $this->Cell($w[0],6,$row[0],'LR',0,'L',$fill);
-                $this->Cell($w[1],6,$row[1],'LR',0,'L',$fill);
-                $this->Cell($w[2],6,$row[2],'LR',0,'R',$fill);
-                $this->Cell($w[3],6,$row[3],'LR',0,'R',$fill);
-               // $this->Cell($w[2],6,number_format($row[2]),'LR',0,'R',$fill);
-               // $this->Cell($w[3],6,number_format($row[3]),'LR',0,'R',$fill);
-                $this->Ln();
-                $fill = !$fill;
+        // Adiciono os Totais das Colunas
+        if (isset($this->ColumnTotal)){
+            $this->printTotals();
         }
-        // Closing line
-        $this->Cell(array_sum($w),0,'','T');
+        // Adiciono Linha Total Geral e Manual
+        if ($this->Total){
+            $this->addTotal();
+        }
+
+
     }
+
+    /**
+     * Exibe os totais das Colunas
+     */
+    private function printTotals()
+    {
+        // adiciona uma linha
+        $this->gridAddRow();
+
+        // percorre as colunas
+        foreach ($this->columns as $column)
+        {
+            $alias = $column['alias'];
+
+            // verifica se há totalização para a coluna
+            if (isset($this->ColumnResults[$alias]))
+            {
+                // exibe a totalização da coluna
+                $formula = $this->ColumnTotal[$alias];
+
+                $style = $this->ColumnTotalStyle[$alias];
+
+                // Se tiver alinhamento se nao usa o da header da coluna
+                if ($this->ColumnTotalAlign[$alias]){
+                    $align = $this->ColumnTotalAlign[$alias];
+                }
+                else {
+                    $align = $column['align'];
+                }
+                $content = $this->ColumnResults[$alias];
+
+                $this->gridAddCell($content, $align, $style, 1, 1, true);
+
+
+                // reinicializa os totais da coluna
+                $this->ColumnResults[$alias] = 0;
+            }
+            else
+            {
+                // exibe uma célula vazia
+                $this->gridAddCell('', $column['align'], 'total');
+            }
+        }
+    }
+
+
+
+
+
+
 
 
 

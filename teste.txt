@@ -1,0 +1,1000 @@
+  885  rm -rf mmagropec_bck_producao_10-10-2012.sql.zip mmagropec_bck_producao_16-10-2012.sql.zip mmagropec_bck_producao_16-10-2012.sql mmagropec_bck_producao_17-10-2012_so_estrutura.sql
+  886  ls -ltr
+  887  vim Teste.txt 
+  888  rm Teste.txt
+  889  rm Rebanho_DER_Part1.pdf
+  890  rm mozilla.pdf
+  891  ls 
+  892  ls
+  893  mv /media/sf_Compartilhada/mmagropec_bck_producao_18-10-2012_backup_geral.sql .
+  894  ls -ltr
+  895  vim mmagropec_bck_producao_18-10-2012_backup_geral.sql 
+  896  chmod 777 mmagropec_bck_producao_18-10-2012_backup_geral.sql 
+  897  rm -rf mmagropec_bck_producao_18-10-2012_backup_geral.sql 
+  898  mv /media/sf_Compartilhada/mmagropec_bck_producao_18-10-2012_backup_geral.sql .
+  899  cp /media/sf_Compartilhada/mmagropec_bck_producao_18-10-2012_backup_geral.sql .
+  900  cd /media/sf_Compartilhada/
+  901  ls -ltr
+  902  ls
+  903  unzip mmagropec_bck_producao_18-10-2012_backup_geral.sql.zip 
+  904  ls -ltr
+  905  mv mmagropec_bck_producao_18-10-2012_backup_geral.sql /home/gverde/
+  906  cd /home/gverde/
+  907  ls -ltr
+  908  chmod 777 mmagropec_bck_producao_18-10-2012_backup_geral.sql 
+  909  cd /media/sf_Compartilhada/
+  910  ls
+  911  unzip mmagropec_bck_producao_18-10-2012_backup_geral.sql.zip 
+  912  ls -ltr
+  913  mv mmagropec_bck_producao_18-10-2012_backup_geral.sql /home/gverde/
+  914  cd /home/gverde/
+  915  chmod 777 mmagropec_bck_producao_18-10-2012_backup_geral.sql 
+  916  cd /var/www/Rebanho
+  917  ls -ltr
+  918  git add -A
+  919  git commit -m 'alterações antes da primeira entrada no sitio gramado, correçoes na tela de transferencia'
+  920  git push origin master
+  921  ping www.google.com.br
+  922  git push origin master
+  923  zip app.zip app
+  924  ls -ltr
+  925  mv app.zip /media/sf_Compartilhada/
+  926  ls
+  927  zip -r9 app.zip app/
+  928  mv app.zip /media/sf_Compartilhada/
+  929  cp app.zip /media/sf_Compartilhada/
+  930  cd /media/sf_Compartilhada/
+  931  ls
+  932  rm -rf *
+  933  ls -ltr
+  934  cd /var/www/Rebanho
+  935  ls -ltr
+  936  chmod -R 777 app.zip 
+  937  mv app.zip /media/sf_Compartilhada/
+  938  cd .
+  939  cd /var/
+  940  cd www/
+  941  ls -tr
+  942  cd Rebanho
+  943  ls
+  944  ls -ltr
+  945  cd /home/gverde/
+  946  ls -ltr
+  947  cp app.zip /media/sf_Compartilhada/
+  948  mv app.zip merda.zip 
+  949  mv merda.zip /media/sf_Compartilhada/
+  950  cd /var
+  951  cd www/Rebanho
+  952  git push origin master
+  953  cd /var/www/
+  954  chmod -R 777 teste_tema/
+  955  cd teste_tema/
+  956  cd resources/
+  957  cd sass/
+  958  ../../extjs/resources/themes/stylesheets/ext4/default/./_functions.scss
+  959  ruby -v
+  960  apt-get intall ruby
+  961  apt-get install ruby
+  962  ../../extjs/resources/themes/stylesheets/ext4/default/./_functions.scss
+  963  ruby -v
+  964  compass compile
+  965  compass -v
+  966  apt-get install libcompass-ruby1.8
+  967  apt-get update
+  968  apt-get install libcompass-ruby1.8
+  969  sass -v
+  970  compass -v
+  971  cd /var/www/teste_tema/
+  972  cd resources/sass/
+  973  ls
+  974  compass compile
+  975  cd
+  976  cd /var/www/teste_tema/ 
+  977  ls
+  978  rm -rf resources/
+  979  cd resources/
+  980  ls
+  981  cd sass/
+  982  vim config.rb 
+  983  compass compile
+  984  cd ..
+  985  ls
+  986  cd sass/
+  987  ls
+  988  vim config.rb 
+  989  compass compile
+  990  ls
+  991  cd ..
+  992  ls
+  993  cd sass/
+  994  ls
+  995  compass compile
+  996  cd ..
+  997  ls
+  998  cd css
+  999  ls
+ 1000  vim my-ext-theme.css 
+ 1001  cd /var/www/extjs-4.1.0/resources/themes/templates/resources/sass/
+ 1002  compass compile
+ 1003  cd ..
+ 1004  ls
+ 1005  cd ..
+ 1006  ls
+ 1007  cd sass/
+ 1008  ls
+ 1009  compass compile
+ 1010  vim ext-all-gray.scss 
+ 1011  compass compile
+ 1012  vim ext-all-gray.scss 
+ 1013  compass compile
+ 1014  vim ext-all-access.scss 
+ 1015  compass compile
+ 1016  vim ext-all-access.scss 
+ 1017  compass compile
+ 1018  vim ext-all-access.scss 
+ 1019  compass compile
+ 1020  vim ext-all-access.scss 
+ 1021  compass compile
+ 1022  vim ../css/ext-all-access.css 
+ 1023  cd ..
+ 1024  chmod +x extjs-4.1.0/
+ 1025  cd /var/www/extjs-4.1.0/resources/sass
+ 1026  compass compile
+ 1027  vim ext-all-gray.scss 
+ 1028  compass compile
+ 1029  vim ../css/ext-all-gray.css 
+ 1030  gem update
+ 1031  apt-get install rubygems1.8
+ 1032  gem install chunky_png
+ 1033  gem intall compass --pre
+ 1034  gem install compass --pre
+ 1035  compass compile
+ 1036  vim ext-all.scss 
+ 1037  compass compile
+ 1038  ln /var/lib/gems/1.8/bin/compass /usr/bin/compass
+ 1039  cd /var/lib/gems/1.8/
+ 1040  ls
+ 1041  cd bin/
+ 1042  ls
+ 1043  cp compass /usr/bin/
+ 1044  cd 
+ 1045  cd /var/www/extjs-4.1.0/
+ 1046  cd resources/
+ 1047  ls
+ 1048  cd sass/
+ 1049  ls
+ 1050  compass compile
+ 1051  cd ..
+ 1052  cd /var/www/
+ 1053  ls
+ 1054  cd teste_tema/
+ 1055  ls
+ 1056  cd resources/
+ 1057  ls
+ 1058  cd sass/
+ 1059  ls
+ 1060  compass compile
+ 1061  cd /var/www/teste_tema/
+ 1062  ls -ltr
+ 1063  cp index.html gray.html
+ 1064  cp index.html teste.html
+ 1065  cd resources/
+ 1066  ls -ltr
+ 1067  cd sass/
+ 1068  ls 
+ 1069  cp ext-all-gray.scss teste.scss
+ 1070  vm teste.scss 
+ 1071  vim teste.scss 
+ 1072  ls -ltr
+ 1073  compass compile
+ 1074  ../../extjs/resources/themes/images/teste/
+ 1075  vim teste.scss 
+ 1076  compass compile
+ 1077  chmod -R 777 /var/www/teste_tema/
+ 1078  compass compile
+ 1079  cd ..
+ 1080  cd css
+ 1081  ls
+ 1082  cd ../sass/
+ 1083  vim config.rb 
+ 1084  cd ..
+ 1085  cd css
+ 1086  ls
+ 1087  cp teste.css /var/www/Rebanho/extjs/resources/css/ext-gray-largefont.css
+ 1088  cp ../sass/teste.scss /var/www/Rebanho/extjs/resources/sass/ext-gray-largefont.scss
+ 1089  cd /var/www/Rebanho
+ 1090  ls
+ 1091  cd extjs/resources/sass/
+ 1092  ls -ltr
+ 1093  ls 
+ 1094  ls -ltr
+ 1095  cd ..
+ 1096  ls -ltr
+ 1097  cd ..
+ 1098  ls -ltr
+ 1099  rm -rf resources/
+ 1100  ls -ltr
+ 1101  cd ..
+ 1102  ls -ltr
+ 1103  rm -rf extjs-4.1.0/
+ 1104  ls -ltr
+ 1105  cd Rebanho
+ 1106  ls -ltr
+ 1107  git status
+ 1108  cd app
+ 1109  ls -ltr
+ 1110  cd controller/
+ 1111  ls
+ 1112  grep 'BoxMsg' *.js
+ 1113  cd ..
+ 1114  cd model/
+ 1115  grep 'BoxMsg' *.js
+ 1116  cd ..
+ 1117  cd store/
+ 1118  ls
+ 1119  grep 'BoxMsg' *.js
+ 1120  cd ..
+ 1121  git status
+ 1122  git add -A
+ 1123  git commit
+ 1124  nao
+ 1125  git status
+ 1126  git add -A
+ 1127  git commit -m 'Alterção de Versao do Extjs 4.0 para 4.1.1a, foi reogarnizado os diretorios, e excluidos arquivos nao usados do extjs'
+ 1128  git push origin master
+ 1129  cd 
+ 1130  cd /home/gverde/Downloads/
+ 1131  ls -ltr
+ 1132  chmod 777 SenchaSDKTools-2.0.0-beta3-linux.run 
+ 1133  ls -ltr
+ 1134  ./SenchaSDKTools-2.0.0-beta3-linux.run 
+ 1135  cd ..
+ 1136  ls
+ 1137  cd Área\ de\ Trabalho/
+ 1138  ls
+ 1139  ./SenchaSDKTools-2.0.0-beta3-linux.run 
+ 1140  sencha
+ 1141  ls
+ 1142  chmod +x SenchaSDKTools-2.0.0-beta3-linux-x64.run 
+ 1143  ./SenchaSDKTools-2.0.0-beta3-linux-x64.run 
+ 1144  sencha
+ 1145  sencha -v
+ 1146  cd /opt/
+ 1147  ls
+ 1148  cd SenchaSDKTools-2.0.0-beta3/
+ 1149  ls -ltr
+ 1150  ./sencha
+ 1151  ./sencha -v
+ 1152  cd bin/
+ 1153  ls
+ 1154  cd ..
+ 1155  ls
+ 1156  ./Uninstall\ Sencha\ SDK\ Tools\ 2.0.0-beta3.desktop 
+ 1157  ./uninstall
+ 1158  cd ..
+ 1159  ls
+ 1160  cd ..
+ 1161  ls
+ 1162  cd /home/gverde/Área\ de\ Trabalho/
+ 1163  ls
+ 1164  chmod +x SenchaSDKTools-2.0.0-beta3-linux.run 
+ 1165  ls
+ 1166  ./SenchaSDKTools-2.0.0-beta3-linux.run 
+ 1167  ./Uninstall\ Sencha\ SDK\ Tools\ 2.0.0-beta3.desktop 
+ 1168  chmod +x SenchaSDKTools-2.0.0-beta3-linux.run 
+ 1169  ./SenchaSDKTools-2.0.0-beta3-linux-x64.run 
+ 1170  cd /opt/SenchaSDKTools-2.0.0-beta3/
+ 1171  ls
+ 1172  vim sencha.js 
+ 1173  cd compat/
+ 1174  ls
+ 1175  cd command/
+ 1176  ls
+ 1177  vim sencha.js 
+ 1178  cd /var/www/
+ 1179  ls
+ 1180  ls -ltr
+ 1181  cd Rebanho
+ 1182  ls -ltr
+ 1183  sencha create jsb -a index.html -p ../app.jsb3
+ 1184  cp /opt/SenchaSDKTools-2.0.0-beta3/sencha /usr/local/bin/
+ 1185  sencha 
+ 1186  cd /usr/local/bin/
+ 1187  ls
+ 1188  rm -rf sencha 
+ 1189  cd ..
+ 1190  ls
+ 1191  cd ..
+ 1192  ls
+ 1193  cd bin/
+ 1194  ls
+ 1195  cp /opt/SenchaSDKTools-2.0.0-beta3/sencha .
+ 1196  sencha
+ 1197  ls 
+ 1198  ls -ltr
+ 1199  rm -rf sencha
+ 1200  ls -ltr
+ 1201  sencha
+ 1202  cd /var/
+ 1203  cd 
+ 1204  cd /var/www/
+ 1205  ls
+ 1206  mv extjs-4.1.0/ sencha
+ 1207  ls -ltr
+ 1208  cd sencha/
+ 1209  sencha 
+ 1210  sencha generate app -p ../gs -n 'start'
+ 1211  halt
+ 1212  add-apt-repository ppa:webupd8team/java
+ 1213  sudo apt-get update
+ 1214  apt-get install oracle-java7-installer
+ 1215  sencha
+ 1216  apt-get install glibc.i686 libstdc++.i686
+ 1217  apt-ge
+ 1218  apt-get install glibc.i686
+ 1219  apt-get search glibc.i686
+ 1220  apt -get install glibc.i686
+ 1221  apt-get install glibc.i686
+ 1222  apt-get install glibc*
+ 1223  /opt/SenchaSDKTools-2.0.0-beta2/bin/node
+ 1224  /opt/SenchaSDKTools-2.0.0-beta3/bin/node 
+ 1225  sencha
+ 1226  cd ..
+ 1227  ls -ltr
+ 1228  rm -rf sencha/
+ 1229  ls -ltr
+ 1230  rm -rf designer1/
+ 1231  ls -ltr
+ 1232  mv loiane-extjs4-ux-gridprinter/ exemplos/
+ 1233  ls
+ 1234  ls -ltr
+ 1235  mv exemplos_livro_php_relatorios/ exemplos/
+ 1236  cd exemplos/
+ 1237  ls
+ 1238  cd ..
+ 1239  ls
+ 1240  ls -ltr
+ 1241  mv paging-grid/ exemplos/
+ 1242  ls -ltr
+ 1243  mv ExtJS_login_MVC/ exemplos/
+ 1244  ls -ltr
+ 1245  mv Crud-ExtJS-com-PHP/ exemplos/
+ 1246  ls
+ 1247  ls -ltr
+ 1248  rm -rf teste_tema/
+ 1249  ls -ltr
+ 1250  mv ux/ exemplos/
+ 1251  ls -ltr
+ 1252  cp /media/sf_Compartilhada/sencha-touch-2.0.1.1-gpl.zip  .
+ 1253  unzip sencha-touch-2.0.1.1-gpl.zip 
+ 1254  ls -ltr
+ 1255  mv sencha-touch-2.0.1.1 sencha
+ 1256  ls -ltr
+ 1257  chmod -R 777 sencha
+ 1258  cd sencha
+ 1259  sencha
+ 1260  cd ..
+ 1261  sencha
+ 1262  cd Rebanho
+ 1263  ls
+ 1264  sencha
+ 1265  cd ..
+ 1266  ls
+ 1267  cd sencha
+ 1268  ls 
+ 1269  sencha create jsb -a ../Rebanho/index.html -p ../Rebanho/app.jsb3
+ 1270  sencha create --h
+ 1271  sencha
+ 1272  cd ..
+ 1273  ls
+ 1274  cd sencha
+ 1275  ls
+ 1276  cd command/
+ 1277  ls
+ 1278  vim sencha.js 
+ 1279  cd ..
+ 1280  sencha generate app -p ../teste_touch -n 'start'
+ 1281  apt-get install ia32-libs
+ 1282  ldconfig
+ 1283  cd ..
+ 1284  sencha
+ 1285  cd ..
+ 1286  cd /www
+ 1287  cd /var/www/
+ 1288  ls
+ 1289  cd Rebanho
+ 1290  sencha
+ 1291  sencha create jsb -a index.html -p app.jsb3
+ 1292  ls -ltr
+ 1293  vim app.jsb3 
+ 1294  sencha build -p app.jsb3 -d
+ 1295  sencha build -p app.jsb3 -d .
+ 1296  ls -ltr
+ 1297  vim app-all.js 
+ 1298  vim all-classes.js 
+ 1299  vim app-all.js 
+ 1300  vim index.html 
+ 1301  cp /media/sf_Compartilhada/zs_impexp_exp_online.php .
+ 1302  ls -ltr
+ 1303  cd /var/www/Rebanho
+ 1304  ls -ltr
+ 1305  git status
+ 1306  cd extjs/resources/sass/
+ 1307  ls
+ 1308  ls -ltr *.
+ 1309  ls -ltr .sass-cache/
+ 1310  ls -lt
+ 1311  ls -ltr
+ 1312  cd ..
+ 1313  ls -ltr
+ 1314  cd ..
+ 1315  git add -A
+ 1316  git status
+ 1317  git commit -m 'Alteração do tamanho da Fonte, e no layout da tela de animais'
+ 1318  git push origin master
+ 1319  git status
+ 1320  git commit -m 'Alteração nas telas de fornecedores, store agora ordena e filtra, a grid so mostra os fornecedores do confinamento.'
+ 1321  git add -A
+ 1322  git commit -m 'Alteração nas telas de fornecedores, store agora ordena e filtra, a grid so mostra os fornecedores do confinamento.'
+ 1323  git push origin master
+ 1324  ps -ef
+ 1325  kill 1735
+ 1326  halt
+ 1327  cp /media/sf_Compartilhada/conecto-linux-5.1.img .
+ 1328  chmod 777 conecto-linux-5.1.img 
+ 1329  dd if conecto-linux-5.1.img of  /media/CONECTOLINU/
+ 1330  dd --h
+ 1331  dd if=conecto-linux-5.1.img of=/media/CONECTOLINU/
+ 1332  ls -ltr /dev/sdb 
+ 1333  dd if=conecto-linux-5.1.img of=/dev/sdb
+ 1334  ls -ltr
+ 1335  ls -ltr /dev
+ 1336  ls -ltr /dev/s
+ 1337  ls -ltr /dev/s*
+ 1338  ls /dev/s*
+ 1339  ls -ltr /dev/s*
+ 1340  ls -ltr /dev/sd*
+ 1341  dd if=conecto-linux-5.1.img of=/dev/sdb
+ 1342  mkdir /media/pen
+ 1343  mount /dev/sdb /media/pen/
+ 1344  ls /dev/sdb /media/pen/
+ 1345  cd /media/pen/
+ 1346  ls
+ 1347  cd ..
+ 1348  ls -ltr
+ 1349  dd --help
+ 1350  cd /media/CONECTOLINU/
+ 1351  l
+ 1352  ls -ltr
+ 1353  cd ..
+ 1354  ls
+ 1355  cd ..
+ 1356  cd /home/gverde/
+ 1357  ls
+ 1358  dd if=conecto-linux-5.1.img of=/media/CONECTOLINU/
+ 1359  dd if=conecto-linux-5.1.img of=/dev/sdb
+ 1360  cd /var/www/Rebanho
+ 1361  chmod 777 app
+ 1362  cd /var/www/Rebanho
+ 1363  git status
+ 1364  git add -A
+ 1365  git commit -m 'Concluida os lancamentos individuais, ocorrencia de morte, a grid de pesagem por animal, grid de ocorrencias por animal...'
+ 1366  git push origin master
+ 1367  cd /var/www/Rebanho
+ 1368  sencha create jsb -a index.html -p app.jsb3
+ 1369  sencha build -p app.jsb3 -d .
+ 1370  git commit -m 'feito o build da ultima versao'
+ 1371  git add -A
+ 1372  git commit -m 'feito o build da ultima versao'
+ 1373  git push origin master
+ 1374  apt-get install preload
+ 1375  apt-get update
+ 1376  halt
+ 1377  apt-get install htop
+ 1378  htop
+ 1379  cd /var/www/Rebanho
+ 1380  ls -ltr
+ 1381  git status
+ 1382  git add -A 
+ 1383  git commit -m 'Alteração na tela de Pesagens, agora o sistema permite fazer o lancamento de pesagens, manejo e vacina na mesma tela, e possivel ver as pesagens pela data e com data retroativa'
+ 1384  git add -A 
+ 1385  git commit -m 'Habilitado Relatorio Basico de Pesagens, sem Filtro mostrando somente o que está na grid'
+ 1386  sencha create jsb -a index.html -p app.jsb3
+ 1387  sencha build -p app.jsb3 -d .
+ 1388  git commit -m 'Criado Build com as Alteracoes da pesagem'
+ 1389  git add -A 
+ 1390  git commit -m 'Criado Build com as Alteracoes da pesagem'
+ 1391  git push origin master
+ 1392  cd /var/www/Rebanho
+ 1393  vim index.html 
+ 1394  sencha create jsb -a index.html -p app.jsb3
+ 1395  sencha build -p app.jsb3 -d .
+ 1396  vim app.jsb3 
+ 1397  git add -A 
+ 1398  git commit -m 'ReBuild com as Alteracoes da pesagem'
+ 1399  git push origin master
+ 1400  cd /var/www/
+ 1401  ls -ltr
+ 1402  rm -rf php-reports-master/
+ 1403  ls -ltr
+ 1404  git clone git://github.com/jdorn/php-reports.git
+ 1405  cd php-reports
+ 1406  git submodule init
+ 1407  git submodule update
+ 1408  cp config/config.php.sample config/config.php
+ 1409  cd ..
+ 1410  chmod -R 777 php-reports/
+ 1411  cd php-reports/
+ 1412  ls -ltr
+ 1413  chmod -R 777 cache/
+ 1414  ls -ltr
+ 1415  cd cache/
+ 1416  ls 
+ 1417  cd ..
+ 1418  ls
+ 1419  mkdir reports
+ 1420  cd reports/
+ 1421  ls -lrte
+ 1422  ls -tr
+ 1423  mkdir reports/my-reports
+ 1424  mkdir my-reports
+ 1425  echo "My Reports" > my-reports/TITLE.txt
+ 1426  ls -ltr
+ 1427  cd my-reports/
+ 1428  ls -ltr
+ 1429  vim timezones.php
+ 1430  cd /var/www/Rebanho/
+ 1431  chmod -R 777 tmp/
+ 1432  cd Downloads/
+ 1433  ls -ltr
+ 1434  cp testeteste\(3\).pdf /media/sf_Compartilhada/
+ 1435  cp testeteste\(4\).pdf /media/sf_Compartilhada/
+ 1436  cp /media/sf_Compartilhada/mmagropec_bck_dados_producao_29-11-12.sql.zip .
+ 1437  chmod 777 mmagropec_bck_dados_producao_29-11-12.sql.zip 
+ 1438  cd /var/www/cronos
+ 1439  ls -ltr
+ 1440  cd Engine/
+ 1441  ls -ltr
+ 1442  cd Main/Modulos/Orcamentos/
+ 1443  ls -ltr
+ 1444  cp Orcamentos_Servidor.class.php /media/sf_Compartilhada/
+ 1445  cp Orcamentos_Servidor_Form.js /media/sf_Compartilhada/
+ 1446  cd /var/www/
+ 1447  cd Downloads/
+ 1448  ls -ltr
+ 1449  cp testeteste\(5\).pdf /media/sf_Compartilhada/
+ 1450  halt
+ 1451  cd Downloads/
+ 1452  ls -ltr
+ 1453  mv testeteste.pdf /media/sf_Compartilhada/
+ 1454  chmod 777 testeteste.pdf 
+ 1455  cp testeteste.pdf /media/sf_Compartilhada/
+ 1456  ls -ltr
+ 1457  cp testeteste.pdf /media/sf_Compartilhada/
+ 1458  mv testeteste.pdf /media/sf_Compartilhada
+ 1459  cd /media/
+ 1460  ls
+ 1461  cd sf_Compartilhada/
+ 1462  ls -ltr
+ 1463  vim teste.txt
+ 1464  ls -ltr
+ 1465  cp /home/gverde/Downloads/testeteste.pdf  .
+ 1466  cp /home/gverde/Downloads/pesagens.pdf  .
+ 1467  ls -ltr
+ 1468  cp /home/gverde/Downloads/testeteste.pdf  .
+ 1469  cd /home/gverde/Downloads/
+ 1470  ls -ltr
+ 1471  chmod 777 testeteste.pdf 
+ 1472  ls -lte
+ 1473  ls -ltr
+ 1474  cp testeteste /media/sf_Compartilhada/
+ 1475  cd /media/sf_Compartilhada/
+ 1476  ls -ltr
+ 1477  cp testeteste /media/sf_Compartilhada/
+ 1478  ls -ltr
+ 1479  cp testeteste .
+ 1480  cp /home/gverde/Downloads/testeteste  .
+ 1481  ls 
+ 1482  cd Downloads/
+ 1483  ls -ltr
+ 1484  cp teste.pdf /media/sf_Compartilhada/
+ 1485  cp teste\(1\).pdf /media/sf_Compartilhada/
+ 1486  cp teste.pdf /media/sf_Compartilhada/
+ 1487  cd /media/sf_Compartilhada/
+ 1488  ls -ltr
+ 1489  chmod 777 teste.pdf 
+ 1490  ls 
+ 1491  cp teste.pdf .
+ 1492  ls -ltr
+ 1493  cd .
+ 1494  cd ..
+ 1495  ls -ltr
+ 1496  chmod -R 777 sf_Compartilhada/
+ 1497  ls -ltr
+ 1498  cd ..
+ 1499  ls -ltr
+ 1500  cd 
+ 1501  cd Downloads/
+ 1502  ls -ltr
+ 1503  chmod 777 teste.pdf 
+ 1504  mv teste.pdf /media/sf_Compartilhada/
+ 1505  cd /var/www/Rebanho
+ 1506  ls -lr
+ 1507  ls -ltr
+ 1508  git status
+ 1509  git add -A
+ 1510  git commit -m 'Criação das funções de relatorio de pesagem, criação da classe principal de relatorio em PDF'
+ 1511  git push origin master
+ 1512  vim index.html 
+ 1513  sencha create jsb -a index.html -p app.jsb3
+ 1514  sencha build -p app.jsb3 -d .
+ 1515  cp app-all.js /media/sf_Compartilhada/
+ 1516  cd /var/www/
+ 1517  ls-ltr
+ 1518  ls -ltr 
+ 1519  cd Rebanho
+ 1520  ls -ltr
+ 1521  cp -r php /media/sf_Compartilhada/
+ 1522  cp -r app/controller/PesagensReport.js /media/sf_Compartilhada/
+ 1523  ifconfig 
+ 1524  cd Downloads/
+ 1525  ls -ltr
+ 1526  chmod 777 doc.pdf /media/sf_Compartilhada/
+ 1527  cp doc.pdf /media/sf_Compartilhada/
+ 1528  cp pesagens\(2\).pdf /media/sf_Compartilhada/
+ 1529  cd /var/www/Rebanho
+ 1530  ls -ltr
+ 1531  cp -r php /media/sf_Compartilhada/
+ 1532  cp /media/sf_Compartilhada/mmagropec_bck_geral_producao_12-12-12.sql.zip .
+ 1533  chomod +x mmagropec_bck_geral_producao_12-12-12.sql.zip 
+ 1534  chmod 777 mmagropec_bck_geral_producao_12-12-12.sql.zip 
+ 1535  cd /var/www/Rebanho
+ 1536  ls -ltr
+ 1537  git status
+ 1538  git add -A 
+ 1539  git commit -m 'Solução do problema de memoria no relatorio, atualizacao da classe fpdf17, aperfeiçoamento das classes de relatorios'
+ 1540  git status
+ 1541  sencha build -p app.jsb3 -d .
+ 1542  sencha create jsb -a index.html -p app.jsb3
+ 1543  sencha build -p app.jsb3 -d .
+ 1544  git add -A 
+ 1545  git commit -m 'compilando o app-all.js'
+ 1546  git push origin master
+ 1547  cd Downloads/
+ 1548  ls 
+ 1549  ls -ltr
+ 1550  mv Clientes.pdf /media/sf_Compartilhada/
+ 1551  vim /etc/phpmyadmin/
+ 1552  ping 192.168.0.207
+ 1553  ifconfig 
+ 1554  ping 192.168.0.207
+ 1555  cd Downloads/
+ 1556  ls -ltr
+ 1557  scp cronos.sql.zip root@192.168.0.207:/root/
+ 1558  scp cronos-client.sql.zip root@192.168.0.207:/root/
+ 1559  cd ..
+ 1560  ls
+ 1561  scp -R cronos root@192.168.0.207:/var/
+ 1562  scp -r cronos root@192.168.0.207:/var/
+ 1563  scp -r cronos-client root@192.168.0.207:/var/
+ 1564  cd /var/www/cronos
+ 1565  ls -ltr
+ 1566  cd Engine/
+ 1567  ls -ltr
+ 1568  cd Main/
+ 1569  ls 
+ 1570  cd ..
+ 1571  ls
+ 1572  cd Main/Data/
+ 1573  ls -l
+ 1574  cd RCV
+ 1575  ls -ltr
+ 1576  ls
+ 1577  ls- ltr
+ 1578  ls -ltr
+ 1579  tail -f /var/log/
+ 1580  ls -ltr
+ 1581  tail -f /var/log/
+ 1582  ls -ltr
+ 1583  vim /var/log/
+ 1584  ls ../../Work/
+ 1585  ls -ltr
+ 1586  ls -ltr /var/log/
+ 1587  cd ../../../Log/
+ 1588  ls -ltr
+ 1589  vim function __autoload($classe) {
+ 1590  }
+ 1591  ls -ltr
+ 1592  vim cronos_130119.log
+ 1593  rm -rf *.log
+ 1594  ls -ltr
+ 1595  vim cronos_130119.log
+ 1596  ls
+ 1597  vim cronos_130119.log
+ 1598  ls
+ 1599  ls -ltr
+ 1600  cd /var/www/cronos/Engine/
+ 1601  ls -ltr
+ 1602  cd Main/
+ 1603  ls -ltr
+ 1604  cd Data/
+ 1605  ls 
+ 1606  cd RCV/
+ 1607  ls -ltr
+ 1608  chmod 777 teste_rms.CAD 
+ 1609  ls -ltr
+ 1610  cronos status
+ 1611  cronos start
+ 1612  ps -ef
+ 1613  cronos status
+ 1614  cd /var/www/cronos/Engine/Main/Data/RCV/
+ 1615  ls -ltr
+ 1616  ls 
+ 1617  cd /var/www/cronos/Engine/Log/
+ 1618  ls -ltr
+ 1619  vim cronos_130122.log 
+ 1620  tail -f cronos_130122.log 
+ 1621  vim cronos_130122.log 
+ 1622  rm -rf *.log
+ 1623  vim cronos_130122.log 
+ 1624  q
+ 1625  vim cronos_130122.log 
+ 1626  rm -rf *.log
+ 1627  vim cronos_130122.log 
+ 1628  rm -rf *.log
+ 1629  vim cronos_130122.log 
+ 1630  cp /media/sf_Compartilhada
+ 1631  cp /media/sf_Compartilhada/* .
+ 1632  ls -ltr
+ 1633  chmod 777 troca_movimento.sh 000138_01028424.xml
+ 1634  vim troca_movimento.sh 
+ 1635  vim 000138_01028424.xml 
+ 1636  vim troca_movimento.sh 
+ 1637  ./troca_movimento.sh 
+ 1638  vim troca_movimento.sh 
+ 1639  ls -ltr
+ 1640  vim 000138_01028424.xml 
+ 1641  ifconfig 
+ 1642  ssh 192.168.0.69
+ 1643  ssh root@192.168.0.69
+ 1644  ls -ltr
+ 1645  cp -r cronos/Engine/ /media/sf_Compartilhada
+ 1646  cp -r cronos/ext-3.2.0/shared/icons/silk.css /media/sf_Compartilhada
+ 1647  cd /var/www/cronos
+ 1648  ls -ltr
+ 1649  cd Engine/
+ 1650  ls -ltr
+ 1651  cd Main/
+ 1652  ls 
+ 1653  cd Modulos/
+ 1654  ls -ltr
+ 1655  grep Toast *.js
+ 1656  cd Produtos/
+ 1657  grep Toast *.js
+ 1658  cd ..
+ 1659  cd Orcamentos/
+ 1660  grep Toast *.js
+ 1661  cd /var/www/cronos/Engine/
+ 1662  ls -ltr
+ 1663  cd Log/
+ 1664  ls -ltr
+ 1665  vim cronos_130127.log 
+ 1666  ls -ltr
+ 1667  rm -rf *.log
+ 1668  vim cronos_130129.log 
+ 1669  rm -rf *.log
+ 1670  vim cronos_130129.log 
+ 1671  rm -rf *.log
+ 1672  vim cronos_130129.log 
+ 1673  rm -rf *.log
+ 1674  vim cronos_130129.log 
+ 1675  rm -rf *.log
+ 1676  vim cronos_130129.log 
+ 1677  rm -rf *.log
+ 1678  vim cronos_130129.log 
+ 1679  rm -rf *.log
+ 1680  vim cronos_130129.log 
+ 1681  rm -rf *.log
+ 1682  vim cronos_130129.log 
+ 1683  rm -rf *.log
+ 1684  vim cronos_130129.log 
+ 1685  rm -rf *.log
+ 1686  vim cronos_130129.log 
+ 1687  rm -rf *.log
+ 1688  vim cronos_130129.log 
+ 1689  rm -rf *.log
+ 1690  vim cronos_130129.log 
+ 1691  rm -rf *.log
+ 1692  vim cronos_130129.log 
+ 1693  rm -rf *.log
+ 1694  vim cronos_130129.log 
+ 1695  rm -rf *.log
+ 1696  vim cronos_130129.log 
+ 1697  rm -rf *.log
+ 1698  vim cronos_130129.log 
+ 1699  rm -rf *.log
+ 1700  vim cronos_130129.log 
+ 1701  rm -rf *.log
+ 1702  vim cronos_130129.log 
+ 1703  vim cronos_130130.log 
+ 1704  ls -ltr
+ 1705  zip -r9 cronos.zip cronos
+ 1706  ls -ltr
+ 1707  scp cronos.zip root@192.168.0.207:/root
+ 1708  ssh root@192.168.0.207
+ 1709  cronos start
+ 1710  cronos status
+ 1711  ls -ltr
+ 1712  cronos status
+ 1713  cd /var/www/cronos
+ 1714  cd Log
+ 1715  cd Engine/Log/
+ 1716  ls -ltr
+ 1717  rm -rf *.log
+ 1718  ls -ltr
+ 1719  vim cronos_130204.log 
+ 1720  rm -rf *.log
+ 1721  vim cronos_130204.log 
+ 1722  rm -rf *.log
+ 1723  vim cronos_130204.log 
+ 1724  rm -rf *.log
+ 1725  vim cronos_130204.log 
+ 1726  q
+ 1727  rm -rf *.log
+ 1728  q
+ 1729  vim cronos_130204.log 
+ 1730  rm -rf *.log
+ 1731  ls -ltr
+ 1732  vim cronos_130204.log 
+ 1733  rm -rf *.log
+ 1734  vim cronos_130204.log 
+ 1735  rm -rf *.log
+ 1736  q
+ 1737  vim cronos_130204.log 
+ 1738  rm -rf *.log
+ 1739  vim cronos_130204.log 
+ 1740  cd /var/www/cronos/Engine/
+ 1741  rm -rf *.log
+ 1742  vim cronos_130204.log 
+ 1743  cd Log/
+ 1744  ls -ltr
+ 1745  vim cronos_130204.log 
+ 1746  rm -rf *.log
+ 1747  vim cronos_130204.log 
+ 1748  ls -ltr /tmp
+ 1749  vim cronos_130204.log 
+ 1750  ls -ltr
+ 1751  vim cronos_130204.log 
+ 1752  rm -rf cronos_130204.log 
+ 1753  ls -ltr
+ 1754  vim cronos_130204.log 
+ 1755  rm -rf cronos_130204.log 
+ 1756  ssh root@192.168.0.207
+ 1757  cp Orcamentos_Produtos_Grid.js /media/sf_Compartilhada
+ 1758  cp Orcamentos_Servidor_Form.js /media/sf_Compartilhada
+ 1759  cp Orcamentos_Servidor.class.php /media/sf_Compartilhada
+ 1760  ls -ltr
+ 1761  rm -rf Modulos cronos.zip cronos cronos-client
+ 1762  gverde
+ 1763  ls -ltr
+ 1764  zip -r9 Engine.zip Engine/
+ 1765  ls -ltr
+ 1766  mv Engine.zip /media/sf_Compartilhada
+ 1767  ls -ltr
+ 1768  rm -rf Engine/
+ 1769  ls -ltr
+ 1770  cd /var/www/
+ 1771  ls -tlr
+ 1772  cd cronos
+ 1773  ls -tlr
+ 1774  cd Engine/
+ 1775  ls -ltr
+ 1776  cd Main/Modulos/Acesso/
+ 1777  ls -ltr
+ 1778  cp Usuarios.class.php /media/sf_Compartilhada
+ 1779  ls -ltr
+ 1780  cd ..
+ 1781  ls -ltr
+ 1782  cd Clientes/
+ 1783  ls -ltr
+ 1784  cp Clientes.class.php /media/sf_Compartilhada
+ 1785  ls -tr
+ 1786  cd ..
+ 1787  ls -ltr
+ 1788  cd Acesso/
+ 1789  ls -ltr
+ 1790  cp Usuarios.class.php 
+ 1791  cp Usuarios.class.php /media/sf_Compartilhada
+ 1792  cp Usuarios.class.php /media/sf_Compartilhada/Usuarios.class.php.teste
+ 1793  cp Clientes.class.php /media/sf_Compartilhada
+ 1794  cp Clientes.class.php /media/sf_Compartilhada/Clientes.clas.php.teste
+ 1795  cd /var/www/
+ 1796  ls -ltr
+ 1797  cd Rebanho
+ 1798  ls -ltr
+ 1799  cd app
+ 1800  ls -
+ 1801  ls -ltr
+ 1802  cd model/
+ 1803  ls -ltr
+ 1804  cd ..
+ 1805  ls -ltr
+ 1806  cd controller/
+ 1807  ls -ltr
+ 1808  cd ..
+ 1809  ls -ltr
+ 1810  cd .
+ 1811  cd ..
+ 1812  ls -l
+ 1813  cd php/
+ 1814  ls -ltr
+ 1815  ifconfig 
+ 1816  cp /media/sf_Compartilhada/mmagropec_bck_producao_19-02-13.sql.zip .
+ 1817  ls -ltr
+ 1818  chmod 777 mmagropec_bck_
+ 1819  chmod 777 mmagropec_bck_producao_1
+ 1820  chmod 777 mmagropec_bck_producao_19-02-13.sql.zip 
+ 1821  cd /var/www/Rebanho
+ 1822  ls -ltr
+ 1823  cd app
+ 1824  ls -ltr
+ 1825  cd ..
+ 1826  ls -ltr
+ 1827  cd Rebanho
+ 1828  ls -ltr
+ 1829  cd tmp/
+ 1830  ls -ltr
+ 1831  cd /var/www/cronos
+ 1832  cd Engine/Log/
+ 1833  ls -ltr
+ 1834  rm -rf *.lo
+ 1835  rm -rf *.log
+ 1836  ls -ltr
+ 1837  ls
+ 1838  vim cronos_130222.log 
+ 1839  rm -rf *.log
+ 1840  vim cronos_130222.log 
+ 1841  cd /home/gverde/
+ 1842  ls -ltr
+ 1843  mv Main/ /media/sf_Compartilhada
+ 1844  cd /var/www/cronos/Engine/Main/Modulos/Orcamentos/
+ 1845  ls -ltr
+ 1846  cp Orcamentos_Servidor_Form.js /media/sf_Compartilhada
+ 1847  cd /var/www/
+ 1848  ls -trl
+ 1849  ls -ltr
+ 1850  zip -r9 Rebanho.zip Rebanho
+ 1851  ls -ltr
+ 1852  ls -lth Rebanho
+ 1853  ls -lth Rebanho.zip 
+ 1854  ls -ltr
+ 1855  mv Rebanho
+ 1856  mv Rebanho.zip /media/sf_Compartilhada
+ 1857  ls -ltr
+ 1858  mv /media/sf_Compartilhada/mmagropec_bck_producao_25-02-13.sql.zip .
+ 1859  ls -r
+ 1860  ls -ltr
+ 1861  chmod 777 mmagropec_bck_producao_25-02-13.sql.zip 
+ 1862  mv /media/sf_Compartilhada/mmagropec_bck_producao_25-02-13.sql.zip .
+ 1863  mv /media/sf_Compartilhada/mmagropecsql.zip .
+ 1864  ls -ltr
+ 1865  chmod mmagropecsql.zip 
+ 1866  chmod 777 mmagropecsql.zip 
+ 1867  unzip mmagropecsql.zip 
+ 1868  vim mmagropec_bck_producao_25-02-13.sql
+ 1869* zip -r9 mmagropec.zip mmagropec_bck_produc
+ 1870  cp /media/sf_Compartilhada/mmagropec.sql .
+ 1871  ls -ltr
+ 1872  zip -r9 mmagropec.zip mmagropec.sql 
+ 1873  cp /media/sf_Compartilhada/mmagropec.sql .
+ 1874  zip -r9 mmagropec.zip mmagropec.sql 
+ 1875  cd /var/www/Rebanho
+ 1876  ls -ltr
+ 1877  git status
+ 1878  git add -A
+ 1879  git status
+ 1880  git commit -m 'Correção de bug na entrada de animais'
+ 1881  git push origin master
+ 1882  history 
+ 1883  /sencha
+ 1884  history > teste.txt

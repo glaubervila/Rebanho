@@ -256,7 +256,7 @@ abstract class Base {
             $limit = $_GET['limit'];
             $sql .= " LIMIT ". $start . " , " . $limit;
         }
-//          echo $sql;
+        //echo $sql;
         $stm = $db->prepare($sql);
         $stm->execute();
         return $stm->fetchAll(\PDO::FETCH_OBJ);

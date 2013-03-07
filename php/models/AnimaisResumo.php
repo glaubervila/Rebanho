@@ -10,21 +10,33 @@ class AnimaisResumo extends Base {
     private     $data = null;
     protected   $table = "animais";
 
+    public function load($data, $return_json = true){
 
-    public function load($data){
-        //var_dump($data);
+        // Se for um Array e pq e uma requisicao vinda de uma grid e nao de um metodo
+        if (is_array($data)){
+            if ($data["filter"]){
+                $strFiltros = $this->parseFilter($data["filter"]);
 
-        $strFiltros = $this->parseFilter($data["filter"]);
-        $strSorters = $this->parseSorter($data["sort"]);
+                $confinamento_id = $data['confinamento_id'];
+            }
+            if ($data["sort"]){
+                $strSorters = $this->parseSorter($data["sort"]);
+            }
+        }
+        else {
+            $confinamento_id = $data->confinamento_id;
 
-        $defaultFilter = "confinamento_id = {$data['confinamento_id']} AND status = 1";
+            $strFiltros = "confinamento_id = $confinamento_id";
+            $strSorters = " confinamento_id ASC, id ASC";
+        }
+
 
         // recuperar o Confinamento
-        $confinamento = $this->findBy('id', $data['confinamento_id'], 'confinamentos');
+        $confinamento = $this->findBy('id', $confinamento_id, 'confinamentos');
 
 
         // Saber o Total de Animais Ativos no Confinamento
-        $total_ativo = $this->filter('COUNT(*) as total', 'animais', $defaultFilter , null, false);
+        $total_ativo = $this->filter('COUNT(*) as total', 'animais', "confinamento_id = {$confinamento_id} AND status = 1" , null, false);
 
         // recuperar todas as quadras do confinamento
         $quadras = $this->filter(null, 'quadras', $strFiltros, $strSorters, false);
@@ -62,6 +74,41 @@ class AnimaisResumo extends Base {
 
         }
 
-        echo  json_encode($records);
+        if ($return_json){
+            echo  json_encode($records);
+        }
+        else {
+            return $records;
+        }
+
+
+    }
+
+
+    public function getResumoConfinamento($data){
+
+        // Verificar os Campos Obrigatorios
+        if ((empty($data->confinamento_id)) || ($data->confinamento_id == null) ){
+            $return->failure = true;
+            $result->msg = "Campo Confinamento é Obrigatório!";
+            return $result;
+        }
+
+
+        $result = AnimaisResumo::load($data,false);
+
+        $return = new StdClass();
+
+        if (count($result) > 0){
+
+            $return->success = true;
+            $return->data = $result;
+        }
+        else {
+            $return->failure = true;
+            $return->msg = "Desculpe mas Nenhum resultado Foi Encontrado!";
+        }
+
+        return $return;
     }
 }

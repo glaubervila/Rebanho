@@ -18,10 +18,10 @@ class PesagensReport extends Base {
 
         //var_dump($data);
         // Tratar as Datas do Filtro
-        if ($data->data_inicial){
+        if ($data->data_inicial != null){
             $data->data_inicial = $this->DateToMysql($data->data_inicial);
         }
-        if ($data->data_final){
+        if ($data->data_final != null){
             $data->data_final = $this->DateToMysql($data->data_final);
         }
 
@@ -38,6 +38,8 @@ class PesagensReport extends Base {
                 }
             break;
             // Tipo 1 - Relatorio Pesagens Resumido
+            // Confinamento - Obrigatorio
+            // Data de Inicial - Obrigatorio
             case 1:
                 $data_report = Pesagens::RelatorioIndividual($data, false);
                 //var_dump($data_report);
@@ -45,6 +47,18 @@ class PesagensReport extends Base {
                     $report = PesagensReport::RelatorioPesagensResumido($data, $data_report);
                 }
             break;
+
+            // Tipo 2 - Relatorio Resumo Confinamento
+            // Confinamento - Obrigatorio
+            case 2:
+                $data_report = AnimaisResumo::getResumoConfinamento($data);
+                //var_dump($data_report);
+                if ($data_report->success){
+                    $report = PesagensReport::ResumoConfinamento($data, $data_report);
+                }
+            break;
+
+
         }
 
         if ($data_report->failure){
@@ -90,12 +104,37 @@ class PesagensReport extends Base {
 
     }
 
+
+    public function ResumoConfinamento($data_filter, $data_report){
+
+       // echo "Entrou aki";
+//         //var_dump($data_report);
+        $pdf = new ResumoConfinamentoPDF();
+// 
+        $pdf->setDataFilter($this->criar_filtros($data_filter));
+// 
+        $pdf->setRepeatHeader(true);
+        $pdf->setDataReport($data_report->data);
+// 
+        $pdf->resumoConfinamento();
+// 
+        $return = $pdf->Save('ResumoConfinamento.pdf', 'F');
+// 
+        echo json_encode($return);
+
+    }
+
+
     public function criar_filtros($data_filter){
 
         // Recuperando o Nome do Confinamento
         $data_filter->confinamento = Confinamentos::getNome($data_filter->confinamento_id);
-        $data_filter->data_inicial = $this->dateBr($data_filter->data_inicial);
-        $data_filter->data_final = $this->dateBr($data_filter->data_final);
+        if ((empty($data->data_inicial)) || ($data->data_inicial == null) ){
+            $data_filter->data_inicial = $this->dateBr($data_filter->data_inicial);
+        }
+        if ((empty($data->data_final)) || ($data->data_final == null) ){
+            $data_filter->data_final = $this->dateBr($data_filter->data_final);
+        }
         $data_filter->data_relatorio = date('d/m/Y H:m:i');
         return $data_filter;
     }

@@ -9,9 +9,9 @@ Ext.define('Rebanho.view.ocorrencias.pesagens.PesagensReportWindow' ,{
 
     autoShow: true,
 
-    width: 300,
+    width: 600,
 
-    height: 400,
+    height: 300,
 
     //iconCls: 'icon-',
 
