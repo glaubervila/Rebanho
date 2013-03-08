@@ -99,17 +99,63 @@ class PesagensResumidoPDF extends appReports{
 
 
         //$this->gridAddColumn('LINENUNBER'    , 'N', 'center', 8, FALSE,TRUE);
-        $this->gridAddColumn('codigo', 'Codigo', 'center', 20);
+        $this->gridAddColumn('codigo', 'Codigo', 'center', 16, false,false,'left');
         $this->gridAddColumn('sexo', 'S', 'center', 5);
-        $this->gridAddColumn('idade_atual', 'Idade', 'center', 16);
-        $this->gridAddColumn('strStatus', 'Status', 'center', 16);
-
-        $this->gridAddColumn('dias_confinamento', 'Dias/Confinamento', 'center', 50);
-        $this->gridAddColumn('data_pesagem', 'Data Pesagem', 'center', 30, 'dateBr');
-        $this->gridAddColumn('peso', 'Peso', 'center', 53);
+        $this->gridAddColumn('idade_atual', 'Idade', 'center', 12);
+        //$this->gridAddColumn('strStatus', 'Status', 'center', 16);
+        $this->gridAddColumn('data_entrada', 'Entrada', 'center', 20, 'dateBr', false,false,'left');
+        $this->gridAddColumn('peso_entrada', 'Peso Entrada', 'center', 22);
+        $this->gridAddColumn('dias_confinamento', 'Dias/Conf', 'center', 20);
+        $this->gridAddColumn('tipo_pesagem_label', 'TP', 'center', 5, 'primeiraLetra');
+        $this->gridAddColumn('data_pesagem', 'Data Pesagem', 'center', 25, 'dateBr', false,false,'left');
+        $this->gridAddColumn('peso', 'Peso', 'center', 20);
+        $this->gridAddColumn('ganho', 'Ganho', 'center', 20);
+        $this->gridAddColumn('ganho_medio', 'Ganho/Dia', 'center', 25, 'corClassificacao');
 
         $this->simpleGrid();
 
+
+
+        // Criando a Grid de Legenda
+        $legenda = Pesagens::getLegendaClassificacao();
+        //var_dump($legenda);
+        $this->setDataReport($legenda);
+        $this->DataGrid(1);
+
+        $this->addStyle('gridTitle', 'Times', '12', 'B', '#1F497D', '#E0EBFF');
+        $this->addStyle('rowP', 'Times', '12', '',  '#000000', '#FFFFFF', 1);
+        $this->addStyle('rowI', 'Times', '12', '',  '#000000', '#FFFFFF', 1);
+
+        $this->gridAddColumn('descricao', 'Descricao', 'center', 50, null,null,'left');
+        $this->gridAddColumn('cor', 'Cor', 'center', 20, 'corLegenda');
+
+// 
+        $this->simpleGrid();
+
+    }
+
+
+    public function corClassificacao($ganho_medio, $obj){
+
+        $cor = $obj->corClassificacao;
+
+        $return = new StdClass();
+        $return->tipo = 'BackgroundColor';
+        $return->value = $ganho_medio;
+        $return->backgroundColor = $cor;
+
+        return $return;
+    }
+
+    public function corLegenda($cor, $obj){
+
+
+        $return = new StdClass();
+        $return->tipo = 'BackgroundColor';
+        $return->value = '';
+        $return->backgroundColor = $cor;
+
+        return $return;
     }
 
 }

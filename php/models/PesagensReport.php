@@ -41,6 +41,8 @@ class PesagensReport extends Base {
             // Confinamento - Obrigatorio
             // Data de Inicial - Obrigatorio
             case 1:
+                // Aki eu adiciono os tipos de pesagem enquanto nao vem pelo filtro
+                $data->tipo_pesagem = '1,2,4';
                 $data_report = Pesagens::RelatorioIndividual($data, false);
                 //var_dump($data_report);
                 if ($data_report->success){

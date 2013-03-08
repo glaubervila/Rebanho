@@ -133,6 +133,14 @@ class appReports extends FPDF {
     public function DataGrid($border = 1){
 
         // armazena as larguras
+        $this->columns = null;
+        // inicializa atributos
+        $this->styles = null;
+        // zerando as larguras
+        $this->colWidths = null;
+
+
+        // armazena as larguras
         $this->columns = array();
         // inicializa atributos
         $this->styles = array();
@@ -152,6 +160,7 @@ class appReports extends FPDF {
      * @param @fontstyle estilo da fonte (B=bold, I=italic)
      * @param @fontcolor cor da fonte
      * @param @fillcolor cor de preenchimento
+     * @param @border tipo de Borda
      */
     public function addStyle($stylename, $fontface, $fontsize, $fontstyle, $fontcolor, $fillcolor, $border)
     {
@@ -286,6 +295,19 @@ class appReports extends FPDF {
                     }
 
                 break;
+
+                case 'BackgroundColor':
+                    $value = $content->value;
+                    if ($content->backgroundColor) {
+                        // cor de preenchimento
+                        $colorarray = self::rgb2int255($content->backgroundColor);
+                        $this->SetFillColor($colorarray[0], $colorarray[1], $colorarray[2]);
+                    }
+                    // Adiciona a Celula
+                    $this->Cell( $width, $heigh, $value, $border, 0, $alignH, true);
+                    // Volta o estilo
+                    $this->applyStyle($stylename);
+                break;
             }
         }
         else if (is_string($content)){
@@ -396,7 +418,7 @@ class appReports extends FPDF {
                 if ($column['format']){
                     $function = $column['format'];
                     $value   = $row->$alias;
-                    $content = $this::$function($value);
+                    $content = $this::$function($value, $row);
                 }
                 else {
                     $content = $row->$alias;
@@ -417,7 +439,10 @@ class appReports extends FPDF {
                     }
                     else if ($formula == 'sum')
                     {
-                        $this->ColumnResults[$alias] += $content;
+                        // Saber se nao e uma string
+                        if (is_float($content)){
+                            $this->ColumnResults[$alias] += $content;
+                        }
                     }
                     else {
                         $this->ColumnResults[$alias] = $formula;
@@ -443,7 +468,7 @@ class appReports extends FPDF {
             $this->addTotal();
         }
 
-
+        $this->gridAddRow();
     }
 
     /**
@@ -491,13 +516,6 @@ class appReports extends FPDF {
     }
 
 
-
-
-
-
-
-
-
     public function dateBr($data){
         if ($data){
             $aData = explode('-',$data);
@@ -514,6 +532,10 @@ class appReports extends FPDF {
     public function upper($string){
 
         return strtoupper($string);
+    }
+
+    public function primeiraLetra($string){
+        return strtoupper(substr($string,0,1));
     }
 
 

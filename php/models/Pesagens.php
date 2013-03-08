@@ -754,8 +754,16 @@ class Pesagens extends Base {
             $filtros[] = "p.data BETWEEN '{$data->data_inicial}' AND '{$data->data_final}'";
         }
         else if ($data->data_inicial){
-            // se nao tiver date final retorna so os da data igual a inicial
+            // se nao tiver date final retorna todos a frente da data inicial
             $filtros[] = "p.data >= '{$data->data_inicial}'";
+        }
+        else if ($data->data_final){
+            // se nao tiver date inicial retorna so os da data igual a inicial
+            $filtros[] = "p.data = '{$data->data_final}'";
+        }
+        // Filtro por tipo de Pesagem
+        if ($data->tipo_pesagem){
+            $filtros[] = "p.tipo IN ({$data->tipo_pesagem})";
         }
 
         // 3 Filtro - Por Quadra , filtrar pela quadra ondo animal esta
@@ -775,7 +783,7 @@ class Pesagens extends Base {
 
 
         // Setar a Ordem
-        $sql .= " ORDER BY p.data ASC";
+        $sql .= " ORDER BY p.data ASC, c.codigo ASC";
 
 
         //echo $sql;
@@ -844,6 +852,37 @@ class Pesagens extends Base {
             $registro->idade_atual = $idade_atual;
 
 
+            // Calculando o Ganho
+            // So calcular o ganho se o animal tiver mais de uma pesagem
+            // Se a pesagem mais recente for a de compra desconsidera ou se a pesagem for da mesma data que a de entrada
+            if (($registro->data_entrada == $registro->data_pesagem) || ($pesagem->pesagem_tipo == 3)){
+                $registro->ganho = '-';
+                $registro->ganho_medio = '-';
+            }
+            else {
+                $peso_entrada      = $registro->peso_entrada;
+                $peso_atual        = $registro->peso;
+                $dias_confinamento = $registro->dias_confinamento;
+
+                $ganho = (float)($peso_atual - $peso_entrada);
+                $registro->ganho = number_format($ganho, 2, '.','.');
+
+                // Calculando o Ganho Medio
+                $ganho_medio = (float)($ganho / $dias_confinamento);
+                $registro->ganho_medio = number_format($ganho_medio, 2, '.','.');
+
+                // Recuperando a Classificacao
+                $registro->classificacao = Pesagens::getClassificacaoMediaDia($registro->ganho_medio);
+
+
+                $registro->corClassificacao = Pesagens::getCorClassificacao($registro->classificacao);
+            }
+
+            // Recuperando o Tipo de Pesagem
+            $registro->tipo_pesagem_label = Pesagens::getTipoPesagem($pesagem->pesagem_tipo);
+
+
+
             $aRegistros[] = $registro;
             $registro = null;
         }
@@ -876,6 +915,168 @@ class Pesagens extends Base {
         $pesagens = $stm->fetchAll(\PDO::FETCH_OBJ);
 
         return $pesagens[0];
+    }
+
+
+// Tipos de Pesagens
+// 1 - Pesagem de Entrada
+// 2 - Pesagem de Rotina
+// 3 - Pesagem de Compra
+// 4 - Pesagem de Saida
+    public function getTipoPesagem($id){
+
+        $tipo_pesagem = array();
+        $tipo_pesagem[1] = "Entrada";
+        $tipo_pesagem[2] = "Rotina";
+        $tipo_pesagem[3] = "Compra";
+        $tipo_pesagem[4] = "Saida";
+
+        return $tipo_pesagem[$id];
+    }
+
+
+    /** getClassificacaoMediaDia($media_dia)
+     * @param:$media_dia(float) - recebe o ganho medio por dia do animal
+     * Classifica o animal pelo ganho de peso diario
+     * a escala tem como meio o valor 1 e vai de -5 a +5
+     * @return:$classificacao(integer) - retorna um valor entre -5 e +5
+     */
+    public function getClassificacaoMediaDia($media){
+
+        switch ($media){
+
+            // media ACIMA de 1kg
+            case(($media >= 1) && ($media < 1.1)):
+                $classificacao = 1;
+            break;
+            case(($media >= 1.1) && ($media < 1.2)):
+                $classificacao = 2;
+            break;
+            case(($media >= 1.2) && ($media < 1.3)):
+                $classificacao = 3;
+            break;
+            case(($media >= 1.3) && ($media < 1.4)):
+                $classificacao = 4;
+            break;
+            case($media >= 1.4):
+                $classificacao = 5;
+            break;
+
+            // media ABAIXO de 1kg
+            case(($media < 1) && ($media > 0.50)):
+                $classificacao = -1;
+            break;
+            case(($media <= 0.50) && ($media > 0.40)):
+                $classificacao = -2;
+            break;
+            case(($media <= 0.40) && ($media > 0.30)):
+                $classificacao = -3;
+            break;
+            case(($media <= 0.30) && ($media > 0.20)):
+                $classificacao = -4;
+            break;
+            case($media <= 0.20):
+                $classificacao = -5;
+            break;
+        }
+
+        return $classificacao;
+    }
+
+
+
+    public function getCorClassificacao($classificacao){
+
+        /** Tabela de Cores
+            -5 =   Vermelho       - #FF0000
+            -4 =   Violeta Escuro - #551A8B
+            -3 =   Violeta        - #9370DB
+            -2 =   Magenta        - #FF00FF
+            -1 =   Laranja        - #FFA500
+            -0 =   Amarelo Escuro - #FFD700
+             1 =   Amarelo        - #FFFF00
+             2 =   Azul Claro     - #7FFFD4
+             3 =   Azul           - #00FFFF
+             4 =   Verde Claro    - #9AFF9A
+             5 =   Verde          - #00FF00
+        **/
+
+
+        $cor = array();
+        $cor[-5] = "#FF0000";
+        $cor[-4] = "#551A8B";
+        $cor[-3] = "#9370DB";
+        $cor[-2] = "#FF00FF";
+        $cor[-1] = "#FFA500";
+        $cor[0]  = "#FFD700";
+        $cor[1]  = "#FFFF00";
+        $cor[2]  = "#7FFFD4";
+        $cor[3]  = "#00FFFF";
+        $cor[4]  = "#9AFF9A";
+        $cor[5]  = "#00FF00";
+
+        return $cor[$classificacao];
+    }
+
+
+    /** Retorna uma legenda com a classificação
+     */
+    public function getLegendaClassificacao(){
+
+        $aClas = array();
+
+            $aClas[0] = new StdClass();
+            $aClas[0]->indice = -5;
+            $aClas[0]->descricao = 'Menos de 0.2kg';
+            $aClas[0]->cor = Pesagens::getCorClassificacao(-5);
+
+            $aClas[1] = new StdClass();
+            $aClas[1]->indice = -4;
+            $aClas[1]->descricao = '0.2kg á 0.3kg';
+            $aClas[1]->cor = Pesagens::getCorClassificacao(-4);
+
+            $aClas[2] = new StdClass();
+            $aClas[2]->indice = -3;
+            $aClas[2]->descricao = '0.3kg á 0.4kg';
+            $aClas[2]->cor = Pesagens::getCorClassificacao(-3);
+
+            $aClas[3] = new StdClass();
+            $aClas[3]->indice = -2;
+            $aClas[3]->descricao = '0.4kg á 0.5kg';
+            $aClas[3]->cor = Pesagens::getCorClassificacao(-2);
+
+            $aClas[4] = new StdClass();
+            $aClas[4]->indice = -1;
+            $aClas[4]->descricao = '0.5kg á 1kg';
+            $aClas[4]->cor = Pesagens::getCorClassificacao(-1);
+
+            $aClas[5] = new StdClass();
+            $aClas[5]->indice = 1;
+            $aClas[5]->descricao = '1kg á 1.1kg';
+            $aClas[5]->cor = Pesagens::getCorClassificacao(1);
+
+            $aClas[6] = new StdClass();
+            $aClas[6]->indice = 2;
+            $aClas[6]->descricao = '1.1kg á 1.2kg';
+            $aClas[6]->cor = Pesagens::getCorClassificacao(2);
+
+            $aClas[7] = new StdClass();
+            $aClas[7]->indice = 3;
+            $aClas[7]->descricao = '1.2kg á 1.3kg';
+            $aClas[7]->cor = Pesagens::getCorClassificacao(3);
+
+            $aClas[8] = new StdClass();
+            $aClas[8]->indice = 4;
+            $aClas[8]->descricao = '1.3kg á 1.4kg';
+            $aClas[8]->cor = Pesagens::getCorClassificacao(4);
+
+            $aClas[9] = new StdClass();
+            $aClas[9]->indice = 5;
+            $aClas[9]->descricao = 'Mais 1.4kg';
+            $aClas[9]->cor = Pesagens::getCorClassificacao(5);
+
+
+        return $aClas;
     }
 
 }
