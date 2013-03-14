@@ -18,6 +18,16 @@ class appReports extends FPDF {
 
     private $Total = null;
 
+    private $total_registros = 0;
+
+    public function setTotalRegistros($total){
+        $this->total_registros = $total;
+    }
+
+    public function getTotalRegistros(){
+        return $this->total_registros;
+    }
+
     public function setDataReport($data_report){
         $this->data_report = $data_report;
     }
@@ -439,10 +449,7 @@ class appReports extends FPDF {
                     }
                     else if ($formula == 'sum')
                     {
-                        // Saber se nao e uma string
-                        if (is_float($content)){
-                            $this->ColumnResults[$alias] += $content;
-                        }
+                        $this->ColumnResults[$alias] += $content;
                     }
                     else {
                         $this->ColumnResults[$alias] = $formula;

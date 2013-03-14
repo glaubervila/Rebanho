@@ -8,9 +8,25 @@ Ext.define('Rebanho.store.MyStore', {
     remoteSort: true,
 
     listeners:{
+        beforeload: function( store, operation, eOpts ){
+
+            var loginMask = new Ext.LoadMask(Ext.getBody(), {msg:"Aguarde ..."});
+            loginMask.show();
+        },
+        load: function ( store, records, successful, eOpts ){
+
+            Ext.getBody().unmask();
+        },
+        beforesync: function (options, eOpts){
+
+            var loginMask = new Ext.LoadMask(Ext.getBody(), {msg:"Aguarde ..."});
+            loginMask.show();
+
+        },
         write: function(store, operation){
 
-        var obj = Ext.decode(operation.response.responseText);
+            Ext.getBody().unmask();
+            var obj = Ext.decode(operation.response.responseText);
 
             if (obj.message){
                 msg = obj.message;

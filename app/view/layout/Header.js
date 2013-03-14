@@ -37,6 +37,7 @@ Ext.define('Rebanho.view.layout.Header', {
                         },
                         {
                             text: 'Relatorios',
+                            disabled: true,
                             iconCls: 'icon-chart_bar',
                             menu: [
                                 {
@@ -107,20 +108,6 @@ Ext.define('Rebanho.view.layout.Header', {
                             iconCls: 'icon-application_form',
                             disabled: true
                         },
-                        {
-                            text: 'Relatorios',
-                            iconCls: 'icon-chart_curve',
-                            menu: [
-                                {
-                                    text: 'Pesagens por Data',
-                                    iconCls: 'icon-report',
-                                },
-                                {
-                                    text: 'Pesagens por Período',
-                                    iconCls: 'icon-report',
-                                },
-                            ]
-                        },
                     ]
                 },
 
@@ -174,6 +161,7 @@ Ext.define('Rebanho.view.layout.Header', {
                     iconCls: 'icon-coins_add',
                     menu: [{
                         text: 'Relatorios',
+                        disabled: true,
                         iconCls: 'icon-chart_pie',
                         menu: [
                             {
@@ -224,6 +212,13 @@ Ext.define('Rebanho.view.layout.Header', {
                             var tabs = Ext.getCmp('mainTabpanel').novaAba('transferenciasgrid');
                         },
                         tooltip: 'Abra uma Lista com todas as Tranferências.',
+                    },
+                    {
+                        text: 'Relatorios de Transferências',
+                        iconCls: 'icon-report',
+                        handler: function(){
+                            Ext.create('Rebanho.view.transferencias.TransferenciasReportWindow',{});
+                        },
                     }]
                 },
             ]
@@ -287,18 +282,30 @@ Ext.define('Rebanho.view.layout.Header', {
             ]
         },
         {
-            text: 'TESTE',
-            handler: function(){
-                //var tabs = Ext.getCmp('mainTabpanel').novaAba('pesagensgrid');
-                Ext.create('Rebanho.view.ocorrencias.pesagens.PesagensReportWindow',{});
-            },
-        },
-//         {
-//             text: 'TESTE2',
+            text: 'Relatórios',
+            scale: 'large',
+            iconCls:'icon-report_32x32',
+            menu: [{
+                text: 'Pesagens',
+                handler: function(){
+                    Ext.create('Rebanho.view.ocorrencias.pesagens.PesagensReportWindow',{});
+                },
+            },{
+                text: 'Transferências',
+                handler: function(){
+                    Ext.create('Rebanho.view.transferencias.TransferenciasReportWindow',{});
+                },
+            }]
+        }
+//         ,{
+//             text: 'TESTE',
 //             handler: function(){
-//                 Ext.create('Rebanho.view.animais.AnimaisWindow',{});
+//                 //var tabs = Ext.getCmp('mainTabpanel').novaAba('pesagensgrid');
+//                 //Ext.create('Rebanho.view.ocorrencias.pesagens.PesagensReportWindow',{});
+// 
 //             },
 //         },
+
 
 
     ]

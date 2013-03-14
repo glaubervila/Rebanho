@@ -82,6 +82,7 @@ Ext.application({
 
         // Relatorios
         'PesagensReport',
+        'TransferenciasReport'
     ],
 
 });

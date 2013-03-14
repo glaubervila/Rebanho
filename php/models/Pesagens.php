@@ -1,5 +1,5 @@
 <?php
-
+ini_set('memory_limit', '64M');
 /**
 Tipos de Pesagens
 1 - Pesagem de Entrada
@@ -700,12 +700,14 @@ class Pesagens extends Base {
 
         //var_dump($data);
 
-        // Verificar os Campos Obrigatorios
-        if ((empty($data->data_inicial)) || ($data->data_inicial == null) ){
-            $return->failure = true;
-            $result->msg = "Campo Data Inicial é Obrigatório!";
-            return $result;
-        }
+//         // Verificar os Campos Obrigatorios
+//         if (((empty($data->data_inicial)) || ($data->data_inicial == null)) && ((empty($data->data_final)) || ($data->data_final == null))){
+// 
+//             $return->failure = true;
+//             $return->msg = "Por Favor Preencha um dos campos de data!";
+//             return $return;
+// 
+//         }
 
         //Montando a Query
         $db = $this->getDb();
@@ -749,22 +751,37 @@ class Pesagens extends Base {
         $filtros[] = "p.confinamento_id = {$data->confinamento_id}";
 
         // 2 Filtro - Periodo pela data da pesagem
-        if ($data->data_inicial && $data->data_final){
-            // Se tiver data inicial e data final pesquisar pelo periodo
-            $filtros[] = "p.data BETWEEN '{$data->data_inicial}' AND '{$data->data_final}'";
+        if ((!empty($data->data_inicial)) || ($data->data_inicial != null)){
+            // Tem data Inicial Verificar se tem tambem a data final
+            if ((!empty($data->data_final)) || ($data->data_final != null)){
+                // Tem data Inicial e Data Final  pesquisar pelo periodo
+                $filtros[] = "p.data BETWEEN '{$data->data_inicial}' AND '{$data->data_final}'";
+            }
+            else {
+                // Tem data Inicial e NAO TEM Data Final - Pesquisar apartir de";
+                $filtros[] = "p.data >= '{$data->data_inicial}'";
+            }
         }
-        else if ($data->data_inicial){
-            // se nao tiver date final retorna todos a frente da data inicial
-            $filtros[] = "p.data >= '{$data->data_inicial}'";
+        else {
+            // Nao tem data inicial
+            // Verificar se tem data Final
+            if ((!empty($data->data_final)) || ($data->data_final != null)){
+                //Tem somente data final pesquisar pela data igual a data final
+                $filtros[] = "p.data = '{$data->data_final}'";
+            }
+            else {
+                $return->failure = true;
+                $return->msg = "Por Favor Preencha um dos campos de data!";
+                return $return;
+            }
         }
-        else if ($data->data_final){
-            // se nao tiver date inicial retorna so os da data igual a inicial
-            $filtros[] = "p.data = '{$data->data_final}'";
-        }
+
+
         // Filtro por tipo de Pesagem
         if ($data->tipo_pesagem){
             $filtros[] = "p.tipo IN ({$data->tipo_pesagem})";
         }
+
 
         // 3 Filtro - Por Quadra , filtrar pela quadra ondo animal esta
         if ($data->quadra_id){
@@ -778,6 +795,20 @@ class Pesagens extends Base {
             $filtros[] = "a.sexo = '{$data->sexo}'";
         }
 
+        // 5 - Filtro - Comparacao por Peso
+        if (((!empty($data->peso_comparacao)) || ($data->peso_comparacao != null)) && ((!empty($data->peso)) || ($data->peso != null))) {
+
+            $filtros[] = "p.peso {$data->peso_comparacao} '{$data->peso}'";
+
+        }
+
+//         // 6 - Filtro - Comparacao por Idade
+//         if (((!empty($data->idade_comparacao)) || ($data->idade_comparacao != null)) && ((!empty($data->idade)) || ($data->idade != null))) {
+// 
+//             // Usar o interval month com a data - a idade
+//             //$filtros[] = "MONTH(d.data_pesagem)-{$data->idade}";
+// 
+//         }
 
         $sql .= implode(' AND ', $filtros);
 
@@ -844,7 +875,13 @@ class Pesagens extends Base {
             $registro->data_entrada = $pesagem->data_entrada;
 
             // Dias Confinamento
-            $dias_confinamento = Animais::calcularDiasConfinamento($data_entrada);
+            if ($pesagem->pesagem_tipo == 4){
+                // Se for uma pesagem de saida
+                $dias_confinamento = Animais::calcularDiasConfinamento($data_entrada, null, $registro->data_pesagem);
+            }
+            else{
+                $dias_confinamento = Animais::calcularDiasConfinamento($data_entrada);
+            }
             $registro->dias_confinamento = $dias_confinamento;
 
             // Idade Atual
@@ -882,8 +919,9 @@ class Pesagens extends Base {
             $registro->tipo_pesagem_label = Pesagens::getTipoPesagem($pesagem->pesagem_tipo);
 
 
-
             $aRegistros[] = $registro;
+
+
             $registro = null;
         }
 

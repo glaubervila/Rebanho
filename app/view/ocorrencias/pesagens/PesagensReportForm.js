@@ -41,10 +41,39 @@ Ext.define('Rebanho.view.ocorrencias.pesagens.PesagensReportForm' ,{
                         },
                         items:[{
                             xtype:'cmbconfinamento',
+                            itemId: 'cmbConfinamento',
                             fieldLabel:'Confinamento',
                             name: 'confinamento_id',
                             flex: 1,
                         },{
+                            xtype:'combobox',
+                            fieldLabel:'Tipo de Relatório',
+                            name: 'tipo_relatorio',
+                            width: 100,
+                            margins: '0 0 0 5',
+                            typeAhead: true,
+                            triggerAction: 'all',
+                            value: '0',
+                            store: [
+                                //['0','Pesagens / '],
+                                ['1','Pesagens / Individual'],
+                                ['2','Resumo por Confinamento'],
+                            ],
+                            flex: 1,
+                        }]
+                    }]
+                },{
+                    // Coluna 2
+                    columnWidth:0.5,
+                    border:false,
+                    items:[{
+                        xtype: 'fieldset',
+                        defaultType:'textfield',
+                        title: 'Filtros',
+                        defaults: {
+                            anchor: '-5',
+                        },
+                        items:[{
                             xtype: 'fieldcontainer',
                             layout: 'hbox',
                             defaultType:'textfield',
@@ -70,34 +99,6 @@ Ext.define('Rebanho.view.ocorrencias.pesagens.PesagensReportForm' ,{
                                 allowBlank: false,
                             }]
                         },{
-                            xtype:'combobox',
-                            fieldLabel:'Tipo de Relatório',
-                            name: 'tipo_relatorio',
-                            width: 100,
-                            margins: '0 0 0 5',
-                            typeAhead: true,
-                            triggerAction: 'all',
-                            value: '0',
-                            store: [
-                                ['0','Individual'],
-                                ['1','Pesagens Resumido'],
-                                ['2','Resumo por Confinamento'],
-                            ],
-                            flex: 1,
-                        }]
-                    }]
-                },{
-                    // Coluna 2
-                    columnWidth:0.5,
-                    border:false,
-                    items:[{
-                        xtype: 'fieldset',
-                        defaultType:'textfield',
-                        title: 'Filtros',
-                        defaults: {
-                            anchor: '-5',
-                        },
-                        items:[{
                             xtype: 'fieldcontainer',
                             layout: 'hbox',
                             defaultType:'textfield',
@@ -147,7 +148,7 @@ Ext.define('Rebanho.view.ocorrencias.pesagens.PesagensReportForm' ,{
                                         ['0',''],
                                         ['=','='],
                                         ['<=','<='],
-                                        ['=>','>='],
+                                        ['>=','>='],
                                     ]
                                 },{
                                     xtype:'textfield',
@@ -157,7 +158,8 @@ Ext.define('Rebanho.view.ocorrencias.pesagens.PesagensReportForm' ,{
                                     flex: 1,
                                     margins: '0 0 0 5',
                                 }]
-                            },{
+                            }
+/*                            ,{
                                 xtype: 'fieldcontainer',
                                 fieldLabel: 'Idade',
                                 layout: 'hbox',
@@ -188,27 +190,19 @@ Ext.define('Rebanho.view.ocorrencias.pesagens.PesagensReportForm' ,{
                                     flex: 1,
                                     margins: '0 0 0 5',
                                 }]
-                            }]
+                            }*/]
                         }]
                     }]
                 }]
             }],
             // Barra e Menus
             bbar:{
-                items:[{
+                items:['->',{
                     xtype: 'button',
                     text: 'Gerar Relatorio',
                     action: 'action_report',
-                    iconCls: 'icon-printer',
-                    //tooltip: 'Click para <font color="blue"><b>Salvar</b></font> as Informações.'
-                },
-                '->',
-                {
-                    xtype: 'button',
-                    text: 'Cancelar',
-                    action: 'action_cancelar',
-                    iconCls: 'icon-cancel',
-                    tooltip: 'Click para <font color="red"><b>Abandonar</b></font> a Janela de Cadastro<br>Nenhuma informação será Gravada e o Cadastro será Fechado.'
+                    iconCls: 'icon-report_32x32',
+                    scale: 'large'
                 }]
             }
 

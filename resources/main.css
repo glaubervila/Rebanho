@@ -80,6 +80,8 @@
 .icon-scale-32 { background-image: url(scale.png) !important; background-repeat: no-repeat; }
 .icon-scale-16 { background-image: url(scale_16.png) !important; background-repeat: no-repeat; }
 .icon-zoom { background-image: url(zoom.png) !important; background-repeat: no-repeat; }
+.icon-report { background-image: url(report.png) !important; background-repeat: no-repeat; }
+.icon-report_32x32 { background-image: url(reports_32x32.png) !important; background-repeat: no-repeat; }
 
 /*Field Star Rating*/
 .x-form-rating-field {

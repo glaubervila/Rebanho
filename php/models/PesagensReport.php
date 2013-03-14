@@ -1,5 +1,5 @@
 <?php
-
+ini_set('memory_limit', '64M');
 /**
 * Tipos de Relatorios de Pesagens
 * 0 - Relatorio Individual

@@ -464,4 +464,246 @@ class Transferencias extends Base {
         }
 
     }
+
+
+    public function getTransferenciasResumidoReport($data){
+
+
+        // Primeiro Passo Montar o Filtro
+        // 1 Filtro - Confinamento pelo confinamento e tipo
+
+        // Se for um relatorio de entrada resumido
+        if (($data->tipo_relatorio == 0)||($data->tipo_relatorio == 1)){
+
+            // Entao o Confinamento selecionado e a ORIGEM
+            $filtros[] = "destino = {$data->confinamento_id}";
+
+            // Seto o Campo de data do where como data_saida
+            $campo_data = 'data_entrada';
+
+        }
+
+        // Se for um relatorio de saida resumido
+        else if (($data->tipo_relatorio == 2)||($data->tipo_relatorio == 3)){
+
+            // Entao o Confinamento selecionado e a ORIGEM
+            $filtros[] = "origem = {$data->confinamento_id}";
+
+            // Seto o Campo de data do where como data_saida
+            $campo_data = 'data_saida';
+        }
+
+        // 2 Filtro - Periodo pela data da pesagem
+        if ((!empty($data->data_inicial)) || ($data->data_inicial != null)){
+            // Tem data Inicial Verificar se tem tambem a data final
+            if ((!empty($data->data_final)) || ($data->data_final != null)){
+                // Tem data Inicial e Data Final  pesquisar pelo periodo
+                $filtros[] = "$campo_data BETWEEN '{$data->data_inicial}' AND '{$data->data_final}'";
+            }
+            else {
+                // Tem data Inicial e NAO TEM Data Final - Pesquisar apartir de";
+                $filtros[] = "$campo_data >= '{$data->data_inicial}'";
+            }
+        }
+        else {
+            // Nao tem data inicial
+            // Verificar se tem data Final
+            if ((!empty($data->data_final)) || ($data->data_final != null)){
+                //Tem somente data final pesquisar pela data igual a data final
+                $filtros[] = "$campo_data = '{$data->data_final}'";
+            }
+            else {
+                // Nao tem nem data de entrada nem de saida
+            }
+        }
+
+
+        $filter .= implode(' AND ', $filtros);
+        //echo $filter;
+        $transferencias = $this->filter(null, 'transferencias', "$filter", null, false);
+
+        foreach ($transferencias as $row){
+            $record = $row;
+
+            // Para Cada Registro Recuperar o Nome do Confinamento de origem e destino
+            $record->origem_nome   = Confinamentos::getNome($record->origem);
+            $record->destino_nome  = Confinamentos::getNome($record->destino);
+
+            $record->status_nome  = Transferencias::getStatusNome($record->status);
+
+            // Para Cada Transferencia saber as estatisticas
+            $estatisticas = Transferencias::getEstatisticas($record);
+            // Estatisticas de Entrada
+            $record->entrada_peso_total = number_format($estatisticas->entrada->peso_total, 2, '.','.');
+            $record->entrada_maior_peso = number_format($estatisticas->entrada->maior_peso, 2, '.','.');
+            $record->entrada_menor_peso = number_format($estatisticas->entrada->menor_peso, 2, '.','.');
+            $record->entrada_peso_medio = number_format($estatisticas->entrada->peso_medio, 2, '.','.');
+
+
+            // Estatisticas de saida
+            $record->saida_peso_total = number_format($estatisticas->saida->peso_total, 2, '.','.');
+            $record->saida_maior_peso = number_format($estatisticas->saida->maior_peso, 2, '.','.');
+            $record->saida_menor_peso = number_format($estatisticas->saida->menor_peso, 2, '.','.');
+            $record->saida_peso_medio = number_format($estatisticas->saida->peso_medio, 2, '.','.');
+
+
+            $records[] = $record;
+            $record = null;
+        }
+
+        $return = new StdClass();
+
+        if (count($records) > 0){
+
+            $return->success = true;
+            $return->data = $records;
+        }
+        else {
+            $return->failure = true;
+            $return->msg = "Desculpe mas Nenhum resultado Foi Encontrado!";
+        }
+
+        return $return;
+    }
+
+
+    public function getTransferenciasReport($data){
+
+        // Primeiro Passo Recuperar os Transferencias Resumido
+
+        $resumos = Transferencias::getTransferenciasResumidoReport($data);
+
+        if ($resumos->success){
+
+            $transferencias = $resumos->data;
+
+            foreach ($transferencias as $row){
+                $record = $row;
+
+                // Separar os ids dos animais
+                $animais_id = str_replace(';', ', ',$row->animais);
+
+                $aIds = explode(',', $animais_id);
+
+                foreach ($aIds as $id){
+                    //$animal = new StdClass();
+
+                    $animal_id = $id;
+                    $origem = $row->origem;
+                    $destino = $row->destino;
+
+                    $animal = Transferencias::getInfoAnimal($animal_id, $origem, $destino);
+
+                    $record->a_animais[] = $animal;
+                }
+
+                $records[] = $record;
+                $record = null;
+            }
+        }
+        else {
+            return $resumos;
+        }
+
+        $return = new StdClass();
+
+        if (count($records) > 0){
+
+            $return->success = true;
+            $return->data = $records;
+        }
+        else {
+            $return->failure = true;
+            $return->msg = "Desculpe mas Nenhum resultado Foi Encontrado!";
+        }
+
+        return $return;
+    }
+
+
+
+
+    public function getEstatisticas($transferencia){
+        $estatisticas = new StdClass();
+
+        // Pegar os animais_id e trocar ; por ,
+        $animais_id = str_replace(';', ', ',$transferencia->animais);
+
+        // Fazer uma query para estatisticas de entrada
+        $cols =   "SUM(peso) as peso_total, MAX(peso) as maior_peso, MIN(peso) as menor_peso,     COUNT(*) as total_animais, (SUM(peso)/COUNT(*)) as peso_medio";
+
+        $filtros[] = "confinamento_id = '{$transferencia->destino}'";
+        $filtros[] = "data = '{$transferencia->data_entrada}'";
+        $filtros[] = "tipo = 1"; // tipo de pesagem de entrada
+        $filtros[] = "animal_id IN ({$animais_id})";
+
+        $filter = implode(' AND ', $filtros);
+
+        $result_entrada = $this->filter($cols, 'pesagens', "$filter", null, false);
+
+
+        // Fazer query para estatisticas de saida
+        $cols =   "SUM(peso) as peso_total, MAX(peso) as maior_peso, MIN(peso) as menor_peso,     COUNT(*) as total_animais, (SUM(peso)/COUNT(*)) as peso_medio";
+
+        $filtros = null;
+        $filtros[] = "confinamento_id = '{$transferencia->origem}'";
+        $filtros[] = "data = '{$transferencia->data_saida}'";
+        $filtros[] = "tipo = 4";
+        $filtros[] = "animal_id IN ({$animais_id})";
+
+        $filter = implode(' AND ', $filtros);
+
+        $result_saida = $this->filter($cols, 'pesagens', "$filter", null, false);
+
+        $estatisticas->entrada = $result_entrada[0];
+        $estatisticas->saida   = $result_saida[0];
+
+        return $estatisticas;
+    }
+
+    public function getInfoAnimal($animal_id, $origem, $destino){
+
+        $animal = Animais::getInfoAnimal($animal_id);
+
+        // Codigo na Origem
+        $animal->origem_codigo = $animal->dados_confinamento[$origem]->codigo;
+        // Data Entrada Origem
+        $animal->origem_data_entrada = $animal->dados_confinamento[$origem]->data_entrada;
+        // Peso Entrada Origem
+        $animal->origem_peso_entrada = $animal->dados_confinamento[$origem]->peso_entrada;
+        // Peso Saida Origem
+        $animal->origem_peso_saida = $animal->dados_confinamento[$origem]->peso_saida;
+        // Dias Confinado
+        $animal->origem_dias_confinado = $animal->dados_confinamento[$origem]->dias_confinado;
+        // Ganho Total
+        $animal->origem_ganho = $animal->dados_confinamento[$origem]->ganho;
+        // Ganho Medio
+        $animal->origem_ganho_medio = $animal->dados_confinamento[$origem]->ganho_medio;
+        // Cor Classificacao
+        $animal->origem_corClassificacao = $animal->dados_confinamento[$origem]->corClassificacao;
+
+
+
+        // Codigo no Destino
+        $animal->destino_codigo = $animal->dados_confinamento[$destino]->codigo;
+        // Codigo no Destino
+        $animal->destino_data_entrada = $animal->dados_confinamento[$destino]->data_entrada;
+        // Peso Entrada Destino
+        $animal->destino_peso_entrada = $animal->dados_confinamento[$destino]->peso_entrada;
+        // Peso Saida Destino
+        $animal->destino_peso_saida = $animal->dados_confinamento[$destino]->peso_saida;
+        // Dias Confinado
+        $animal->destino_dias_confinado = $animal->dados_confinamento[$destino]->dias_confinado;
+        // Ganho Total
+        $animal->destino_ganho = $animal->dados_confinamento[$destino]->ganho;
+        // Ganho Medio
+        $animal->destino_ganho_medio = $animal->dados_confinamento[$destino]->ganho_medio;
+        // Cor Classificacao
+        $animal->destino_corClassificacao = $animal->dados_confinamento[$destino]->corClassificacao;
+
+
+
+        return $animal;
+    }
+
 }

@@ -574,7 +574,7 @@ class Animais extends Base {
         return $idade_mes;
     }
 
-    public function calcularDiasConfinamento($data_entrada, $animal){
+    public function calcularDiasConfinamento($data_entrada, $animal, $data_saida){
 
 
         if (!$data_entrada){
@@ -593,10 +593,17 @@ class Animais extends Base {
         // Calculando o Tempo no Confinamento
         //$data_entrada = strtotime($data_entrada);
         //$data_atual   = strtotime(date('Y-m-d'));
-        $data_atual   = date('Y-m-d');
+        if ($data_saida) {
+            $dias_confinamento = $this->diferencaEntreDatas($data_entrada, $data_saida);
+        }
+        else {
+            $data_atual   = date('Y-m-d');
+            $dias_confinamento = $this->diferencaEntreDatas($data_entrada, $data_atual);
+        }
+        
         //transformação do timestamp em  dias
         //$dias_confinamento = ($data_atual-$data_entrada)/86400;
-        $dias_confinamento = $this->diferencaEntreDatas($data_entrada, $data_atual);
+//        $dias_confinamento = $this->diferencaEntreDatas($data_entrada, $data_atual);
 
         if ($dias_confinamento > 0){
             return $dias_confinamento;
@@ -843,6 +850,101 @@ class Animais extends Base {
         return $stm->fetchObject();
     }
 
+
+    public function getInfoAnimal($animal_id){
+
+        $animal = $this->find($animal_id, 'animais');
+
+        $animal->idade_entrada = $animal->idade;
+
+        // Informacoes da Compra
+        $compra = $this->findBy('id', $animal->compra_id, 'compras');
+        $animal->fornecedor_id = $compra->fornecedor_id;
+
+        // Informacoes do Fornecedor
+        $fornecedor = $this->findBy('id', $animal->fornecedor_id, 'fornecedores');
+        $animal->fornecedor = $fornecedor->nome;
+
+        // Para Cada Confinamento saber as informacoes
+        $confinamentos = $this->filter(null,'confinamentos');
+
+        foreach ($confinamentos as $confinamento){
+
+            if ($confinamento->id != 0){
+
+                $dados = new StdClass();
+
+                // Recuperando o Codigo do animal na Origem
+                $codigos = Animais::getCodigosById($animal_id, $confinamento->id);
+                $dados->codigo = $codigos[0]->codigo;
+
+                // Peso Entrada
+                $pesagem_entrada  = Pesagens::getPesagemEntrada($animal_id, $confinamento->id);
+                $dados->data_entrada = $pesagem_entrada->data;
+                // Data Entrada
+                $dados->peso_entrada = $pesagem_entrada->peso;
+
+                // Peso Compra
+                $pesagem_compra  = Pesagens::getPesagem($animal_id, $confinamento->id, 3);
+                $dados->peso_compra = $pesagem_compra->peso;
+
+                // Ultima Pesagem
+                $pesagem_recente  = Pesagens::getPesagemRecente($animal_id, $confinamento->id);
+                $dados->peso_recente = $pesagem_recente->peso;
+                // Data Saida
+                $dados->data_peso_recente = $pesagem_recente->data;
+
+                // Peso Saida
+                $pesagem_saida  = Pesagens::getPesagem($animal_id, $confinamento->id, 4);
+                $dados->peso_saida = $pesagem_saida->peso;
+                // Data Saida
+                $dados->data_saida = $pesagem_saida->data;
+
+                // Dias Confinamento
+                if ($dados->data_saida){
+                    // Se tiver saida
+                    $dias_confinamento = Animais::calcularDiasConfinamento($dados->data_entrada, null, $dados->data_saida);
+                }
+                else{
+                    $dias_confinamento = Animais::calcularDiasConfinamento($dados->data_entrada);
+                }
+                $dados->dias_confinado = $dias_confinamento;
+
+
+                // Calcular o ganho
+                $peso_inicial      = $dados->peso_entrada;
+                $dias_confinado = $dados->dias_confinado;
+                if ($dados->data_saida){
+                    $peso_final    = $dados->peso_saida;
+                }
+                else {
+                    $peso_final    = $dados->peso_recente;
+                }
+
+                if (($peso_inicial)&&($peso_final != null)){
+    
+                    $ganho = (float)($peso_final - $peso_inicial);
+                    $dados->ganho = number_format($ganho, 2, '.','.');
+
+                    // Calculando o Ganho Medio
+                    $ganho_medio = (float)($ganho / $dias_confinado);
+                    $dados->ganho_medio = number_format($ganho_medio, 2, '.','.');
+
+                    if ($ganho){
+                        // Recuperando a Classificacao
+                        $dados->classificacao = Pesagens::getClassificacaoMediaDia($dados->ganho_medio);
+
+                        $dados->corClassificacao = Pesagens::getCorClassificacao($dados->classificacao);
+                    }
+                }
+
+
+                $animal->dados_confinamento[$confinamento->id] = $dados;
+            }
+        }
+        //var_dump($animal);
+        return $animal;
+    }
 
 // QUERY PARA IDADE DE ANIMAIS E PERMANENCIA
 // SELECT

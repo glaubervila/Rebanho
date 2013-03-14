@@ -1,19 +1,19 @@
-Ext.define('Rebanho.store.PesagensReport', {
+Ext.define('Rebanho.store.TransferenciasReport', {
     extend: 'Rebanho.store.MyStore',
 
     remoteFilter: true,
 
     autoSync: false,
 
-    model: 'Rebanho.model.PesagensReport',
+    model: 'Rebanho.model.TransferenciasReport',
 
     proxy: {
 
         type: 'rest',
         url: 'php/main.php',
         extraParams:{
-            classe: 'PesagensReport',
-            action: 'getRelatorioPesagens',
+            classe: 'TransferenciasReport',
+            action: 'getRelatorioTransferencias',
             returnJson: true,
         },
         writer: {

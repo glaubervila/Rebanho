@@ -66,14 +66,19 @@ Ext.define('Rebanho.controller.PesagensReport', {
         values = form.getValues();
         record = Ext.create('Rebanho.model.PesagensReport', values);
         //console.log(values);
-
+        //var loginMask = new Ext.LoadMask(Ext.getBody(), {msg:"Please wait ..."});
+        //loginMask.show();
+        //loginMask.hide();        
         store = this.getStore('PesagensReport');
         //console.log(store);
         store.removeAll(true);
         store.add(record);
 
-        //Ext.Ajax.timeout = 12000;
+        //var loginMask = new Ext.LoadMask(Ext.getBody(), {msg:"Please wait ..."});
+        
+        Ext.Ajax.timeout = 12000;
         store.sync();
+
         record.save();
 
 
@@ -86,7 +91,6 @@ Ext.define('Rebanho.controller.PesagensReport', {
         window.open(url,'_blank');
     },
 
-    
 });
 
 
