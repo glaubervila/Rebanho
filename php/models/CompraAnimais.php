@@ -354,7 +354,151 @@ class CompraAnimais extends Base {
     }
 
 
+    public function getComprasAtivasReport($data){
 
+        //var_dump($data);
+        // Recuperar todas as Compras ativas
+        $campo_data = 'b.data_compra';
+
+        $filtros[] = "a.status = 1";
+
+        // 1 Filtro - Periodo pela data da compra
+        if ((!empty($data->data_inicial)) || ($data->data_inicial != null)){
+            // Tem data Inicial Verificar se tem tambem a data final
+            if ((!empty($data->data_final)) || ($data->data_final != null)){
+                // Tem data Inicial e Data Final  pesquisar pelo periodo
+                $filtros[] = "$campo_data BETWEEN '{$data->data_inicial}' AND '{$data->data_final}'";
+            }
+            else {
+                // Tem data Inicial e NAO TEM Data Final - Pesquisar apartir de";
+                $filtros[] = "$campo_data >= '{$data->data_inicial}'";
+            }
+        }
+        else {
+            // Nao tem data inicial
+            // Verificar se tem data Final
+            if ((!empty($data->data_final)) || ($data->data_final != null)){
+                //Tem somente data final pesquisar pela data igual a data final
+                $filtros[] = "$campo_data = '{$data->data_final}'";
+            }
+            else {
+                // Nao tem nem data de entrada nem de saida
+            }
+        }
+
+        // Se for um relatorio de entrada resumido
+        if ((!empty($data->fornecedor_id)) || ($data->fornecedor_id != null)){
+
+            // Entao o Confinamento selecionado e a ORIGEM
+            $filtros[] = "b.fornecedor_id = {$data->fornecedor_id}";
+
+        }
+
+
+        $filter = implode(' AND ', $filtros);
+
+        $sql = "SELECT DISTINCT(a.compra_id) FROM animais a INNER JOIN compras b ON a.compra_id = b.id WHERE $filter";
+
+        $db = $this->getDb();
+        $stm = $db->prepare($sql);
+
+        //echo $sql;
+
+        $stm->execute();
+        $compras_ids = $stm->fetchAll(\PDO::FETCH_OBJ);
+
+        if (count($compras_ids) > 0){
+
+            //var_dump($compras_ids);
+            foreach ($compras_ids as $compra_id){
+
+                $compra_id = $compra_id->compra_id;
+
+                $record = new StdClass();
+
+                // Para cada Compra id
+                // Recuperar os dados da Compra
+                $compra = $this->findBy('id', $compra_id, 'compras');
+
+                // Confinamento
+                $compra->confinamento_nome = Confinamentos::getNome($compra->confinamento_id);
+
+                // Nome do Fornecedor
+                $fornecedor = $this->findBy('id', $compra->fornecedor_id, 'fornecedores');
+                $compra->fazenda = $fornecedor->fazenda;
+                $compra->fornecedor_nome = $fornecedor->nome;
+
+
+                // Quantidade Mortos
+                //$mortos = filter('count(*) as quantidade_mortos','animais', "compra_id = {$compra_id} AND status = 0");
+                //$compra->quatidade_morto = $mortos[0]->quantidade_mortos;
+
+                $record = $compra;
+
+                // Para cada compra recuperar os animais
+                $animais_id = $this->filter('id', 'animais', "compra_id = {$compra_id}" );
+
+                foreach($animais_id as $animal_id){
+
+                    $animal_id = $animal_id->id;
+
+                    $animal = CompraAnimais::getInfoAnimal($animal_id, $compra->confinamento_id);
+
+                    $record->a_animais[] = $animal;
+
+                }
+
+
+                $records[] = $record;
+            }
+
+        }
+
+
+
+        $return = new StdClass();
+
+        if (count($records) > 0){
+
+            $return->success = true;
+            $return->data = $records;
+        }
+        else {
+            $return->failure = true;
+            $return->msg = "Desculpe mas Nenhum resultado Foi Encontrado!";
+        }
+
+        return $return;
+
+    }
+
+    public function getInfoAnimal($animal_id, $origem){
+
+        $animal = Animais::getInfoAnimal($animal_id);
+
+        // Codigo na Origem
+        $animal->origem_codigo = $animal->dados_confinamento[$origem]->codigo;
+        // Data Compra
+        $animal->data_compra = $animal->dados_confinamento[$origem]->data_compra;
+        // Peso Compra
+        $animal->peso_compra = $animal->dados_confinamento[$origem]->peso_compra;
+        // Data Entrada Origem
+        $animal->origem_data_entrada = $animal->dados_confinamento[$origem]->data_entrada;
+        // Peso Entrada Origem
+        $animal->origem_peso_entrada = $animal->dados_confinamento[$origem]->peso_entrada;
+        // Peso Saida Origem
+        $animal->origem_peso_saida = $animal->dados_confinamento[$origem]->peso_saida;
+        // Dias Confinado
+        $animal->origem_dias_confinado = $animal->dados_confinamento[$origem]->dias_confinado;
+        // Ganho Total
+        $animal->origem_ganho = $animal->dados_confinamento[$origem]->ganho;
+        // Ganho Medio
+        $animal->origem_ganho_medio = $animal->dados_confinamento[$origem]->ganho_medio;
+        // Cor Classificacao
+        $animal->origem_corClassificacao = $animal->dados_confinamento[$origem]->corClassificacao;
+
+        return $animal;
+    }
 }
 
 

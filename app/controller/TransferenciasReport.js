@@ -53,7 +53,7 @@ Ext.define('Rebanho.controller.TransferenciasReport', {
 
 
     onBtnClickReport: function (button){
-        console.log('PesagensReport - onBtnClickReport');
+        console.log('TransferenciasReport - onBtnClickReport');
 
         // Recuperar as informacoes do form e enviar a requisicao
         form = button.up('form');
@@ -70,7 +70,7 @@ Ext.define('Rebanho.controller.TransferenciasReport', {
         store.removeAll(true);
         store.add(record);
 
-        Ext.Ajax.timeout = 12000;
+        Ext.Ajax.timeout = 99000;
         store.sync();
 
         record.save();

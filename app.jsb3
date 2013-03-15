@@ -1005,6 +1005,16 @@
                     "path": "app/view/transferencias/"
                 },
                 {
+                    "clsName": "Rebanho.model.ComprasReport",
+                    "name": "ComprasReport.js",
+                    "path": "app/model/"
+                },
+                {
+                    "clsName": "Rebanho.view.compras.animais.ComprasReportWindow",
+                    "name": "ComprasReportWindow.js",
+                    "path": "app/view/compras/animais/"
+                },
+                {
                     "clsName": "Ext.util.History",
                     "name": "History.js",
                     "path": "extjs/src/util/"
@@ -1290,6 +1300,11 @@
                     "path": "app/store/"
                 },
                 {
+                    "clsName": "Rebanho.store.ComprasReport",
+                    "name": "ComprasReport.js",
+                    "path": "app/store/"
+                },
+                {
                     "clsName": "Ext.chart.LegendItem",
                     "name": "LegendItem.js",
                     "path": "extjs/src/chart/"
@@ -1567,6 +1582,16 @@
                 {
                     "clsName": "Rebanho.controller.TransferenciasReport",
                     "name": "TransferenciasReport.js",
+                    "path": "app/controller/"
+                },
+                {
+                    "clsName": "Rebanho.view.compras.animais.ComprasReportForm",
+                    "name": "ComprasReportForm.js",
+                    "path": "app/view/compras/animais/"
+                },
+                {
+                    "clsName": "Rebanho.controller.ComprasReport",
+                    "name": "ComprasReport.js",
                     "path": "app/controller/"
                 },
                 {

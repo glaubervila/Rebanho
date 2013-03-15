@@ -291,6 +291,11 @@ Ext.define('Rebanho.view.layout.Header', {
                     Ext.create('Rebanho.view.ocorrencias.pesagens.PesagensReportWindow',{});
                 },
             },{
+                text: 'Compras',
+                handler: function(){
+                    Ext.create('Rebanho.view.compras.animais.ComprasReportWindow',{});
+                },
+            },{
                 text: 'Transferências',
                 handler: function(){
                     Ext.create('Rebanho.view.transferencias.TransferenciasReportWindow',{});
@@ -301,7 +306,7 @@ Ext.define('Rebanho.view.layout.Header', {
 //             text: 'TESTE',
 //             handler: function(){
 //                 //var tabs = Ext.getCmp('mainTabpanel').novaAba('pesagensgrid');
-//                 //Ext.create('Rebanho.view.ocorrencias.pesagens.PesagensReportWindow',{});
+//                 Ext.create('Rebanho.view.compras.animais.ComprasReportWindow',{});
 // 
 //             },
 //         },

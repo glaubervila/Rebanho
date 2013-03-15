@@ -65914,6 +65914,68 @@ Ext.define('Rebanho.view.transferencias.TransferenciasReportWindow' ,{
         this.callParent(arguments);
     }
  });
+Ext.define('Rebanho.model.ComprasReport', {
+
+    extend: 'Ext.data.Model',
+
+    alias: 'ComprasReport',
+
+    fields: [
+        {name:'data_inicial', type: 'date', dateFormat: 'Y-m-d' },
+        {name:'data_final', type: 'date', dateFormat: 'Y-m-d' },
+        {name:'fornecedor_id', type: 'int'},
+        {name:'tipo_relatorio', type: 'int'},
+    ],
+
+});
+Ext.define('Rebanho.view.compras.animais.ComprasReportWindow' ,{
+    extend: 'Ext.window.Window',
+
+    alias : 'widget.comprasreportwindow',
+
+    title: 'Relatórios de Compras',
+
+    layout: 'fit',
+
+    autoShow: true,
+
+    width: 400,
+
+    height: 250,
+
+    iconCls: 'icon-report',
+
+    initComponent: function() {
+
+        var me = this;
+
+        Ext.applyIf(me, {
+
+            items: [{
+                xtype: 'panel',
+                layout: 'border',
+                items: [
+                {
+                    title: '',
+                    region: 'center',
+                    xtype: 'comprasreportform',
+                    margins: '5',
+                    bodyStyle:'padding:5px',
+                    width: 340,
+                },
+/*                {
+                    title: '',
+                    region: 'east',
+                    xtype: 'saidagrid',
+                    margins: '5',
+                    width: 460,
+                }*/]
+            }]
+        });
+
+        this.callParent(arguments);
+    }
+ });
 /**
  * History management component that allows you to register arbitrary tokens that signify application
  * history state on navigation actions.  You can then handle the history {@link #change} event in order
@@ -75281,6 +75343,65 @@ Ext.define('Rebanho.store.TransferenciasReport', {
         extraParams:{
             classe: 'TransferenciasReport',
             action: 'getRelatorioTransferencias',
+            returnJson: true,
+        },
+        writer: {
+            type: 'json',
+            root: 'data',
+            writeAllFields: true,
+            encode: true,
+            allowSingle: true,
+        },
+
+    },
+
+    listeners: {
+        beforesync: function (options, eOpts){
+
+            var loginMask = new Ext.LoadMask(Ext.getBody(), {msg:"Aguarde ..."});
+            loginMask.show();
+
+        },
+        write: function(store, operation){
+
+            Ext.getBody().unmask();
+
+            var obj = Ext.decode(operation.response.responseText);
+            //console.log(obj);
+            if (obj.success){
+
+                if (obj.filename){
+                    this.fireEvent('Download_Relatorio', this, obj);
+                }
+            }
+            else {
+                if (obj.msg){
+                    Ext.MessageBox.show({ title:'Atenção!', msg:obj.msg, buttons: Ext. MessageBox.OK, icon:  Ext.MessageBox.WARNING });
+                }
+                else {
+
+                    Ext.MessageBox.show({ title:'Atenção!', msg:"Desculpe, mas houve uma Falha e Não foi possivel realizar a operação", buttons: Ext. MessageBox.OK, icon:  Ext.MessageBox.WARNING });
+                }
+            }
+        }
+    }
+});
+Ext.define('Rebanho.store.ComprasReport', {
+    extend: 'Rebanho.store.MyStore',
+
+    remoteFilter: true,
+
+    autoSync: false,
+
+    model: 'Rebanho.model.ComprasReport',
+
+    proxy: {
+
+        type: 'rest',
+        url: 'php/main.php',
+        extraParams:{
+            classe: 'ComprasReport',
+            action: 'getRelatorioCompras',
             returnJson: true,
         },
         writer: {
@@ -96435,7 +96556,7 @@ Ext.define('Rebanho.controller.TransferenciasReport', {
 
 
     onBtnClickReport: function (button){
-        console.log('PesagensReport - onBtnClickReport');
+        console.log('TransferenciasReport - onBtnClickReport');
 
         // Recuperar as informacoes do form e enviar a requisicao
         form = button.up('form');
@@ -96452,7 +96573,7 @@ Ext.define('Rebanho.controller.TransferenciasReport', {
         store.removeAll(true);
         store.add(record);
 
-        Ext.Ajax.timeout = 12000;
+        Ext.Ajax.timeout = 99000;
         store.sync();
 
         record.save();
@@ -96492,6 +96613,236 @@ Ext.define('Rebanho.controller.TransferenciasReport', {
 
     },
 
+
+});
+
+
+
+Ext.define('Rebanho.view.compras.animais.ComprasReportForm' ,{
+    extend: 'Ext.form.Panel',
+
+    requires:[
+
+    ],
+    alias : 'widget.comprasreportform',
+
+    iconCls: 'icon-application_form',
+
+    layout: 'form',
+
+    initComponent: function() {
+        var me = this;
+
+        Ext.applyIf(me, {
+            fieldDefaults: {
+                labelAlign: 'top',
+                labelWidth: 80,
+            },
+            // Items do FormPanel Principal
+            items:[{
+                xtype: 'fieldset',
+                layout: 'form',
+                items: [{
+                    xtype: 'fieldcontainer',
+                    layout: 'hbox',
+                    defaultType:'textfield',
+                    fieldDefaults: {
+                        labelAlign: 'top',
+                    },
+                    items:[{
+                        xtype: 'datefield',
+                        fieldLabel:'Data Inicial',
+                        name: 'data_inicial',
+                        format: 'd/m/y',
+                        submitFormat: 'Y-m-d',
+                        flex:1,
+                        allowBlank: false,
+                    },{
+                        xtype: 'datefield',
+                        fieldLabel:'Data Final',
+                        name: 'data_final',
+                        format: 'd/m/y',
+                        submitFormat: 'Y-m-d',
+                        flex:1,
+                        margins: '0 0 0 5',
+                        allowBlank: false,
+                    }]
+                },{
+                    xtype: 'triggerfieldfornecedores',
+                    fieldLabel:'Forncedor',
+                    name: 'fornecedor_id',
+                    itemId: 'cmbFornecedores',
+                    flex: 1,
+                    lastQuery:'',
+                },{
+                    xtype:'combobox',
+                    fieldLabel:'Tipo de Lotes',
+                    name: 'tipo_relatorio',
+                    width: 100,
+                    margins: '0 0 0 5',
+                    typeAhead: true,
+                    triggerAction: 'all',
+                    value: '0',
+                    store: [
+                        ['0','Ativos'],
+                        //['1','Encerrados'],
+                        //['2','Todos'],
+                    ],
+                    flex: 1,
+                }]
+            }]
+            , bbar:{
+                items:['->',{
+                    xtype: 'button',
+                    text: 'Gerar Relatorio',
+                    action: 'action_report',
+                    iconCls: 'icon-report_32x32',
+                    scale: 'large'
+                }]
+            }
+        });
+
+        this.callParent(arguments);
+    }
+});
+Ext.define('Rebanho.controller.ComprasReport', {
+    extend: 'Ext.app.Controller',
+
+    stores: ['ComprasReport','Fornecedores'],
+
+    models: [
+       'Rebanho.model.ComprasReport',
+    ],
+
+    views: [
+         'compras.animais.ComprasReportWindow',
+         'compras.animais.ComprasReportForm',
+    ],
+
+    refs: [
+        {
+            ref: 'comprasReportForm',
+            selector: 'comprasreportform'
+        },
+        {
+            ref: 'comprasReportWindow',
+            selector: 'comprasreportwindow'
+        },
+    ],
+
+    // Chave estrangeira confinamento_id
+    confinamento: 0,
+
+    init: function() {
+
+        // ----------< Actions no Store >----------
+        // Eventos da Store
+        this.getComprasReportStore().addListener('Download_Relatorio',this.onDownloadRelatori, this);
+
+        this.control({
+
+            // ----------< Actions do Grid >----------
+
+
+            // ----------< Actions do Form >----------
+            'comprasreportform button[action=action_report]': {
+                click: this.onBtnClickReport
+            },
+              // Ao Clicar No Select de Fornecedores
+            'comprasreportform [name=fornecedor_id]': {
+                fornecedorestriggerclick: this.searchFornecedor
+            },
+            // Ao Selecionar um Confinamento
+//             'comprasreportform [name=confinamento_id]': {
+//                 select: this.onSelectCmbConfinamentos
+//             },
+
+
+            // ----------< Actions do Window >----------
+            // Show da Window
+            'comprasreportwindow':{
+                show: this.onShowWindow
+            }
+        });
+
+    },
+
+
+    onBtnClickReport: function (button){
+        console.log('ComprasReport - onBtnClickReport');
+
+        // Recuperar as informacoes do form e enviar a requisicao
+        form = button.up('form');
+        values = form.getValues();
+        record = Ext.create('Rebanho.model.ComprasReport', values);
+
+        // saber se tem confinamento
+        if (record.get('confinamento_id') == 0){
+            record.set('confinamento_id', this.confinamento);
+        }
+        //console.log(values);
+        store = this.getStore('ComprasReport');
+        //console.log(store);
+        store.removeAll(true);
+        store.add(record);
+
+        Ext.Ajax.timeout = 99999;
+        store.sync();
+
+        record.save();
+
+    },
+
+    onDownloadRelatori: function(store,obj){
+
+        url = "php/core/Download_Arquivo.php?file="+obj.file+'&path='+obj.path+'&filename='+obj.filename+'&mime='+obj.mime;
+
+        window.open(url,'_blank');
+    },
+
+
+    /** Funcao: onShowWindow
+     * executada no Evendo Show da Window do Form
+     */
+    onShowWindow: function(){
+        console.log('ComprasReportWindow - onShowWindow');
+
+        // Setando o Atributo Confinamento
+        this.confinamento = Ext.getCmp('main_viewport').getConfinamentoId();
+
+//         // Recuperado as Stores
+        store_fornecedores = this.getStore('Fornecedores');
+        // Carregando as Stores
+        store_fornecedores.clearFilter(true);
+        store_fornecedores.load();
+
+         
+// 
+//         // Recupera o Form
+//         var form = this.getComprasReportForm();
+// 
+//         combo_confinamento = form.down('#cmbConfinamento');
+// 
+//         if (this.confinamento > 0){
+// 
+//             combo_confinamento.setValue(this.confinamento);
+//             combo_confinamento.setDisabled(true);
+// 
+//             // Chamando o Metodo onSelectCmbConfinamentos para carregar os combos
+//             this.onSelectCmbConfinamentos(combo_confinamento, this.confinamento);
+// 
+//         }
+//         else {
+//             combo_confinamento.setValue(0);
+//             // Carregando as Stores
+//             store_fornecedores.clearFilter(true);
+//             store_fornecedores.load();
+//         }
+
+    },
+
+
+    
 
 });
 
@@ -107062,6 +107413,11 @@ Ext.define('Rebanho.view.layout.Header', {
                     Ext.create('Rebanho.view.ocorrencias.pesagens.PesagensReportWindow',{});
                 },
             },{
+                text: 'Compras',
+                handler: function(){
+                    Ext.create('Rebanho.view.compras.animais.ComprasReportWindow',{});
+                },
+            },{
                 text: 'Transferências',
                 handler: function(){
                     Ext.create('Rebanho.view.transferencias.TransferenciasReportWindow',{});
@@ -107072,7 +107428,7 @@ Ext.define('Rebanho.view.layout.Header', {
 //             text: 'TESTE',
 //             handler: function(){
 //                 //var tabs = Ext.getCmp('mainTabpanel').novaAba('pesagensgrid');
-//                 //Ext.create('Rebanho.view.ocorrencias.pesagens.PesagensReportWindow',{});
+//                 Ext.create('Rebanho.view.compras.animais.ComprasReportWindow',{});
 // 
 //             },
 //         },

@@ -887,6 +887,8 @@ class Animais extends Base {
                 // Peso Compra
                 $pesagem_compra  = Pesagens::getPesagem($animal_id, $confinamento->id, 3);
                 $dados->peso_compra = $pesagem_compra->peso;
+                // Data Compra
+                $dados->data_compra = $pesagem_compra->peso;
 
                 // Ultima Pesagem
                 $pesagem_recente  = Pesagens::getPesagemRecente($animal_id, $confinamento->id);
