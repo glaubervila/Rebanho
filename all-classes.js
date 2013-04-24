@@ -65809,6 +65809,79 @@ Ext.define('Rebanho.view.vendas.clientes.ClientesWindow' ,{
         this.callParent(arguments);
     }
  });
+Ext.define('Rebanho.model.AnimaisAtivosReport', {
+
+    extend: 'Ext.data.Model',
+
+    alias: 'AnimaisAtivosReport',
+
+    fields: [
+        {name:'confinamento_id', type: 'int'},
+        {name:'quadra_id', type: 'int'},
+    ],
+
+});
+Ext.define('Rebanho.view.animais.AnimaisAtivosReportWindow' ,{
+    extend: 'Ext.window.Window',
+
+    alias : 'widget.animaisativosreportwindow',
+
+    title: 'Relatórios de Animais Ativos',
+
+    layout: 'fit',
+
+    autoShow: true,
+
+    width: 230,
+
+    height: 250,
+
+    //iconCls: 'icon-',
+
+    initComponent: function() {
+
+        var me = this;
+
+        Ext.applyIf(me, {
+
+            items: [
+                Ext.create('Ext.form.Panel',{
+                    itemId:'formAnimaisAtivosReport',
+                    fieldDefaults: {
+                        labelAlign: 'top',
+                        labelWidth: 100
+                    },
+                    layout:'form',
+                    bodyStyle:'padding:10px',
+                    items:[{
+                        xtype:'cmbconfinamento',
+                        itemId:'cmbConfinamento',
+                        fieldLabel:'Confinamento',
+                        name: 'confinamento_id'
+                    },{
+                        xtype:'cmbquadras',
+                        itemId:'cmbQuadra',
+                        fieldLabel:'Quadra',
+                        name: 'quadra_id',
+                        disabled: true
+                    }]
+                })
+            ],
+            // Barra e Menus
+            bbar:{
+                items:['->',{
+                    xtype: 'button',
+                    text: 'Gerar Relatorio',
+                    action: 'action_report',
+                    iconCls: 'icon-report_32x32',
+                    scale: 'large'
+                }]
+            }
+
+        });
+        this.callParent(arguments);
+    }
+ });
 Ext.define('Rebanho.model.Relatorio', {
 
     extend: 'Ext.data.Model',
@@ -75327,6 +75400,192 @@ Ext.define('Rebanho.store.Clientes', {
     },
 
 });
+Ext.define('Rebanho.store.AnimaisAtivosReport', {
+    extend: 'Rebanho.store.MyStore',
+
+    remoteFilter: true,
+
+    autoSync: false,
+
+    model: 'Rebanho.model.AnimaisAtivosReport',
+
+    proxy: {
+
+        type: 'rest',
+        url: 'php/main.php',
+        extraParams:{
+            classe: 'AnimaisAtivosReport',
+            action: 'getRelatorioAnimaisAtivos',
+            returnJson: true,
+        },
+        writer: {
+            type: 'json',
+            root: 'data',
+            writeAllFields: true,
+            encode: true,
+            allowSingle: true,
+        },
+
+    },
+
+    listeners: {
+        beforesync: function (options, eOpts){
+
+            var loginMask = new Ext.LoadMask(Ext.getBody(), {msg:"Aguarde ..."});
+            loginMask.show();
+
+        },
+        write: function(store, operation){
+
+            Ext.getBody().unmask();
+
+            var obj = Ext.decode(operation.response.responseText);
+            //console.log(obj);
+            if (obj.success){
+
+                if (obj.filename){
+                    this.fireEvent('Download_Relatorio', this, obj);
+                }
+            }
+            else {
+                if (obj.msg){
+                    Ext.MessageBox.show({ title:'Atenção!', msg:obj.msg, buttons: Ext. MessageBox.OK, icon:  Ext.MessageBox.WARNING });
+                }
+                else {
+
+                    Ext.MessageBox.show({ title:'Atenção!', msg:"Desculpe, mas houve uma Falha e Não foi possivel realizar a operação", buttons: Ext. MessageBox.OK, icon:  Ext.MessageBox.WARNING });
+                }
+            }
+        }
+    }
+});
+Ext.define('Rebanho.controller.AnimaisAtivosReport', {
+    extend: 'Ext.app.Controller',
+
+    stores: ['AnimaisAtivosReport'],
+
+    models: [
+        'Rebanho.model.AnimaisAtivosReport',
+    ],
+
+    views: [
+         'animais.AnimaisAtivosReportWindow'
+    ],
+
+    refs: [
+        {
+            ref: 'animaisAtivosReportWindow',
+            selector: 'animaisativosreportwindow'
+        },
+    ],
+
+    // Chave estrangeira confinamento_id
+    confinamento: 0,
+
+    init: function() {
+
+        // ----------< Actions no Store >----------
+        // Eventos da Store
+        this.getAnimaisAtivosReportStore().addListener('Download_Relatorio',this.onDownloadRelatori, this);
+
+        this.control({
+
+            // ----------< Actions do Grid >----------
+
+            // Ao Clicar no Botao Novo
+
+            'animaisativosreportwindow button[action=action_report]': {
+                click: this.onBtnClickReport
+            },
+
+
+            // Ao Selecionar o Confinamento
+            'animaisativosreportwindow [itemId=cmbConfinamento]': {
+                select: this.onSelectCmbConfinamentos
+            },
+            // ----------< Actions do Window >----------
+            // Show da Window
+            'animaisativosreportwindow':{
+                show: this.onShowWindow
+            }
+        });
+
+    },
+
+    /** Funcao: onShowWindow
+     * executada no Evendo Show da Window
+     */
+    onShowWindow: function(window){
+        console.log('AnimaisAtivosReportWindow - onShowWindow');
+
+        // Setando o Atributo Confinamento
+        this.confinamento = Ext.getCmp('main_viewport').getConfinamentoId();
+
+        // Recupera o Form
+        form = window.down('#formAnimaisAtivosReport');
+
+        combo_confinamento = form.down('#cmbConfinamento');
+        if (this.confinamento > 0){
+ 
+            combo_confinamento.setValue(this.confinamento);
+            combo_confinamento.setReadOnly(true);
+
+            // Pegar a combo quadra e setar um valor
+            combo_quadra = form.down('#cmbQuadra');
+            combo_quadra.setDisabled(false);
+            combo_quadra.filtrarConfinamento(this.confinamento);
+        }
+        else {
+            combo_confinamento.setValue(0);
+        }
+    },
+
+
+    onSelectCmbConfinamentos: function(combo, record, options){
+        console.log('AnimaisAtivosReportWindow - onSelectCmbConfinamentos');
+        // Setando o Confinamento
+        this.confinamento = combo.getValue();
+        form = combo.up('#formAnimaisAtivosReport');
+
+        // Pegar a combo quadra e setar um valor
+        combo_quadra = form.down('#cmbQuadra');
+        combo_quadra.setDisabled(false);
+        combo_quadra.filtrarConfinamento(this.confinamento);
+    },
+
+    onBtnClickReport: function (button){
+        console.log('AnimaisAtivosReport - onBtnClickReport');
+
+        Ext.Ajax.timeout = 12000;
+
+        // Recuperar as informacoes do form e enviar a requisicao
+        form = this.getAnimaisAtivosReportWindow().down('#formAnimaisAtivosReport');
+
+        values = form.getForm().getValues();
+
+        record = Ext.create('Rebanho.model.AnimaisAtivosReport', values);
+
+        store = this.getStore('AnimaisAtivosReport');
+
+        store.removeAll(true);
+        store.add(record);
+        store.sync();
+
+        record.save();
+
+    },
+
+    onDownloadRelatori: function(store,obj){
+
+        url = "php/core/Download_Arquivo.php?file="+obj.file+'&path='+obj.path+'&filename='+obj.filename+'&mime='+obj.mime;
+
+        window.open(url,'_blank');
+    },
+
+});
+
+
+
 Ext.define('Rebanho.store.TransferenciasReport', {
     extend: 'Rebanho.store.MyStore',
 
@@ -96573,7 +96832,7 @@ Ext.define('Rebanho.controller.TransferenciasReport', {
         store.removeAll(true);
         store.add(record);
 
-        Ext.Ajax.timeout = 99000;
+        Ext.Ajax.timeout = 99999;
         store.sync();
 
         record.save();
@@ -107408,27 +107667,32 @@ Ext.define('Rebanho.view.layout.Header', {
             scale: 'large',
             iconCls:'icon-report_32x32',
             menu: [{
+                text: 'Animais Ativos',
+                handler: function(){
+                    Ext.create('Rebanho.view.animais.AnimaisAtivosReportWindow',{});
+                }
+            },{
                 text: 'Pesagens',
                 handler: function(){
                     Ext.create('Rebanho.view.ocorrencias.pesagens.PesagensReportWindow',{});
-                },
+                }
             },{
                 text: 'Compras',
                 handler: function(){
                     Ext.create('Rebanho.view.compras.animais.ComprasReportWindow',{});
-                },
+                }
             },{
                 text: 'Transferências',
                 handler: function(){
                     Ext.create('Rebanho.view.transferencias.TransferenciasReportWindow',{});
-                },
+                }
             }]
         }
 //         ,{
 //             text: 'TESTE',
 //             handler: function(){
 //                 //var tabs = Ext.getCmp('mainTabpanel').novaAba('pesagensgrid');
-//                 Ext.create('Rebanho.view.compras.animais.ComprasReportWindow',{});
+//                 Ext.create('Rebanho.view.animais.AnimaisAtivosReportWindow',{});
 // 
 //             },
 //         },

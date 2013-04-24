@@ -109,19 +109,17 @@ class PesagensReport extends Base {
 
     public function ResumoConfinamento($data_filter, $data_report){
 
-       // echo "Entrou aki";
-//         //var_dump($data_report);
         $pdf = new ResumoConfinamentoPDF();
-// 
+
         $pdf->setDataFilter($this->criar_filtros($data_filter));
-// 
+
         $pdf->setRepeatHeader(true);
         $pdf->setDataReport($data_report->data);
-// 
+
         $pdf->resumoConfinamento();
-// 
+
         $return = $pdf->Save('ResumoConfinamento.pdf', 'F');
-// 
+
         echo json_encode($return);
 
     }

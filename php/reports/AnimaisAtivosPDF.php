@@ -1,15 +1,14 @@
 <?php
 
+class AnimaisAtivosPDF extends appReports{
 
-class PesagensResumidoPDF extends appReports{
-
-    private $orientacao ='P'; //orientação P-Retrato ou L-Paisagem
+    private $orientacao ='L'; //orientação P-Retrato ou L-Paisagem
     private $papel      ='A4';     //formato do papel
     private $unidade    = 'mm';
 
     private $destino = 'F';  //destivo do arquivo pdf I-borwser, S-retorna o arquivo, D-força download, F-salva em arquivo local
     private $pdfDir  = '';      //diretorio para salvar o pdf com a opção de destino = F
-    private $pdfName = 'PesagensResumido.pdf';
+    private $pdfName = 'AnimaisAtivos.pdf';
 
    public function GeraPdf(){
 
@@ -18,7 +17,7 @@ class PesagensResumidoPDF extends appReports{
         $this->AliasNbPages();
         $this->AddPage();
 
-        //$this->SetMargins(5, 5, 5);
+        $this->SetMargins(10, 10, 10);
         $this->SetAutoPageBreak(true, 10);
 
         $this->SetLineWidth(0.1);
@@ -32,7 +31,6 @@ class PesagensResumidoPDF extends appReports{
     // // Page header
     function Header()
     {
-
         if ($this->repeatHeader){
             $this->makeHeader();
         }
@@ -42,7 +40,6 @@ class PesagensResumidoPDF extends appReports{
             }
         }
     }
-
 
     public function makeHeader(){
 
@@ -56,19 +53,16 @@ class PesagensResumidoPDF extends appReports{
         $this->Ln();
         // Nome do Relatorio
         $this->SetFont('Arial','B',10);
-        $this->Cell(0, 5, utf8_decode("Relatório de Pesagens - Resumido"), 0, 0, 'L');
+        $this->Cell(0, 5, utf8_decode("Relatório de Animais Ativos"), 0, 0, 'L');
         $this->Ln();
-        // Data Inicial
+
+        // Quadra
         $this->SetFont('Arial','B',8);
-        $this->Cell(20, 4, utf8_decode("Data Inicial: "), 0, 0, 'L');
+        $this->Cell(15, 4, utf8_decode("Quadra: "), 0, 0, 'L');
         $this->SetFont('Arial','',8);
-        $this->Cell(20, 4, utf8_decode($this->data_filter->data_inicial), 0, 0, 'L');
-        // Data Final
-        $this->SetFont('Arial','B',8);
-        $this->Cell(20, 4, utf8_decode("Data Final: "), 0, 0, 'L');
-        $this->SetFont('Arial','',8);
-        $this->Cell(20, 4, utf8_decode($this->data_filter->data_final), 0, 0, 'L');
+        $this->Cell(20, 4, utf8_decode($this->data_filter->quadra), 0, 0, 'L');
         $this->Ln();
+
         // Mostrando Resultados
         $this->SetFont('Arial','B',8);
         $this->Cell(25, 4, utf8_decode("Data Relatório: "), 0, 0, 'L');
@@ -84,7 +78,9 @@ class PesagensResumidoPDF extends appReports{
 
     }
 
-    public function resumido(){
+
+
+    public function AnimaisAtivos(){
 
         $this->GeraPdf();
 
@@ -95,7 +91,7 @@ class PesagensResumidoPDF extends appReports{
         // cria os estilos utilizados no documento
         $this->addStyle('gridTitle', 'Times', '10', 'B', '#1F497D', '#E0EBFF');
         $this->addStyle('rowP', 'Times', '10', '',  '#000000', '#FFFFFF', 1);
-        $this->addStyle('rowI', 'Times', '10', '',  '#000000', '#FFFFFF', 1);
+        $this->addStyle('rowI', 'Times', '10', '',  '#000000', '#F0F0F0', 1);
 
 
         //$this->gridAddColumn('LINENUNBER'    , 'N', 'center', 8, FALSE,TRUE);
@@ -106,11 +102,11 @@ class PesagensResumidoPDF extends appReports{
         $this->gridAddColumn('data_entrada', 'Entrada', 'center', 20, 'dateBr', false,false,'left');
         $this->gridAddColumn('peso_entrada', 'Peso Entrada', 'center', 22);
         $this->gridAddColumn('dias_confinamento', 'Dias/Conf', 'center', 20);
-        $this->gridAddColumn('tipo_pesagem_label', 'TP', 'center', 5, 'primeiraLetra');
-        $this->gridAddColumn('data_pesagem', 'Data Pesagem', 'center', 25, 'dateBr', false,false,'left');
-        $this->gridAddColumn('peso', 'Peso', 'center', 20);
-        $this->gridAddColumn('ganho', 'Ganho', 'center', 20);
-        $this->gridAddColumn('ganho_medio', 'Ganho/Dia', 'center', 25, 'corClassificacao');
+
+        $this->gridAddColumn('data_ultima_pesagem', 'Data Pesagem', 'center', 25, 'dateBr', false,false,'left');
+        $this->gridAddColumn('peso_atual', 'Peso', 'center', 20);
+        $this->gridAddColumn('peso_ganho', 'Ganho', 'center', 20);
+//        $this->gridAddColumn('ganho_diario', 'Ganho/Dia', 'center', 25, 'corClassificacao');
 
         $this->simpleGrid();
 
@@ -129,7 +125,7 @@ class PesagensResumidoPDF extends appReports{
         $this->gridAddColumn('descricao', 'Legenda Ganho kg/Dia', 'center', 50, null,null,'left');
         $this->gridAddColumn('cor', 'Cor', 'center', 20, 'corLegenda');
 
-// 
+
         $this->simpleGrid();
 
     }
@@ -143,7 +139,6 @@ class PesagensResumidoPDF extends appReports{
         $return->tipo = 'BackgroundColor';
         $return->value = $ganho_medio;
         $return->backgroundColor = $cor;
-
         return $return;
     }
 

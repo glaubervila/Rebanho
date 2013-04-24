@@ -23,7 +23,7 @@ class TransferenciasPDF extends appReports{
 
         $this->SetLineWidth(0.1);
 
-        $this->SetDrawColor(100,100,100);
+        $this->SetDrawColor(0,0,0);
         $this->SetFillColor(255,255,255);
         $this->SetTextColor(0,0,0);
 
@@ -179,8 +179,8 @@ class TransferenciasPDF extends appReports{
 
         // cria os estilos utilizados no documento
         $this->addStyle('gridTitle', 'Times', '10', 'B', '#1F497D', '#E0EBFF');
-        $this->addStyle('rowP', 'Times', '10', '',  '#000000', '#FFFFFF', 'T');
-        $this->addStyle('rowI', 'Times', '10', '',  '#000000', '#FFFFFF', 'T');
+        $this->addStyle('rowP', 'Times', '10', '',  '#000000', '#FFFFFF', 1);
+        $this->addStyle('rowI', 'Times', '10', '',  '#000000', '#FFFFFF', 1);
 
 
         $this->gridAddColumn('LINENUNBER'    , 'N', 'center', 8, FALSE,TRUE);
@@ -214,8 +214,8 @@ class TransferenciasPDF extends appReports{
 
         // cria os estilos utilizados no documento
         $this->addStyle('gridTitle', 'Times', '10', 'B', '#1F497D', '#E0EBFF');
-        $this->addStyle('rowP', 'Times', '10', '',  '#000000', '#FFFFFF', 'T');
-        $this->addStyle('rowI', 'Times', '10', '',  '#000000', '#FFFFFF', 'T');
+        $this->addStyle('rowP', 'Times', '10', '',  '#000000', '#FFFFFF', 1);
+        $this->addStyle('rowI', 'Times', '10', '',  '#000000', '#FFFFFF', 1);
 
 
         $this->gridAddColumn('LINENUNBER'    , 'N', 'center', 8, FALSE,TRUE);
@@ -223,6 +223,7 @@ class TransferenciasPDF extends appReports{
         $this->gridAddColumn('sexo', 'S', 'center', 5);
         $this->gridAddColumn('origem_data_entrada', 'Entrada', 'center', 20, 'dateBr');
         $this->gridAddColumn('origem_peso_entrada', 'Peso Entrada', 'center', 25);
+        $this->gridAddColumn('origem_data_saida', 'Entrada', 'center', 20, 'dateBr');
         $this->gridAddColumn('origem_peso_saida', 'Peso Saida', 'center', 20);
         $this->gridAddColumn('origem_dias_confinado', 'Permanencia', 'center', 25);
         $this->gridAddColumn('origem_ganho', 'Ganho', 'center', 20);

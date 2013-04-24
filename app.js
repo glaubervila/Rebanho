@@ -81,6 +81,7 @@ Ext.application({
         'Clientes',
 
         // Relatorios
+        'AnimaisAtivosReport',
         'PesagensReport',
         'TransferenciasReport',
         'ComprasReport'

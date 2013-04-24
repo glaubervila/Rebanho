@@ -286,27 +286,32 @@ Ext.define('Rebanho.view.layout.Header', {
             scale: 'large',
             iconCls:'icon-report_32x32',
             menu: [{
+                text: 'Animais Ativos',
+                handler: function(){
+                    Ext.create('Rebanho.view.animais.AnimaisAtivosReportWindow',{});
+                }
+            },{
                 text: 'Pesagens',
                 handler: function(){
                     Ext.create('Rebanho.view.ocorrencias.pesagens.PesagensReportWindow',{});
-                },
+                }
             },{
                 text: 'Compras',
                 handler: function(){
                     Ext.create('Rebanho.view.compras.animais.ComprasReportWindow',{});
-                },
+                }
             },{
                 text: 'Transferências',
                 handler: function(){
                     Ext.create('Rebanho.view.transferencias.TransferenciasReportWindow',{});
-                },
+                }
             }]
         }
 //         ,{
 //             text: 'TESTE',
 //             handler: function(){
 //                 //var tabs = Ext.getCmp('mainTabpanel').novaAba('pesagensgrid');
-//                 Ext.create('Rebanho.view.compras.animais.ComprasReportWindow',{});
+//                 Ext.create('Rebanho.view.animais.AnimaisAtivosReportWindow',{});
 // 
 //             },
 //         },

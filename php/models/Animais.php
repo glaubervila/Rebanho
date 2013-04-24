@@ -207,7 +207,7 @@ class Animais extends Base {
             // Retornar Todos os Codigos para o animal
         }
 
-        $db = $this->getDb();
+        $db = Base::getDb();
         $stm = $db->prepare($sql);
         $stm->execute();
         return $stm->fetchAll(\PDO::FETCH_OBJ);
@@ -304,12 +304,13 @@ class Animais extends Base {
     }
 
 
-    public function getAnimaisAtivos($data){
+    public function getAnimaisAtivos($data, $json = true){
 
         $strFiltros = $this->parseFilter($data["filter"]);
 //        $strSorters = $this->parseSorter($data["sort"]);
-
-        $aResult = $this->filter(null, 'animais', $strFiltros, null, false);
+        // Adicionando Filtro para retornar somente os animais ativos
+        $strFiltros .= " AND status = 1 ";
+        $aResult = $this->filter(null, 'vw_animais', $strFiltros, null, false);
 
         // Recuperar as Informacoes de cada animal
         foreach ($aResult as $row){
@@ -320,21 +321,21 @@ class Animais extends Base {
             $codigos = $this->getCodigosById($row->id, $row->confinamento_id);
             $registro->codigo = $codigos[0]->codigo;
 
-            // Informacoes da Compra
-            $compra = $this->findBy('id', $registro->compra_id, 'compras');
-            $registro->fornecedor_id = $compra->fornecedor_id;
-            $registro->idade_entrada = $compra->idade;
-            $registro->valor_arroba = $compra->valor_arroba;
-            $registro->numero_nota = $compra->numero_nota;
-            $registro->serie_nota = $compra->serie_nota;
+//             // Informacoes da Compra
+//             $compra = $this->findBy('id', $registro->compra_id, 'compras');
+//             $registro->fornecedor_id = $compra->fornecedor_id;
+//             $registro->idade_entrada = $compra->idade;
+//             $registro->valor_arroba = $compra->valor_arroba;
+//             $registro->numero_nota = $compra->numero_nota;
+//             $registro->serie_nota = $compra->serie_nota;
 
-            // Informacoes do Fornecedor
-            $fornecedor = $this->findBy('id', $registro->fornecedor_id, 'fornecedores');
-            $registro->fornecedor = $fornecedor->nome;
+//             // Informacoes do Fornecedor
+//             $fornecedor = $this->findBy('id', $registro->fornecedor_id, 'fornecedores');
+//             $registro->fornecedor = $fornecedor->nome;
 
-            // Informacoes da Quadra
-            $quadra = $this->find($row->quadra_id, 'quadras', 'quadra');
-            $registro->quadra = $quadra->quadra;
+//             // Informacoes da Quadra
+//             $quadra = $this->find($row->quadra_id, 'quadras', 'quadra');
+//             $registro->quadra = $quadra->quadra;
 
             $estatistica = $this->getEstatiscaPorAnimal($row->id);
             $registro->peso_entrada        = $estatistica->peso_entrada;
@@ -346,7 +347,8 @@ class Animais extends Base {
             $registro->ganho_diario        = $estatistica->ganho_diario;
 
             // Calcular Idade Atual
-            $registro->idade = $this->calcularIdade($compra->idade, $registro->dias_confinamento);
+            //$registro->idade = $this->calcularIdade($compra->idade, $registro->dias_confinamento);
+            $registro->idade = $this->calcularIdade($registro->idade_entrada, $registro->dias_confinamento);
 
             $aRegistros[] = $registro;
         }
@@ -358,7 +360,7 @@ class Animais extends Base {
         $result->data    = $aRegistros;
         $result->total   = count($aRegistros);
 
-        if ($data["returnJson"]){
+        if (($data["returnJson"]) AND ($json == true)){
 
             echo json_encode($result);
         }
@@ -411,7 +413,7 @@ class Animais extends Base {
         if ($obj->peso_atual > 0){
             // Peso Ganho neste Confinamento
             $peso_ganho = ($obj->peso_atual - $obj->peso_entrada);
-            $obj->peso_ganho = number_format($peso_ganho, 3, '.',',');
+            $obj->peso_ganho = number_format($peso_ganho, 2, '.',',');
 
             // Calculando a Media Diaria de Peso Ganho
             $ganho_diario = ($obj->peso_ganho / $obj->dias_confinamento);
@@ -946,6 +948,57 @@ class Animais extends Base {
         }
         //var_dump($animal);
         return $animal;
+    }
+
+    public function getAnimaisAtivosReport($data, $json = true){
+
+
+        //getAnimaisAtivos
+        $aFiltros[] = "confinamento_id = 2";
+        //$aFiltros[] = "quadra_id = 3";
+        $aFiltros[] = "status = 1";
+
+        $strFiltros = implode($aFiltros,' AND ');
+
+        $aResult = $this->filter(null, 'vw_animais', $strFiltros, null, false);
+        // Recuperar as Informacoes de cada animal
+        foreach ($aResult as $row){
+
+            $registro = $row;
+
+            // Informacoes do Codigo
+            $codigos = Animais::getCodigosById($row->id, $row->confinamento_id);
+            $registro->codigo = $codigos[0]->codigo;
+
+
+
+            $estatistica = Animais::getEstatiscaPorAnimal($row->id);
+            $registro->peso_entrada        = $estatistica->peso_entrada;
+            $registro->data_entrada        = $estatistica->data_entrada;
+            $registro->peso_atual          = $estatistica->peso_atual;
+            $registro->data_ultima_pesagem = $estatistica->data_ultima_pesagem;
+            $registro->dias_confinamento   = $estatistica->dias_confinamento;
+            $registro->peso_ganho          = $estatistica->peso_ganho;
+            $registro->ganho_diario        = $estatistica->ganho_diario;
+
+            // Calcular Idade Atual
+            $registro->idade = Animais::calcularIdade($registro->idade_entrada, $registro->dias_confinamento);
+
+            // Recuperando a Classificacao
+            $registro->classificacao = Pesagens::getClassificacaoMediaDia($registro->ganho_diario);
+
+            $registro->corClassificacao = Pesagens::getCorClassificacao($registro->classificacao);
+
+
+             $aRegistros[] = $registro;
+        }
+
+        $result = new StdClass();
+        $result->success = true;
+        $result->data    = $aRegistros;
+        $result->total   = count($aRegistros);
+
+        return $result;
     }
 
 // QUERY PARA IDADE DE ANIMAIS E PERMANENCIA

@@ -983,6 +983,28 @@ class Pesagens extends Base {
 
         switch ($media){
 
+            // Abaixo de 600  = 1
+            case($media < 0.600):
+                $classificacao = 1;
+            break;
+            // Entre 600 e 800 
+            case(($media >= 0.600) && ($media < 0.800)):
+                $classificacao = 2;
+            break;
+            // Entre 800 e 1kg
+            case(($media >= 0.800) && ($media < 1)):
+                $classificacao = 3;
+            break;
+            // Entre 1kg e 1,500
+            case(($media >= 1) && ($media < 1.500)):
+                $classificacao = 4;
+            break;
+            // Entre 
+            case($media >= 1.5):
+                $classificacao = 5;
+            break;
+
+/*            // Media calculada de 100 em 100 gramas
             // media ACIMA de 1kg
             case(($media >= 1) && ($media < 1.1)):
                 $classificacao = 1;
@@ -1015,7 +1037,7 @@ class Pesagens extends Base {
             break;
             case($media <= 0.20):
                 $classificacao = -5;
-            break;
+            break;*/
         }
 
         return $classificacao;
@@ -1025,7 +1047,22 @@ class Pesagens extends Base {
 
     public function getCorClassificacao($classificacao){
 
-        /** Tabela de Cores
+        /** Tabela de Cores para escala de 200 
+
+             1 =   Vermelho       - #FF0000
+             2 =   Azul Claro     - #7FFFD4
+             3 =   Verde          - #00FF00
+             4 =   Amarelo        - #FFFF00
+             5 =   Verde Claro    - #9AFF9A
+        **/
+        $cor[1]  = "#FF0000";
+        $cor[2]  = "#7FFFD4";
+        $cor[3]  = "#00FF00";
+        $cor[4]  = "#FFFF00";
+        $cor[5]  = "#9AFF9A";
+
+
+        /** Tabela de Cores para escala de 100 e 100
             -5 =   Vermelho       - #FF0000
             -4 =   Violeta Escuro - #551A8B
             -3 =   Violeta        - #9370DB
@@ -1038,20 +1075,18 @@ class Pesagens extends Base {
              4 =   Verde Claro    - #9AFF9A
              5 =   Verde          - #00FF00
         **/
-
-
-        $cor = array();
-        $cor[-5] = "#FF0000";
-        $cor[-4] = "#551A8B";
-        $cor[-3] = "#9370DB";
-        $cor[-2] = "#FF00FF";
-        $cor[-1] = "#FFA500";
-        $cor[0]  = "#FFD700";
-        $cor[1]  = "#FFFF00";
-        $cor[2]  = "#7FFFD4";
-        $cor[3]  = "#00FFFF";
-        $cor[4]  = "#9AFF9A";
-        $cor[5]  = "#00FF00";
+//         $cor = array();
+//         $cor[-5] = "#FF0000";
+//         $cor[-4] = "#551A8B";
+//         $cor[-3] = "#9370DB";
+//         $cor[-2] = "#FF00FF";
+//         $cor[-1] = "#FFA500";
+//         $cor[0]  = "#FFD700";
+//         $cor[1]  = "#FFFF00";
+//         $cor[2]  = "#7FFFD4";
+//         $cor[3]  = "#00FFFF";
+//         $cor[4]  = "#9AFF9A";
+//         $cor[5]  = "#00FF00";
 
         return $cor[$classificacao];
     }
@@ -1064,54 +1099,79 @@ class Pesagens extends Base {
         $aClas = array();
 
             $aClas[0] = new StdClass();
-            $aClas[0]->indice = -5;
-            $aClas[0]->descricao = 'Menos de 0.2kg';
+            $aClas[0]->indice = 1;
+            $aClas[0]->descricao = 'Menos de 0.6kg';
             $aClas[0]->cor = Pesagens::getCorClassificacao(-5);
 
             $aClas[1] = new StdClass();
-            $aClas[1]->indice = -4;
-            $aClas[1]->descricao = '0.2kg á 0.3kg';
+            $aClas[1]->indice = 2;
+            $aClas[1]->descricao = '0.6kg á 0.8kg';
             $aClas[1]->cor = Pesagens::getCorClassificacao(-4);
 
             $aClas[2] = new StdClass();
-            $aClas[2]->indice = -3;
-            $aClas[2]->descricao = '0.3kg á 0.4kg';
+            $aClas[2]->indice = 3;
+            $aClas[2]->descricao = '0.8kg á 1kg';
             $aClas[2]->cor = Pesagens::getCorClassificacao(-3);
 
             $aClas[3] = new StdClass();
-            $aClas[3]->indice = -2;
-            $aClas[3]->descricao = '0.4kg á 0.5kg';
+            $aClas[3]->indice = 4;
+            $aClas[3]->descricao = '1kg á 1.5kg';
             $aClas[3]->cor = Pesagens::getCorClassificacao(-2);
 
             $aClas[4] = new StdClass();
-            $aClas[4]->indice = -1;
-            $aClas[4]->descricao = '0.5kg á 1kg';
+            $aClas[4]->indice = 5;
+            $aClas[4]->descricao = 'Maior 1.5kg';
             $aClas[4]->cor = Pesagens::getCorClassificacao(-1);
 
-            $aClas[5] = new StdClass();
-            $aClas[5]->indice = 1;
-            $aClas[5]->descricao = '1kg á 1.1kg';
-            $aClas[5]->cor = Pesagens::getCorClassificacao(1);
-
-            $aClas[6] = new StdClass();
-            $aClas[6]->indice = 2;
-            $aClas[6]->descricao = '1.1kg á 1.2kg';
-            $aClas[6]->cor = Pesagens::getCorClassificacao(2);
-
-            $aClas[7] = new StdClass();
-            $aClas[7]->indice = 3;
-            $aClas[7]->descricao = '1.2kg á 1.3kg';
-            $aClas[7]->cor = Pesagens::getCorClassificacao(3);
-
-            $aClas[8] = new StdClass();
-            $aClas[8]->indice = 4;
-            $aClas[8]->descricao = '1.3kg á 1.4kg';
-            $aClas[8]->cor = Pesagens::getCorClassificacao(4);
-
-            $aClas[9] = new StdClass();
-            $aClas[9]->indice = 5;
-            $aClas[9]->descricao = 'Mais 1.4kg';
-            $aClas[9]->cor = Pesagens::getCorClassificacao(5);
+//             $aClas[0] = new StdClass();
+//             $aClas[0]->indice = -5;
+//             $aClas[0]->descricao = 'Menos de 0.2kg';
+//             $aClas[0]->cor = Pesagens::getCorClassificacao(-5);
+// 
+//             $aClas[1] = new StdClass();
+//             $aClas[1]->indice = -4;
+//             $aClas[1]->descricao = '0.2kg á 0.3kg';
+//             $aClas[1]->cor = Pesagens::getCorClassificacao(-4);
+// 
+//             $aClas[2] = new StdClass();
+//             $aClas[2]->indice = -3;
+//             $aClas[2]->descricao = '0.3kg á 0.4kg';
+//             $aClas[2]->cor = Pesagens::getCorClassificacao(-3);
+// 
+//             $aClas[3] = new StdClass();
+//             $aClas[3]->indice = -2;
+//             $aClas[3]->descricao = '0.4kg á 0.5kg';
+//             $aClas[3]->cor = Pesagens::getCorClassificacao(-2);
+// 
+//             $aClas[4] = new StdClass();
+//             $aClas[4]->indice = -1;
+//             $aClas[4]->descricao = '0.5kg á 1kg';
+//             $aClas[4]->cor = Pesagens::getCorClassificacao(-1);
+// 
+//             $aClas[5] = new StdClass();
+//             $aClas[5]->indice = 1;
+//             $aClas[5]->descricao = '1kg á 1.1kg';
+//             $aClas[5]->cor = Pesagens::getCorClassificacao(1);
+// 
+//             $aClas[6] = new StdClass();
+//             $aClas[6]->indice = 2;
+//             $aClas[6]->descricao = '1.1kg á 1.2kg';
+//             $aClas[6]->cor = Pesagens::getCorClassificacao(2);
+// 
+//             $aClas[7] = new StdClass();
+//             $aClas[7]->indice = 3;
+//             $aClas[7]->descricao = '1.2kg á 1.3kg';
+//             $aClas[7]->cor = Pesagens::getCorClassificacao(3);
+// 
+//             $aClas[8] = new StdClass();
+//             $aClas[8]->indice = 4;
+//             $aClas[8]->descricao = '1.3kg á 1.4kg';
+//             $aClas[8]->cor = Pesagens::getCorClassificacao(4);
+// 
+//             $aClas[9] = new StdClass();
+//             $aClas[9]->indice = 5;
+//             $aClas[9]->descricao = 'Mais 1.4kg';
+//             $aClas[9]->cor = Pesagens::getCorClassificacao(5);
 
 
         return $aClas;

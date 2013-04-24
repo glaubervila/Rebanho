@@ -223,7 +223,7 @@ abstract class Base {
      * @PARAM:{bool}$limit = true usa o Limit pegando da Get o star e o limit, falso traz todos os registros
      * @RETURN:Vai retornar um array de resultados ou False
      */
-    public function filter($col, $table, $filter, $sort, $limit = false){
+    public function filter($col, $table, $filter, $sort, $limit = false, $debug = false){
 
         $db = $this->getDb();
 
@@ -256,7 +256,9 @@ abstract class Base {
             $limit = $_GET['limit'];
             $sql .= " LIMIT ". $start . " , " . $limit;
         }
-        //echo $sql;
+        if ($debug){
+            echo $sql;
+        }
         $stm = $db->prepare($sql);
         $stm->execute();
         return $stm->fetchAll(\PDO::FETCH_OBJ);

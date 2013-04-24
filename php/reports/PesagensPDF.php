@@ -47,8 +47,8 @@ class PesagensPDF extends appReports{
 
         // cria os estilos utilizados no documento
         $this->addStyle('gridTitle', 'Courier', '10', 'B', '#1F497D', '#E0EBFF');
-        $this->addStyle('rowP', 'Courier', '10', '',  '#000000', '#FFFFFF', 'T');
-        $this->addStyle('rowI', 'Courier', '10', '',  '#000000', '#FFFFFF', 'T');
+        $this->addStyle('rowP', 'Courier', '10', '',  '#000000', '#FFFFFF', 1);
+        $this->addStyle('rowI', 'Courier', '10', '',  '#000000', '#FFFFFF', 1);
 
 
         $this->gridAddColumn('codigo', 'Codigo', 'center', 20);

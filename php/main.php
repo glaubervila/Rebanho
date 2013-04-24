@@ -6,7 +6,7 @@ require_once('../php/libs/FPDF/FPDF.php');
 
 //Desliga o notice e warning do PHP.INI
 ini_set('error_reporting','E_ALL & ~E_NOTICE');
-ini_set('memory_limit', '16M');
+ini_set('memory_limit', '128M');
 session_start();
 
 $base_path = getcwd();

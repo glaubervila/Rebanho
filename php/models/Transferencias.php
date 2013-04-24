@@ -1,4 +1,5 @@
 <?php
+ini_set('memory_limit', '128M');
 header('Content-Type: text/javascript; charset=UTF-8');
 /** @Class: Transferencias
  *  @date: 2012-10-10
@@ -519,8 +520,11 @@ class Transferencias extends Base {
 
 
         $filter .= implode(' AND ', $filtros);
+        
         //echo $filter;
         $transferencias = $this->filter(null, 'transferencias', "$filter", null, false);
+
+        //var_dump($transferencias);
 
         foreach ($transferencias as $row){
             $record = $row;
@@ -578,12 +582,14 @@ class Transferencias extends Base {
             $transferencias = $resumos->data;
 
             foreach ($transferencias as $row){
+
                 $record = $row;
 
                 // Separar os ids dos animais
                 $animais_id = str_replace(';', ', ',$row->animais);
 
-                $aIds = explode(',', $animais_id);
+                $aIds = explode(', ', $animais_id);
+
 
                 foreach ($aIds as $id){
                     //$animal = new StdClass();
@@ -595,16 +601,16 @@ class Transferencias extends Base {
                     $animal = Transferencias::getInfoAnimal($animal_id, $origem, $destino);
 
                     $record->a_animais[] = $animal;
-                }
 
+                }
                 $records[] = $record;
-                $record = null;
             }
+                //var_dump($records);
         }
         else {
             return $resumos;
         }
-
+        //var_dump($records);
         $return = new StdClass();
 
         if (count($records) > 0){
@@ -671,6 +677,8 @@ class Transferencias extends Base {
         $animal->origem_data_entrada = $animal->dados_confinamento[$origem]->data_entrada;
         // Peso Entrada Origem
         $animal->origem_peso_entrada = $animal->dados_confinamento[$origem]->peso_entrada;
+        // Peso Saida Origem
+        $animal->origem_data_saida = $animal->dados_confinamento[$origem]->data_saida;
         // Peso Saida Origem
         $animal->origem_peso_saida = $animal->dados_confinamento[$origem]->peso_saida;
         // Dias Confinado

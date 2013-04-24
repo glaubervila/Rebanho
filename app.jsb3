@@ -985,6 +985,16 @@
                     "path": "app/view/vendas/clientes/"
                 },
                 {
+                    "clsName": "Rebanho.model.AnimaisAtivosReport",
+                    "name": "AnimaisAtivosReport.js",
+                    "path": "app/model/"
+                },
+                {
+                    "clsName": "Rebanho.view.animais.AnimaisAtivosReportWindow",
+                    "name": "AnimaisAtivosReportWindow.js",
+                    "path": "app/view/animais/"
+                },
+                {
                     "clsName": "Rebanho.model.Relatorio",
                     "name": "Relatorio.js",
                     "path": "app/model/"
@@ -1293,6 +1303,16 @@
                     "clsName": "Rebanho.store.Clientes",
                     "name": "Clientes.js",
                     "path": "app/store/"
+                },
+                {
+                    "clsName": "Rebanho.store.AnimaisAtivosReport",
+                    "name": "AnimaisAtivosReport.js",
+                    "path": "app/store/"
+                },
+                {
+                    "clsName": "Rebanho.controller.AnimaisAtivosReport",
+                    "name": "AnimaisAtivosReport.js",
+                    "path": "app/controller/"
                 },
                 {
                     "clsName": "Rebanho.store.TransferenciasReport",

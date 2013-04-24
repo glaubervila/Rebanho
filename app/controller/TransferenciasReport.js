@@ -70,7 +70,7 @@ Ext.define('Rebanho.controller.TransferenciasReport', {
         store.removeAll(true);
         store.add(record);
 
-        Ext.Ajax.timeout = 99000;
+        Ext.Ajax.timeout = 99999;
         store.sync();
 
         record.save();

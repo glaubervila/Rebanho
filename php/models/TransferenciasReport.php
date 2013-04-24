@@ -60,8 +60,9 @@ class TransferenciasReport extends Base {
  
             // Tipo 2 - Relatorio Saida
             case 2:
+
                 $data_report = Transferencias::getTransferenciasReport($data);
-                //var_dump($data_report);
+
                 if ($data_report->success){
                     $report = TransferenciasReport::Saida($data, $data_report);
                 }
@@ -144,6 +145,7 @@ class TransferenciasReport extends Base {
         // Para Cada Transferencia criar o cabecalho
 
         $rows = $data_report->data;
+//        var_dump($rows);
 
         $pdf->GeraPdf();
 
