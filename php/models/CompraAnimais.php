@@ -137,7 +137,6 @@ class CompraAnimais extends Base {
 
         foreach ($data->data as $row){
             $record = $row;
-
             // Para Cada Registro Recuperar o Nome do Fornecedor e a Fazenda
             $fornecedor = $this->find($record->fornecedor_id, 'fornecedores');
             $record->fornecedor_nome    = $fornecedor->nome;

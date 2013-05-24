@@ -194,7 +194,19 @@ class NotasEntrada extends Base {
         // Recuperando o ObjNota
         $objNota = $this->find($nota_aberta, 'compras');
 
-        $animais = $this->findAllBy('compra_id', $nota_aberta, 'animais');
+#        $animais = $this->findAllBy('compra_id', $nota_aberta, 'animais');
+
+
+        $sql = "SELECT a.*, b.codigo FROM vw_animais a 
+                INNER JOIN animais_codigos b
+                ON a.id = b.animal_id
+                WHERE a.compra_id = {$objNota->id}
+                AND b.confinamento_id = {$objNota->confinamento_id}";
+        //echo $sql;
+        $db = $this->getDb();
+        $stm = $db->prepare($sql);
+        $stm->execute();
+        $animais =  $stm->fetchAll(\PDO::FETCH_OBJ);
 
         // Para Cada Animal Recuperar os codigos
         foreach ($animais as $animal){
@@ -202,8 +214,8 @@ class NotasEntrada extends Base {
             $registro = $animal;
 
             // Recuperando o Codigo para o Confinamento
-            $codigo = Animais::getCodigosById($animal->id, $animal->confinamento_id);
-            $registro->codigo = $codigo[0]->codigo;
+//             $codigo = Animais::getCodigosById($animal->id, $animal->confinamento_id);
+//             $registro->codigo = $codigo[0]->codigo;
 
             // Recuperando o Peso de Entrada
             $peso_entrada = Pesagens::getPesagemEntrada($animal->id, $objNota->confinamento_id);
@@ -214,8 +226,8 @@ class NotasEntrada extends Base {
             $registro->peso_compra = $peso_entrada->peso;
 
             // Informacoes da Quadra
-            $quadra = $this->find($animal->quadra_id, 'quadras', 'quadra');
-            $registro->quadra = $quadra->quadra;
+//             $quadra = $this->find($animal->quadra_id, 'quadras', 'quadra');
+//             $registro->quadra = $quadra->quadra;
 
             $registros[] = $registro;
 

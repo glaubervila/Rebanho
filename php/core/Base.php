@@ -14,9 +14,9 @@ abstract class Base {
 
             $this->config['adapter']  = "mysql";
             $this->config['hostname'] = "localhost";
-            $this->config['dbname']   = "rebanho";
+            $this->config['dbname']   = "mmagropec";
             $this->config['user']     = "root";
-            $this->config['password'] = "";
+            $this->config['password'] = "gverde";
 
 //             $this->config['adapter']  = "mysql";
 //             $this->config['hostname'] = "mysql01.mmagropec.com.br";
