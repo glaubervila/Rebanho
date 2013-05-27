@@ -137,6 +137,7 @@ class ComprasPDF extends appReports{
         // Headers
         $this->Cell(15, 6, utf8_decode("Compra"), 1, 0, '');
         $this->Cell(15, 6, utf8_decode("Ativos"), 1, 0, '');
+        $this->Cell(15, 6, utf8_decode("Transf"), 1, 0, '');
         $this->Cell(15, 6, utf8_decode("Vendido"), 1, 0, '');
         $this->Cell(15, 6, utf8_decode("Morto"), 1, 0, '');
 
@@ -154,7 +155,7 @@ class ComprasPDF extends appReports{
         $this->SetFont('Times','B',10);
         $this->Cell(20, 6, utf8_decode("Valor Nota:"), 1, 0, '');
         $this->SetFont('Times','',10);
-        $this->Cell(40, 6, utf8_decode(''), 1, 0, '');
+        $this->Cell(25, 6, utf8_decode(''), 1, 0, '');
         $this->Cell(40, 6, utf8_decode("R$ {$row->valor_nota}"), 1, 0, '');
 
         // Machos
@@ -162,10 +163,11 @@ class ComprasPDF extends appReports{
         $this->SetFont('Times','B',10);
         $this->Cell(20, 6, utf8_decode("Machos: "), 1, 0, '');
         $this->SetFont('Times','',10);
-        $this->Cell(15, 6, utf8_decode($row->qtd_machos), 1, 0, '');
-        $this->Cell(15, 6, utf8_decode($row->qtd_machos_ativos), 1, 0, '');
-        $this->Cell(15, 6, utf8_decode($row->qtd_machos_vendidos), 1, 0, '');
-        $this->Cell(15, 6, utf8_decode($row->qtd_machos_morto), 1, 0, '');
+        $this->Cell(15, 6, utf8_decode($row->qtd_machos), 1, 0, 'C');
+        $this->Cell(15, 6, utf8_decode($row->qtd_machos_ativos), 1, 0, 'C');
+        $this->Cell(15, 6, utf8_decode($row->qtd_machos_transferidos), 1, 0, 'C');
+        $this->Cell(15, 6, utf8_decode($row->qtd_machos_vendidos), 1, 0, 'C');
+        $this->Cell(15, 6, utf8_decode($row->qtd_machos_morto), 1, 0, 'C');
 
         // Vazio
         $this->Cell(15, 6, '', 0, 0, '');
@@ -181,7 +183,7 @@ class ComprasPDF extends appReports{
         $this->SetFont('Times','B',10);
         $this->Cell(20, 6, utf8_decode("Corretor:"), 1, 0, '');
         $this->SetFont('Times','',10);
-        $this->Cell(40, 6, utf8_decode($row->corretor), 1, 0, '');
+        $this->Cell(25, 6, utf8_decode($row->corretor), 1, 0, '');
         $this->Cell(40, 6, utf8_decode("R$ {$row->valor_comissao}"), 1, 0, '');
 
         // Femeas
@@ -189,10 +191,11 @@ class ComprasPDF extends appReports{
         $this->SetFont('Times','B',10);
         $this->Cell(20, 6, utf8_decode("Femeas:"), 1, 0, '');
         $this->SetFont('Times','',10);
-        $this->Cell(15, 6, utf8_decode($row->qtd_femeas), 1, 0, '');
-        $this->Cell(15, 6, utf8_decode($row->qtd_femeas_ativos), 1, 0, '');
-        $this->Cell(15, 6, utf8_decode($row->qtd_femeas_vendidos), 1, 0, '');
-        $this->Cell(15, 6, utf8_decode($row->qtd_femeas_morto), 1, 0, '');
+        $this->Cell(15, 6, utf8_decode($row->qtd_femeas), 1, 0, 'C');
+        $this->Cell(15, 6, utf8_decode($row->qtd_femeas_ativos), 1, 0, 'C');
+        $this->Cell(15, 6, utf8_decode($row->qtd_femeas_transferidos), 1, 0, 'C');
+        $this->Cell(15, 6, utf8_decode($row->qtd_femeas_vendidos), 1, 0, 'C');
+        $this->Cell(15, 6, utf8_decode($row->qtd_femeas_morto), 1, 0, 'C');
 
         // Vazio
         $this->Cell(15, 6, '', 0, 0, '');
@@ -208,19 +211,23 @@ class ComprasPDF extends appReports{
         $this->SetFont('Times','B',10);
         $this->Cell(20, 6, utf8_decode("Frete:"), 1, 0, '');
         $this->SetFont('Times','',10);
-        $this->Cell(40, 6, utf8_decode($row->frete), 1, 0, '');
+        $this->Cell(25, 6, utf8_decode($row->frete), 1, 0, '');
         $this->Cell(40, 6, utf8_decode("R$ {$row->valor_frete}"), 1, 0, '');
 
 
         // Total
         $this->Ln();
         $this->SetFont('Times','B',10);
-        $this->Cell(20, 6, utf8_decode("Total:"), 1, 0, '');
+        $this->SetFillColor(220,220,220);
+        $this->Cell(20, 6, utf8_decode("Total:"), 1, 0, '', true);
+
+        $this->Cell(15, 6, utf8_decode($row->quantidade), 1, 0, 'C', true);
+        $this->Cell(15, 6, utf8_decode($row->quatidade_ativos), 1, 0, 'C', true);
+        $this->Cell(15, 6, utf8_decode($row->quantidade_transferidos), 1, 0, 'C', true);
+        $this->Cell(15, 6, utf8_decode($row->quatidade_vendidos), 1, 0, 'C', true);
+        $this->Cell(15, 6, utf8_decode($row->quatidade_morto), 1, 0, 'C', true);
         $this->SetFont('Times','',10);
-        $this->Cell(15, 6, utf8_decode($row->quantidade), 1, 0, '');
-        $this->Cell(15, 6, utf8_decode($row->quatidade_ativos), 1, 0, '');
-        $this->Cell(15, 6, utf8_decode($row->quatidade_vendidos), 1, 0, '');
-        $this->Cell(15, 6, utf8_decode($row->quatidade_morto), 1, 0, '');
+        $this->SetFillColor(255,255,255);
 
         // Vazio
         $this->Cell(15, 6, '', 0, 0, '');
@@ -237,29 +244,51 @@ class ComprasPDF extends appReports{
         $this->SetFont('Times','B',10);
         $this->Cell(20, 6, utf8_decode("Imposto:"), 1, 0, '');
         $this->SetFont('Times','',10);
-        $this->Cell(40, 6, utf8_decode($row->imposto), 1, 0, '');
+        $this->Cell(25, 6, utf8_decode($row->imposto), 1, 0, '');
         $this->Cell(40, 6, utf8_decode("R$ {$row->valor_imposto}"), 1, 0, '');
 
 
         $this->Ln(8);
+        // Entrada
         // Peso Medio
         $this->SetFont('Times','B',10);
         $this->Cell(25, 6, utf8_decode("Peso Médio: "), 1, 0, '');
         $this->SetFont('Times','',10);
-        $this->Cell(25, 6, utf8_decode($row->saida_peso_medio), 'TBR', 0, '');
+        $this->Cell(25, 6, utf8_decode($row->entrada_peso_medio), 'TBR', 0, '');
 
         // Maior Peso
         $this->SetFont('Times','B',10);
         $this->Cell(25, 6, utf8_decode("Maior Peso: "), 1, 0, '');
         $this->SetFont('Times','',10);
-        $this->Cell(25, 6, utf8_decode($row->saida_maior_peso), 'TBR', 0, '');
+        $this->Cell(25, 6, utf8_decode($row->entrada_maior_peso), 'TBR', 0, '');
 
 
         // Menor Peso
         $this->SetFont('Times','B',10);
         $this->Cell(25, 6, utf8_decode("Menor Peso: "), 1, 0, '');
         $this->SetFont('Times','',10);
-        $this->Cell(25, 6, utf8_decode($row->saida_menor_peso), 'TBR', 0, '');
+        $this->Cell(25, 6, utf8_decode($row->entrada_menor_peso), 'TBR', 0, '');
+
+
+//         // Saida
+//         // Peso Medio
+//         $this->SetFont('Times','B',10);
+//         $this->Cell(25, 6, utf8_decode("Peso Médio: "), 1, 0, '');
+//         $this->SetFont('Times','',10);
+//         $this->Cell(25, 6, utf8_decode($row->saida_peso_medio), 'TBR', 0, '');
+// 
+//         // Maior Peso
+//         $this->SetFont('Times','B',10);
+//         $this->Cell(25, 6, utf8_decode("Maior Peso: "), 1, 0, '');
+//         $this->SetFont('Times','',10);
+//         $this->Cell(25, 6, utf8_decode($row->saida_maior_peso), 'TBR', 0, '');
+// 
+// 
+//         // Menor Peso
+//         $this->SetFont('Times','B',10);
+//         $this->Cell(25, 6, utf8_decode("Menor Peso: "), 1, 0, '');
+//         $this->SetFont('Times','',10);
+//         $this->Cell(25, 6, utf8_decode($row->saida_menor_peso), 'TBR', 0, '');
 
         $this->Ln(6);
     }
@@ -271,9 +300,11 @@ class ComprasPDF extends appReports{
 
         // cria os estilos utilizados no documento
         $this->addStyle('gridTitle', 'Times', '10', 'B', '#1F497D', '#E0EBFF');
-        $this->addStyle('rowP', 'Times', '10', '',  '#000000', '#FFFFFF', 'T');
-        $this->addStyle('rowI', 'Times', '10', '',  '#000000', '#FFFFFF', 'T');
-
+        $this->addStyle('rowP', 'Times', '10', '',  '#000000', '#FFFFFF', 1);
+        $this->addStyle('rowI', 'Times', '10', '',  '#000000', '#FFFFFF', 1);
+        $this->addStyle('style_transferido', 'Times', '10', '',  '#000000', '#FFFEAC', 1);
+        $this->addStyle('style_morto', 'Times', '10', 'B',  '#FF0000', '#F0F0F0', 1);
+        $this->addStyle('style_vendido', 'Times', '10', 'IB',  '#000000', '#CFFFBC', 1);
 
 
         $this->gridAddColumn('LINENUNBER'    , 'N', 'center', 8, FALSE,TRUE);

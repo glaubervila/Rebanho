@@ -307,7 +307,7 @@ class Animais extends Base {
     public function getAnimaisAtivos($data, $json = true){
 
         $strFiltros = $this->parseFilter($data["filter"]);
-//        $strSorters = $this->parseSorter($data["sort"]);
+
         // Adicionando Filtro para retornar somente os animais ativos
         $strFiltros .= " AND status = 1 ";
         $aResult = $this->filter(null, 'vw_animais', $strFiltros, null, false);
@@ -320,22 +320,6 @@ class Animais extends Base {
             // Informacoes do Codigo
             $codigos = $this->getCodigosById($row->id, $row->confinamento_id);
             $registro->codigo = $codigos[0]->codigo;
-
-//             // Informacoes da Compra
-//             $compra = $this->findBy('id', $registro->compra_id, 'compras');
-//             $registro->fornecedor_id = $compra->fornecedor_id;
-//             $registro->idade_entrada = $compra->idade;
-//             $registro->valor_arroba = $compra->valor_arroba;
-//             $registro->numero_nota = $compra->numero_nota;
-//             $registro->serie_nota = $compra->serie_nota;
-
-//             // Informacoes do Fornecedor
-//             $fornecedor = $this->findBy('id', $registro->fornecedor_id, 'fornecedores');
-//             $registro->fornecedor = $fornecedor->nome;
-
-//             // Informacoes da Quadra
-//             $quadra = $this->find($row->quadra_id, 'quadras', 'quadra');
-//             $registro->quadra = $quadra->quadra;
 
             $estatistica = $this->getEstatiscaPorAnimal($row->id);
             $registro->peso_entrada        = $estatistica->peso_entrada;
@@ -855,17 +839,17 @@ class Animais extends Base {
 
     public function getInfoAnimal($animal_id){
 
-        $animal = $this->find($animal_id, 'animais');
+        $animal = $this->find($animal_id, 'vw_animais');
 
         $animal->idade_entrada = $animal->idade;
 
         // Informacoes da Compra
-        $compra = $this->findBy('id', $animal->compra_id, 'compras');
-        $animal->fornecedor_id = $compra->fornecedor_id;
-
-        // Informacoes do Fornecedor
-        $fornecedor = $this->findBy('id', $animal->fornecedor_id, 'fornecedores');
-        $animal->fornecedor = $fornecedor->nome;
+//         $compra = $this->findBy('id', $animal->compra_id, 'compras');
+//         $animal->fornecedor_id = $compra->fornecedor_id;
+// 
+//         // Informacoes do Fornecedor
+//         $fornecedor = $this->findBy('id', $animal->fornecedor_id, 'fornecedores');
+//         $animal->fornecedor = $fornecedor->nome;
 
         // Para Cada Confinamento saber as informacoes
         $confinamentos = $this->filter(null,'confinamentos');

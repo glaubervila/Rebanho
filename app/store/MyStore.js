@@ -9,18 +9,18 @@ Ext.define('Rebanho.store.MyStore', {
 
     listeners:{
         beforeload: function( store, operation, eOpts ){
-
-            var loginMask = new Ext.LoadMask(Ext.getBody(), {msg:"Aguarde ..."});
-            loginMask.show();
+            Ext.getBody().mask('Carregando');
+//             var loginMask = new Ext.LoadMask(Ext.getBody(), {msg:"Aguarde ..."});
+//             loginMask.show();
         },
         load: function ( store, records, successful, eOpts ){
 
             Ext.getBody().unmask();
         },
         beforesync: function (options, eOpts){
-
-            var loginMask = new Ext.LoadMask(Ext.getBody(), {msg:"Aguarde ..."});
-            loginMask.show();
+            Ext.getBody().mask('Carregando');
+//             var loginMask = new Ext.LoadMask(Ext.getBody(), {msg:"Aguarde ..."});
+//             loginMask.show();
 
         },
         write: function(store, operation){

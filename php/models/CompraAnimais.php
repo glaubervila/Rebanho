@@ -429,24 +429,44 @@ class CompraAnimais extends Base {
 
 
                 // Quantidade Mortos
-                //$mortos = filter('count(*) as quantidade_mortos','animais', "compra_id = {$compra_id} AND status = 0");
-                //$compra->quatidade_morto = $mortos[0]->quantidade_mortos;
+                $mortos = $this->filter('count(*) as quantidade_mortos','animais', "compra_id = {$compra_id} AND status = 0");
+                $compra->quatidade_morto = $mortos[0]->quantidade_mortos;
+
+                // Vendidos
+                $vendidos = $this->filter('count(*) as quantidade_vendidos','animais', "compra_id = {$compra_id} AND status = 2");
+                $compra->quatidade_vendidos = $vendidos[0]->quantidade_vendidos;
+
+                // Ativos no confinamento da compra
+                $ativos = $this->filter('count(*) as quantidade_ativos','animais', "compra_id = {$compra_id} AND status = 1 AND confinamento_id = {$compra->confinamento_id}");
+                $compra->quatidade_ativos = $ativos[0]->quantidade_ativos;
+
+                // Transferidos
+                $ativos = $this->filter('count(*) as quantidade_transferidos','animais', "compra_id = {$compra_id} AND status = 1 AND confinamento_id <> {$compra->confinamento_id}");
+                $compra->quantidade_transferidos = $ativos[0]->quantidade_transferidos;
 
                 $record = $compra;
 
                 // Para cada compra recuperar os animais
                 $animais_id = $this->filter('id', 'animais', "compra_id = {$compra_id}" );
 
+                $pesos_entrada = array();
+                
                 foreach($animais_id as $animal_id){
 
                     $animal_id = $animal_id->id;
 
                     $animal = CompraAnimais::getInfoAnimal($animal_id, $compra->confinamento_id);
 
+                    array_push($pesos_entrada,$animal->origem_peso_entrada);
+
                     $record->a_animais[] = $animal;
 
                 }
 
+                $peso_medio = (array_sum($pesos_entrada) / count($pesos_entrada));
+                $compra->entrada_peso_medio = number_format($peso_medio, 3, '.',',');
+                $compra->entrada_maior_peso = max($pesos_entrada);
+                $compra->entrada_menor_peso = min($pesos_entrada);
 
                 $records[] = $record;
             }
@@ -496,6 +516,16 @@ class CompraAnimais extends Base {
         // Cor Classificacao
         $animal->origem_corClassificacao = $animal->dados_confinamento[$origem]->corClassificacao;
 
+        // ROW_STYLE para marcar se a animal ta transferido ou nao
+        if ($animal->origem_peso_saida){
+            $animal->ROW_STYLE = 'style_transferido';
+        }
+        else if ($animal->status == 0){
+            $animal->ROW_STYLE = 'style_morto';
+        }
+        else if ($animal->status == 2){
+            $animal->ROW_STYLE = 'style_vendido';
+        }
         return $animal;
     }
 }

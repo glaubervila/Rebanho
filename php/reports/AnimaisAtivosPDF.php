@@ -106,25 +106,7 @@ class AnimaisAtivosPDF extends appReports{
         $this->gridAddColumn('data_ultima_pesagem', 'Data Pesagem', 'center', 25, 'dateBr', false,false,'left');
         $this->gridAddColumn('peso_atual', 'Peso', 'center', 20);
         $this->gridAddColumn('peso_ganho', 'Ganho', 'center', 20);
-//        $this->gridAddColumn('ganho_diario', 'Ganho/Dia', 'center', 25, 'corClassificacao');
-
-        $this->simpleGrid();
-
-
-
-        // Criando a Grid de Legenda
-        $legenda = Pesagens::getLegendaClassificacao();
-        //var_dump($legenda);
-        $this->setDataReport($legenda);
-        $this->DataGrid(1);
-
-        $this->addStyle('gridTitle', 'Times', '10', 'B', '#1F497D', '#E0EBFF');
-        $this->addStyle('rowP', 'Times', '12', '',  '#000000', '#FFFFFF', 1);
-        $this->addStyle('rowI', 'Times', '12', '',  '#000000', '#FFFFFF', 1);
-
-        $this->gridAddColumn('descricao', 'Legenda Ganho kg/Dia', 'center', 50, null,null,'left');
-        $this->gridAddColumn('cor', 'Cor', 'center', 20, 'corLegenda');
-
+        $this->gridAddColumn('ganho_diario', 'Ganho/Dia', 'center', 25, 'corClassificacao');
 
         $this->simpleGrid();
 
@@ -135,22 +117,15 @@ class AnimaisAtivosPDF extends appReports{
 
         $cor = $obj->corClassificacao;
 
-        $return = new StdClass();
-        $return->tipo = 'BackgroundColor';
-        $return->value = $ganho_medio;
-        $return->backgroundColor = $cor;
-        return $return;
+        if ($ganho_medio) {
+            $return = new StdClass();
+            $return->tipo = 'BackgroundColor';
+            $return->value = $ganho_medio;
+            $return->backgroundColor = $cor;
+            return $return;
+        }
     }
 
-    public function corLegenda($cor, $obj){
 
-
-        $return = new StdClass();
-        $return->tipo = 'BackgroundColor';
-        $return->value = '';
-        $return->backgroundColor = $cor;
-
-        return $return;
-    }
 
 }

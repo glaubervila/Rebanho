@@ -408,8 +408,13 @@ class appReports extends FPDF {
 
         foreach ($rows as $row){
 
-            // define o estilo a ser utilizado
-            $style = $colore ? 'rowI' : 'rowP';
+            if ($row->ROW_STYLE) {
+                $style = $row->ROW_STYLE;
+            }
+            else {
+                // define o estilo a ser utilizado
+                $style = $colore ? 'rowI' : 'rowP';
+            }
 
             // adiciona uma linha para os dados
             $this->gridAddRow();
