@@ -590,6 +590,10 @@ class Transferencias extends Base {
 
                 $aIds = explode(', ', $animais_id);
 
+                $permanencias = array();
+                $ganhos_media = array();
+                $ganhos       = array();
+                $entradas     = array();
 
                 foreach ($aIds as $id){
                     //$animal = new StdClass();
@@ -600,12 +604,81 @@ class Transferencias extends Base {
 
                     $animal = Transferencias::getInfoAnimal($animal_id, $origem, $destino);
 
+                    array_push($permanencias,$animal->origem_dias_confinado);
+                    array_push($ganhos_media,$animal->origem_ganho_medio);
+                    array_push($ganhos,$animal->origem_ganho);
+                    array_push($entradas,$animal->origem_peso_entrada);
+
                     $record->a_animais[] = $animal;
 
                 }
+                // Totais adicionais 
+
+                $media_permanencia = array_sum($permanencias)/count($permanencias);
+                $media_permanencia = (int)$media_permanencia;
+
+                $ganho_medio_media = array_sum($ganhos_media)/count($ganhos_media);
+                $ganho_medio_media = number_format($ganho_medio_media, 2, '.','.');
+                
+                $ganho_total = array_sum($ganhos);
+                $ganho_total = number_format($ganho_total, 2, '.','.');
+
+                $ganho_total_media = array_sum($ganhos)/count($ganhos);
+                $ganho_total_media = number_format($ganho_total_media, 2, '.','.');
+                
+                $entradas_total = array_sum($entradas);
+                $entradas_total = number_format($entradas_total, 2, '.','.');
+                
+                $entradas_total_media = array_sum($entradas)/count($entradas);
+                $entradas_total_media = number_format($entradas_total_media, 2, '.','.');
+                
+                // Linhas de Totais
+                // SOMA
+                $row_total = new StdClass();
+                $row_total->ROW_STYLE = 'totais';
+                $row_total->LINENUNBER = FALSE;
+                // Label da Row Soma
+                $row_total->origem_codigo = 'Soma:';
+                // Soma dos pesos de entrada
+                $row_total->origem_peso_entrada = $entradas_total;
+                // Soma dos pesos de Saida
+                $row_total->origem_peso_saida = $row->saida_peso_total;
+                // Soma ganho total
+                $row_total->origem_ganho = $ganho_total;
+
+                // MEDIA
+                $row_media = new StdClass();
+                $row_media->ROW_STYLE = 'totais';
+                $row_media->LINENUNBER = FALSE;
+                // Label da Row Media
+                $row_media->origem_codigo = 'Média:';
+                // Media dos pesos de entrada
+                $row_media->origem_peso_entrada = $entradas_total_media;
+                // Media dos pesos de Saida
+                $row_media->origem_peso_saida = $row->saida_peso_medio;
+                // Media ganho medio
+                $row_media->origem_ganho_medio = $ganho_medio_media;
+                // Media ganho total
+                $row_media->origem_ganho = $ganho_total_media;
+                // Media da Permanencia
+                $row_media->origem_dias_confinado = $media_permanencia;
+
+                array_push($record->a_animais,$row_total);
+                array_push($record->a_animais,$row_media);
+
+
+                // Acrescentar a permanencia media na transferencia
+                $row->permanencia_media = $media_permanencia;
+                // Acrescentar a ganho_medio media na transferencia
+                $row->ganho_medio_media = $ganho_medio_media;
+                // Acrescentar a ganho_total na transferencia
+                $row->ganho_total = $ganho_total;
+                // Acrescentar a ganho_total media na transferencia
+                $row->ganho_total_media = $ganho_total_media;
+
                 $records[] = $record;
             }
-                //var_dump($records);
+            //var_dump($records);
         }
         else {
             return $resumos;
@@ -636,7 +709,7 @@ class Transferencias extends Base {
         $animais_id = str_replace(';', ', ',$transferencia->animais);
 
         // Fazer uma query para estatisticas de entrada
-        $cols =   "SUM(peso) as peso_total, MAX(peso) as maior_peso, MIN(peso) as menor_peso,     COUNT(*) as total_animais, (SUM(peso)/COUNT(*)) as peso_medio";
+        $cols =   "SUM(peso) as peso_total, MAX(peso) as maior_peso, MIN(peso) as menor_peso, COUNT(*) as total_animais, (SUM(peso)/COUNT(*)) as peso_medio";
 
         $filtros[] = "confinamento_id = '{$transferencia->destino}'";
         $filtros[] = "data = '{$transferencia->data_entrada}'";

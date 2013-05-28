@@ -128,6 +128,11 @@ class TransferenciasPDF extends appReports{
         $this->SetFont('Times','',10);
         $this->Cell(25, 6, utf8_decode($row->saida_peso_total), 'TBR', 0, '');
 
+        // Permanencia
+        $this->SetFont('Times','B',10);
+        $this->Cell(25, 6, utf8_decode("Perm. Média: "), 1, 0, '');
+        $this->SetFont('Times','',10);
+        $this->Cell(25, 6, utf8_decode($row->permanencia_media), 'TBR', 0, '');
 
         // Machos
         $this->Ln();
@@ -142,6 +147,11 @@ class TransferenciasPDF extends appReports{
         $this->SetFont('Times','',10);
         $this->Cell(25, 6, utf8_decode($row->saida_peso_medio), 'TBR', 0, '');
 
+        // Ganho Dia Medio
+        $this->SetFont('Times','B',10);
+        $this->Cell(25, 6, utf8_decode("Ganho/Dia: "), 1, 0, '');
+        $this->SetFont('Times','',10);
+        $this->Cell(25, 6, utf8_decode($row->ganho_medio_media), 'TBR', 0, '');
 
         // Femeas
         $this->Ln();
@@ -149,6 +159,12 @@ class TransferenciasPDF extends appReports{
         $this->Cell(20, 6, utf8_decode("Femeas:"), 1, 0, '');
         $this->SetFont('Times','',10);
         $this->Cell(30, 6, utf8_decode($row->femeas), 'TBR', 0, '');
+
+        // Ganho Total
+        $this->SetFont('Times','B',10);
+        $this->Cell(25, 6, utf8_decode("Ganho Total: "), 1, 0, '');
+        $this->SetFont('Times','',10);
+        $this->Cell(25, 6, utf8_decode($row->ganho_total), 'TBR', 0, '');
 
         // Maior Peso 
         $this->SetFont('Times','B',10);
@@ -163,6 +179,12 @@ class TransferenciasPDF extends appReports{
         $this->SetFont('Times','',10);
         $this->Cell(30, 6, utf8_decode($row->quantidade), 'TBR', 0, '');
 
+        // Ganho Total Medio
+        $this->SetFont('Times','B',10);
+        $this->Cell(25, 6, utf8_decode("Ganho Médio: "), 1, 0, '');
+        $this->SetFont('Times','',10);
+        $this->Cell(25, 6, utf8_decode($row->ganho_total_media), 'TBR', 0, '');
+        
         // Menor Peso
         $this->SetFont('Times','B',10);
         $this->Cell(25, 6, utf8_decode("Menor Peso: "), 1, 0, '');
@@ -202,6 +224,7 @@ class TransferenciasPDF extends appReports{
         $this->gridAddColumn('destino_ganho_medio', 'Ganho/Dia', 'center', 20,'corClassificacao');
 
 
+
         $this->simpleGrid();
 
     }
@@ -216,6 +239,7 @@ class TransferenciasPDF extends appReports{
         $this->addStyle('gridTitle', 'Times', '10', 'B', '#1F497D', '#E0EBFF');
         $this->addStyle('rowP', 'Times', '10', '',  '#000000', '#FFFFFF', 1);
         $this->addStyle('rowI', 'Times', '10', '',  '#000000', '#FFFFFF', 1);
+        $this->addStyle('totais', 'Times', '9', 'B',  '#000000', '#F0F0F0', 1);
 
 
         $this->gridAddColumn('LINENUNBER'    , 'N', 'center', 8, FALSE,TRUE);
@@ -224,10 +248,10 @@ class TransferenciasPDF extends appReports{
         $this->gridAddColumn('origem_data_entrada', 'Entrada', 'center', 20, 'dateBr');
         $this->gridAddColumn('origem_peso_entrada', 'Peso Entrada', 'center', 25);
         $this->gridAddColumn('origem_data_saida', 'Entrada', 'center', 20, 'dateBr');
-        $this->gridAddColumn('origem_peso_saida', 'Peso Saida', 'center', 20);
         $this->gridAddColumn('origem_dias_confinado', 'Permanencia', 'center', 25);
         $this->gridAddColumn('origem_ganho', 'Ganho', 'center', 20);
         $this->gridAddColumn('origem_ganho_medio', 'Ganho/Dia', 'center', 20,'corClassificacao');
+        $this->gridAddColumn('origem_peso_saida', 'Peso Saida', 'center', 20);
 
         $this->simpleGrid();
 

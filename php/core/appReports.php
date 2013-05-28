@@ -426,7 +426,14 @@ class appReports extends FPDF {
 
                 // Se estiver flagado lineNumber
                 if ($alias == 'LINENUNBER'){
-                    $row->$alias = $ln;
+                    //TODO Tratamento para nao exibir number line
+                    if (($row->LINENUNBER == false) && (isset($row->LINENUNBER))){
+                        $row->$alias = '';
+                    }
+                    else {
+                        $row->$alias = $ln;
+                        $ln++;
+                    }
                 }
 
                 //var_dump($alias);
@@ -467,7 +474,6 @@ class appReports extends FPDF {
 
             // alterna variável de controle para cor de fundo
             $colore = !$colore;
-            $ln++;
 
         }
 
