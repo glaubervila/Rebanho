@@ -4,7 +4,7 @@ Ext.define('Rebanho.view.relatorios.RelatoriosForm' ,{
     requires:[],
     alias : 'widget.relatoriosform',
 
-    bodyStyle:'padding:5px;',
+    //bodyStyle:'padding:5px;',
 
     //iconCls: 'icon-pill',
 
@@ -22,10 +22,11 @@ Ext.define('Rebanho.view.relatorios.RelatoriosForm' ,{
             },
             defaults:{
                 layout:'form',
-                bodyStyle:'padding:4px',
+                //bodyStyle:'padding:4px',
             },
             items:[{
                 xtype: 'fieldset',
+                title: 'Filtros',
                 defaultType:'textfield',
                 defaults: {
                     anchor: '-5',
@@ -42,6 +43,7 @@ Ext.define('Rebanho.view.relatorios.RelatoriosForm' ,{
                     },
                     items:[{
                         xtype:'cmbconfinamento',
+                        itemId:'relatorios_cmbConfinamento',
                         fieldLabel:'Confinamento',
                         name: 'confinamento_id',
                         flex: 1,
@@ -49,18 +51,28 @@ Ext.define('Rebanho.view.relatorios.RelatoriosForm' ,{
                         xtype:'combobox',
                         fieldLabel:'Status',
                         name: 'status',
-                        width: 100,
+                        width: 60,
                         margins: '0 0 0 5',
                         typeAhead: true,
                         triggerAction: 'all',
                         value: '1',
                         store: [
+                            ['-1','Todos'],
                             ['0','Inativo'],
                             ['1','Ativo'],
                         ],
                         flex: 1,
                     }]
                 },{
+                    xtype: 'triggerfieldfornecedores',
+                    fieldLabel:'Forncedor',
+                    name: 'fornecedor_id',
+                    itemId: 'relatorios_cmbFornecedores',
+                    flex: 1,
+                    lastQuery:'',
+                    disabled: true,
+                }
+                ,{
                     xtype: 'fieldcontainer',
                     layout: 'hbox',
                     defaultType:'textfield',
@@ -68,17 +80,22 @@ Ext.define('Rebanho.view.relatorios.RelatoriosForm' ,{
                         labelAlign: 'top',
                     },
                     items:[{
-                        fieldLabel:'Nome',
-                        name: 'nome',
-                        flex: 1,
+                        xtype: 'datefield',
+                        fieldLabel:'Data Inicial',
+                        name: 'data_inicial',
+                        format: 'd/m/y',
+                        submitFormat: 'Y-m-d',
+                        flex:1,
                         allowBlank: false,
-                        maxLength: 45,
                     },{
-                        fieldLabel:'Laboratório',
-                        name: 'laboratorio',
-                        flex: 1,
-                        maxLength: 45,
+                        xtype: 'datefield',
+                        fieldLabel:'Data Final',
+                        name: 'data_final',
+                        format: 'd/m/y',
+                        submitFormat: 'Y-m-d',
+                        flex:1,
                         margins: '0 0 0 5',
+                        allowBlank: false,
                     }]
                 },{
                     xtype: 'fieldcontainer',
@@ -88,50 +105,87 @@ Ext.define('Rebanho.view.relatorios.RelatoriosForm' ,{
                         labelAlign: 'top',
                     },
                     items:[{
-                        fieldLabel:'Lote',
-                        name: 'lote',
+                        xtype:'cmbquadras',
+                        itemId:'relatorios_cmbQuadras',
+                        fieldLabel:'Quadra',
+                        name: 'quadra_id',
                         flex: 1,
-                        allowBlank: false,
-                        maxLength: 10,
                     },{
-                        fieldLabel:'Fabricação',
-                        name: 'fabricacao',
-                        flex: 1,
-                        allowBlank: false,
+                        xtype:'combobox',
+                        fieldLabel:'Sexo',
+                        name: 'sexo',
+                        width: 60,
                         margins: '0 0 0 5',
-                        maxLength: 10,
-                    },{
-                        fieldLabel:'Validade',
-                        name: 'validade',
-                        margins: '0 0 0 5',
-                        flex: 1,
-                        maxLength: 10,
+                        typeAhead: true,
+                        triggerAction: 'all',
+                        value: '0',
+                        store: [
+                            ['0',''],
+                            ['M','M'],
+                            ['F','F'],
+                        ]
+                    }]
+                },{
+                    xtype: 'fieldcontainer',
+                    layout: 'hbox',
+                    items:[{
+                        xtype: 'fieldcontainer',
+                        fieldLabel: 'Peso',
+                        labelAlign: 'top',
+                        layout: 'hbox',
+                        flex:1,
+                        defaults: {
+                            hideLabel: true
+                        },
+                        items:[{
+                            xtype:'combobox',
+                            name: 'peso_comparacao',
+                            width: 40,
+                            typeAhead: true,
+                            triggerAction: 'all',
+                            value: '0',
+                            store: [
+                                ['0',''],
+                                ['=','='],
+                                ['<=','<='],
+                                ['>=','>='],
+                            ]
+                        },{
+                            xtype:'textfield',
+                            fieldLabel:'',
+                            name: 'peso',
+                            //width: 40,
+                            flex: 1,
+                            margins: '0 0 0 5',
+                        }]
                     }]
                 }]
-            //}]
-
+            },{
+                xtype: 'fieldset',
+                defaultType:'textfield',
+                defaults: {
+                    anchor: '-5',
+                },
+                items:[{
+                    xtype:'combobox',
+                    name: 'group_by',
+                    typeAhead: true,
+                    triggerAction: 'all',
+                    value: '',
+                    store: [
+                        ['','Não Agrupar'],
+                        ['compra_id','Lotes de Compra'],
+                    ]
+                }]
             }],
             // Barra e Menus
-            tbar:{
-                items:[{
+            bbar:{
+                items:['->',{
                     xtype: 'button',
-                    text: 'Excluir',
-                    action: 'action_excluir_form',
-                    iconCls: 'icon-cross',
-                },{
-                    xtype: 'button',
-                    text: 'Salvar',
-                    action: 'action_salvar',
+                    text: 'Gerar Relatório',
+                    action: 'action_relatorio',
                     iconCls: 'icon-disk',
-                    tooltip: 'Click para <font color="blue"><b>Salvar</b></font> as Informações.'
-                },
-                '->',
-                {
-                    xtype: 'button',
-                    text: 'Cancelar',
-                    action: 'action_cancelar',
-                    iconCls: 'icon-cancel',
-                    tooltip: 'Click para <font color="red"><b>Abandonar</b></font> a Janela de Cadastro<br>Nenhuma informação será Gravada e o Cadastro será Fechado.'
+                    tooltip: 'Click para <font color="blue"><b>Gerar um Relatório</b></font> as Informações que representão o filtro.'
                 }]
             }
 

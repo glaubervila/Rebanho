@@ -1049,13 +1049,13 @@ class Pesagens extends Base {
 
         /** Tabela de Cores para escala de 200 
 
-             1 =   Vermelho       - #FF0000
+             1 =   Violeta        - #EE82EE
              2 =   Azul Claro     - #7FFFD4
              3 =   Verde          - #00FF00
              4 =   Amarelo        - #FFFF00
              5 =   Verde Claro    - #9AFF9A
         **/
-        $cor[1]  = "#FF0000";
+        $cor[1]  = "#EE82EE";
         $cor[2]  = "#7FFFD4";
         $cor[3]  = "#00FF00";
         $cor[4]  = "#FFFF00";

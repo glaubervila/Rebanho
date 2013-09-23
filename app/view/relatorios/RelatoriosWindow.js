@@ -11,7 +11,7 @@ Ext.define('Rebanho.view.relatorios.RelatoriosWindow' ,{
 
     width: 400,
 
-    height: 250,
+    height: 500,
 
     //iconCls: 'icon-',
 

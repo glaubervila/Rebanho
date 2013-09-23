@@ -89,6 +89,7 @@ Ext.define('Rebanho.controller.PesagensReport', {
         url = "php/core/Download_Arquivo.php?file="+obj.file+'&path='+obj.path+'&filename='+obj.filename+'&mime='+obj.mime;
 
         window.open(url,'_blank');
+
     },
 
 });

@@ -939,7 +939,9 @@ class Animais extends Base {
 
         //getAnimaisAtivos
         $aFiltros[] = "confinamento_id = {$data->confinamento_id}";
-        $aFiltros[] = "quadra_id = {$data->quadra_id}";
+        if ($data->quadra_id != 0){
+            $aFiltros[] = "quadra_id = {$data->quadra_id}";
+        }
         $aFiltros[] = "status = 1";
 
         $strFiltros = implode($aFiltros,' AND ');

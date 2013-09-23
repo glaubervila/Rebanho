@@ -54,10 +54,12 @@ class AnimaisAtivosReport extends Base {
 
         // Recuperando o Nome do Confinamento
         $data_filter->confinamento = Confinamentos::getNome($data_filter->confinamento_id);
-        $quadra = Base::find($data_filter->quadra_id, 'quadras', 'quadra');
-        $data_filter->quadra = $quadra->quadra;
+        $data_filter->quadra = "";
+        if ($data_filter->quadra_id !=0){
+            $quadra = Base::find($data_filter->quadra_id, 'quadras', 'quadra');
+            $data_filter->quadra = $quadra->quadra;
+        }
         $data_filter->data_relatorio = date('d/m/Y H:m:i');
-
 
         return $data_filter;
     }

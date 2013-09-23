@@ -59,7 +59,7 @@ class NotasEntrada extends Base {
     /** Metodo: inicioEntradaAnimais
      */
     public function inicioEntradaAnimais ($data) {
-
+        //TODO: Permitir dar entrada em animais sem o codigo sequencial
         // Recuperando os Paramentros
         $notaAberta    = $data['nota_aberta'];
         $identificacao = $data['identificacao'];

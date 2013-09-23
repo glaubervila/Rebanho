@@ -160,19 +160,10 @@ Ext.define('Rebanho.view.layout.Header', {
                     text: 'Vendas',
                     iconCls: 'icon-coins_add',
                     menu: [{
-                        text: 'Relatorios',
-                        disabled: true,
-                        iconCls: 'icon-chart_pie',
-                        menu: [
-                            {
-                                text: 'Vendas Por Período',
-                                iconCls: 'icon-report',
-                            },
-                            {
-                                text: 'Vendas Por Clientes',
-                                iconCls: 'icon-report',
-                            },
-                        ]
+                        text: 'Lista de Vendas',
+                        handler: function(){
+                            var tabs = Ext.getCmp('mainTabpanel').novaAba('vendasgrid');
+                        }
                     }]
                 },
                 {
@@ -286,6 +277,11 @@ Ext.define('Rebanho.view.layout.Header', {
             scale: 'large',
             iconCls:'icon-report_32x32',
             menu: [{
+                text: 'Geral',
+                handler: function(){
+                    Ext.create('Rebanho.view.relatorios.RelatoriosWindow',{});
+                }
+            },{
                 text: 'Animais Ativos',
                 handler: function(){
                     Ext.create('Rebanho.view.animais.AnimaisAtivosReportWindow',{});
