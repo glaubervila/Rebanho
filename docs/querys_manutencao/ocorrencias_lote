@@ -1,0 +1,11 @@
+-- SELECT COUNT(*) FROM animais_codigos WHERE animal_id IN (SELECT id FROM animais WHERE compra_id = 136);
+-- SELECT * FROM animais_codigos WHERE animal_id IN (SELECT id FROM animais WHERE compra_id = 136) ORDER BY animal_id;
+SELECT * FROM quadras WHERE confinamento_id = 2;
+SELECT COUNT(*) FROM animais WHERE confinamento_id = 2 AND quadra_id = 2 AND sexo = 'M';
+INSERT INTO ocorrencias (confinamento_id, quadra_id, animal_id, tipo, ocorrencia, data) 
+    SELECT 2, 2, id as animal_id, 9, 'Castracao', '2013-09-04' FROM animais WHERE confinamento_id = 2 AND quadra_id = 2 AND sexo = 'M';
+
+SELECT * FROM ocorrencias WHERE tipo = 9 AND data = '2013-09-04';
+-- IN (SELECT id FROM animais WHERE compra_id = 136);
+
+
