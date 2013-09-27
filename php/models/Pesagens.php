@@ -665,7 +665,7 @@ class Pesagens extends Base {
 
                     // Fazer o Manejo
                     if ($animal->quadra != $registro->quadra){
-                        $manejo = Manejos::manejoQuadras($registro, $registro->animal_id, $registro->quadra, false);
+                        $manejo = Manejos::manejoQuadras($registro, $registro->animal_id, $registro->quadra_id, false);
                         if ($manejo->failure){
                             $msgs[] = $manejo->msg;
                         }
