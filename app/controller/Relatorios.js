@@ -159,9 +159,8 @@ Ext.define('Rebanho.controller.Relatorios', {
     onOpenRelatorio: function(store,obj){
         console.log('onOpenRelatorio()');
 
-        myWindow=window.open('','_blank')
-        myWindow.document.write("<p>This is 'myWindow'</p>")
-        myWindow.document.write(obj.content)
+        myWindow=window.open('','_blank');
+        myWindow.document.write(obj.content);
         myWindow.focus()
     },
 });

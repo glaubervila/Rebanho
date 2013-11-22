@@ -1,11 +1,27 @@
 -- SELECT COUNT(*) FROM animais_codigos WHERE animal_id IN (SELECT id FROM animais WHERE compra_id = 136);
 -- SELECT * FROM animais_codigos WHERE animal_id IN (SELECT id FROM animais WHERE compra_id = 136) ORDER BY animal_id;
-SELECT * FROM quadras WHERE confinamento_id = 2;
-SELECT COUNT(*) FROM animais WHERE confinamento_id = 2 AND quadra_id = 2 AND sexo = 'M';
-INSERT INTO ocorrencias (confinamento_id, quadra_id, animal_id, tipo, ocorrencia, data) 
-    SELECT 2, 2, id as animal_id, 9, 'Castracao', '2013-09-04' FROM animais WHERE confinamento_id = 2 AND quadra_id = 2 AND sexo = 'M';
 
-SELECT * FROM ocorrencias WHERE tipo = 9 AND data = '2013-09-04';
+-- CASTRACAO
+-- SELECT * FROM quadras WHERE confinamento_id = 2;
+-- SELECT COUNT(*) FROM animais WHERE confinamento_id = 2 AND quadra_id = 2 AND sexo = 'M';
+-- INSERT INTO ocorrencias (confinamento_id, quadra_id, animal_id, tipo, ocorrencia, data) 
+--    SELECT 2, 2, id as animal_id, 9, 'Castracao', '2013-09-04' FROM animais WHERE confinamento_id = 2 AND quadra_id = 2 AND sexo = 'M';
+
+-- SELECT * FROM ocorrencias WHERE tipo = 9 AND data = '2013-09-04';
 -- IN (SELECT id FROM animais WHERE compra_id = 136);
 
+-- MANEJO
+-- SELECT * FROM quadras WHERE confinamento_id = 2;
+-- SELECT COUNT(*) FROM animais WHERE confinamento_id = 2 AND quadra_id = 10 AND status = 1 AND sexo = 'F';
+ -- INSERT INTO ocorrencias (confinamento_id, quadra_id, animal_id, tipo, ocorrencia, descricao, data) 
+   -- SELECT 2, 15, id as animal_id, 5, 'Manejo', 'Manejo da Quadra H Estrada Para Pasto G', '2013-09-30' FROM animais WHERE confinamento_id = 2 AND quadra_id = 10 AND status = 1 AND sexo = 'F'; 
+   -- UPDATE animais SET quadra_id = 15 WHERE confinamento_id = 2 AND quadra_id = 10 AND status = 1 AND sexo = 'F';
+   -- SELECT COUNT(*) FROM ocorrencias WHERE confinamento_id = 2 AND quadra_id = 15 AND tipo = 5 AND data = '2013-09-30';
 
+-- Todos para o pasto mudancas
+	SELECT * FROM quadras WHERE confinamento_id = 2;
+	SELECT COUNT(*) FROM animais WHERE confinamento_id = 2 AND status = 1;
+	INSERT INTO ocorrencias (confinamento_id, quadra_id, animal_id, tipo, ocorrencia, descricao, data) 
+		SELECT 2, 12, id as animal_id, 5, 'Manejo', 'Manejo P/ Mudanças', '2013-11-18' FROM animais WHERE confinamento_id = 2 AND status = 1;
+		UPDATE animais SET quadra_id = 12 WHERE confinamento_id = 2 AND status = 1;
+		SELECT COUNT(*) FROM ocorrencias WHERE confinamento_id = 2 AND quadra_id = 1 AND tipo = 5 AND data = '2013-11-18';

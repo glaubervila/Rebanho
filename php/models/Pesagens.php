@@ -982,9 +982,12 @@ class Pesagens extends Base {
     public function getClassificacaoMediaDia($media){
 
         switch ($media){
-
+            // Abaixo de 0 = 0
+            case($media < 0):
+                $classificacao = 0;
+            break;
             // Abaixo de 600  = 1
-            case($media < 0.600):
+            case(($media > 0) && ($media < 0.600)):
                 $classificacao = 1;
             break;
             // Entre 600 e 800 
@@ -1048,13 +1051,14 @@ class Pesagens extends Base {
     public function getCorClassificacao($classificacao){
 
         /** Tabela de Cores para escala de 200 
-
+             0 =   Vermelho       - #F66969
              1 =   Violeta        - #EE82EE
              2 =   Azul Claro     - #7FFFD4
              3 =   Verde          - #00FF00
              4 =   Amarelo        - #FFFF00
              5 =   Verde Claro    - #9AFF9A
         **/
+        $cor[0]  = "#F66969";
         $cor[1]  = "#EE82EE";
         $cor[2]  = "#7FFFD4";
         $cor[3]  = "#00FF00";

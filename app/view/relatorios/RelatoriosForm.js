@@ -171,9 +171,9 @@ Ext.define('Rebanho.view.relatorios.RelatoriosForm' ,{
                     name: 'group_by',
                     typeAhead: true,
                     triggerAction: 'all',
-                    value: '',
+                    value: 'compra_id',
                     store: [
-                        ['','Não Agrupar'],
+                        //['','Não Agrupar'],
                         ['compra_id','Lotes de Compra'],
                     ]
                 }]

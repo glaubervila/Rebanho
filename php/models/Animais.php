@@ -402,6 +402,10 @@ class Animais extends Base {
             // Calculando a Media Diaria de Peso Ganho
             $ganho_diario = ($obj->peso_ganho / $obj->dias_confinamento);
             $obj->ganho_diario = number_format($ganho_diario, 3, '.',',');
+            
+            // Classificacao
+            $obj->classificacao = Pesagens::getClassificacaoMediaDia($obj->ganho_diario);
+            $obj->cor_classificacao = Pesagens::getCorClassificacao($obj->classificacao);
         }
         else {
             $obj->peso_ganho = 0;
